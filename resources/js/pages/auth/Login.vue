@@ -22,12 +22,6 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('login'), {
-        onSuccess: () => {
-            // Full page redirect after successful login
-            window.location.href = '/dashboard/dashboard';
-        },
-        preserveState: false,
-        preserveScroll: false,
         onFinish: () => form.reset('password'),
     });
 };

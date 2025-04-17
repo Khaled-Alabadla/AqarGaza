@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,9 +19,9 @@ class RegisteredUserController extends Controller
     /**
      * Show the registration page.
      */
-    public function create(): Response
+    public function create()
     {
-        return Inertia::render('auth/Register');
+        return view('auth.register');
     }
 
     /**
@@ -28,12 +29,12 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => 'required|string|lowercase|email|max:255|unique:users,email',
+            'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         $user = User::create([
@@ -42,16 +43,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Fire email verification
         event(new Registered($user));
 
+        // Login the user
         Auth::login($user);
 
-        //     return to_route('dashboard');
-
-        if (in_array($user->role, ['admin', 'super_admin'])) {
-            return redirect()->intended(route('dashboard', absolute: false));
-        }
-
-        return redirect()->intended('/');
+        // Redirect to email verification notice
+        return redirect()->route('verification.notice')->with('status', 'Registration successful. Please check your email to verify your account.');
     }
 }
