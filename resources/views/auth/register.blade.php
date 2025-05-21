@@ -8,7 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}" />
 
-    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/register_styles.css') }}" />
+
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+
 </head>
 
 <body>
@@ -29,6 +32,9 @@
                         <div class="field-container">
                             <input type="text" id="fullname" name="name"
                                 placeholder="مثال: محمد عبدالله أحمد حمدان" required />
+                            @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -40,6 +46,10 @@
                             <input type="email" id="email" name="email" placeholder="john.doe@gmail.com"
                                 required />
                         </div>
+                        @error('email')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+
                     </div>
                 </div>
 
@@ -49,38 +59,45 @@
                         <div class="field-container">
                             <input type="password" id="password" name="password" placeholder="••••••••" required />
                         </div>
+                        @error('password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                     <div class="form-group half">
                         <label for="confirm-password">تأكيد كلمة المرور</label>
                         <div class="field-container">
                             <input type="password" id="confirm-password" name="password_confirmation"
                                 placeholder="••••••••" required />
+
                         </div>
+                        @error('password_confirmation')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
-                <div class="policy-agreement">
+                {{-- <div class="policy-agreement">
                     <input type="checkbox" id="agree" name="agree" required />
                     <label for="agree">أوافق على الشروط وسياسة الخصوصية</label>
-                </div>
+                </div> --}}
 
                 <button type="submit" class="btn-submit">إنشاء حساب</button>
             </form>
 
             <p class="already-have-account">
                 لديك حساب بالفعل؟
-                <a href="#" class="login-link">تسجيل الدخول</a>
+                <a href="{{ route('login') }}" class="login-link">تسجيل الدخول</a>
             </p>
 
             <div class="divider-text">أو قم بالتسجيل مع</div>
 
             <!-- وسائل التواصل للتسجيل -->
             <div class="social-icons">
-                <a href="#" class="icon-wrapper">
+                <a href="{{ route('auth.redirect', 'google') }}" class="icon-wrapper">
                     <img src="{{ asset('assets/img/google.png') }}" alt="google  " class="illustration-image" /> </a>
-                <a href="#" class="icon-wrapper">
+                {{-- <a href="{{ route('auth.redirect', 'facebook') }}" class="icon-wrapper">
                     <img src="{{ asset('assets/img/facebook.png') }}" alt="facebook  " class="illustration-image" />
-                </a>
+                </a> --}}
             </div>
         </div>
 

@@ -15,7 +15,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::prefix('dashboard')->middleware(['auth', 'verified', EnsureUserIsAdmin::class])->name('dashboard.')->group(function () {
+Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('dashboard.')->group(function () {
     Route::get('/', function () {
         return view('dashboard.home');
     })->name('index');
@@ -27,7 +27,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified', EnsureUserIsAdmin::c
     // End Users
 
     // Roles
-    Route::resource('roles', RolesController::class)->except('show');
+    Route::resource('roles', RolesController::class)->middleware('password.confirm')->except('show');
     // End Roles
 
 

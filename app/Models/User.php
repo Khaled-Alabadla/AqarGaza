@@ -8,6 +8,7 @@ use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 
 class User extends Authenticatable
 {
@@ -27,7 +28,10 @@ class User extends Authenticatable
         'image',
         'about',
         'phone',
-        'address'
+        'address',
+        'provider',
+        'provider_token',
+        'provider_id'
     ];
 
     /**
@@ -38,6 +42,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'provider_token'
     ];
 
     /**
@@ -100,5 +105,15 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    public function setProviderTokenAttribute($token)
+    {
+        $this->attributes['provider_token'] = Crypt::encryptString($token);
+    }
+
+    public function getProviderTokenAttribute($token)
+    {
+        return Crypt::decryptString($token);
     }
 }

@@ -16,7 +16,10 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || !in_array(Auth::user()->role, ['admin', 'super_admin'])) {
+        if(Auth::user()->super_admin) {
+            return $next($request);
+        }
+        if (!in_array(Auth::user()->role, ['admin', 'super_admin'])) {
             abort(403, 'Unauthorized access.');
         }
 

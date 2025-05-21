@@ -32,10 +32,24 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|min:10',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'name.required' => 'يرجى إدخال الاسم',
+            'name.max' => 'الاسم كبير للغاية',
+            'name.min' => 'الاسم يجب أن يحتوي على 10 أحرف على الأقل',
+
+            'email.required' => 'البريد الإلكتروني مطلوب',
+            'email.lowercase' => 'البريد الإلكتروني يجب أن يكون بحروف صغيرة',
+            'email.email' => 'يرجى إدخال بريد إلكتروني صالح.',
+            'email.max' => 'البريد الإلكتروني يجب ألا يزيد عن 255 حرفًا',
+            'email.unique' => 'هذا البريد الإلكتروني مسجل بالفعل',
+
+            'password.required' => 'كلمة المرور مطلوبة',
+            'password.confirmed' => 'تأكيد كلمة المرور غير مطابق',
         ]);
+
 
         $user = User::create([
             'name' => $request->name,

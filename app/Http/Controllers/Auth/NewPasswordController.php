@@ -40,6 +40,13 @@ class NewPasswordController extends Controller
             'token' => 'required',
             'email' => 'required|email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'email.required' => 'البريد الإلكتروني مطلوب',
+            'email.email' => 'البريد الإلكتروني غير صالح',
+            'password.required' => 'كلمة المرور مطلوبة',
+            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق',
+            'password.min' => 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل',
+            'password.regex' => 'يجب أن تحتوي كلمة المرور على حرف كبير وحرف صغير ورقم ورمز خاص',
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
@@ -65,7 +72,7 @@ class NewPasswordController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'email' => [__($status)],
+            'email' => 'البريد الإلكتروني غير صحيح',
         ]);
     }
 }

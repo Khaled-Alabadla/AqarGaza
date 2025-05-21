@@ -109,7 +109,7 @@
             </li>  --}}
 
 
-            @can('donors.display')
+            {{-- @can('donors.display')
                 <li class="side-item side-item-category">الجهات المانحة</li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
@@ -137,7 +137,7 @@
                         @endcan
                     </ul>
                 </li>
-            @endcan
+            @endcan --}}
 
             @can('properties.display')
             <li class="side-item side-item-category">المساعدات</li>
@@ -168,7 +168,7 @@
         @endcan
 
 
-            @can('queries.display')
+            {{-- @can('queries.display')
                 <li class="side-item side-item-category">الاستعلامات والتقارير</li>
                 <li class="slide">
                     <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
@@ -192,7 +192,7 @@
                 </li>
             </ul>
             </li>
-        @endcan
+        @endcan --}}
 
         @can('settings.display')
             <li class="side-item side-item-category">الإعدادات</li>

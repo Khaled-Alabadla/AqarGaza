@@ -20,8 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
-            EnsureUserIsAdmin::class,
+            // EnsureUserIsAdmin::class,
         ]);
+           $middleware->appendToGroup('admin', [
+               EnsureUserIsAdmin::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

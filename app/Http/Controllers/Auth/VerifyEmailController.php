@@ -16,10 +16,8 @@ class VerifyEmailController extends Controller
     {
         if ($request->user()->hasVerifiedEmail()) {
             if (in_array($request->user()->role, ['admin', 'super_admin'])) {
-                dd('1');
                 return redirect()->intended(route('dashboard.index', absolute: false) . '?verified=1');
             } else {
-                dd('2');
                 return redirect()->intended(route('home', absolute: false) . '?verified=1');
             }
         }
@@ -29,13 +27,11 @@ class VerifyEmailController extends Controller
             $user = $request->user();
             event(new Verified($user));
             if (in_array($request->user()->role, ['admin', 'super_admin'])) {
-                dd('3');
                 return redirect()->intended(route('dashboard.index', absolute: false) . '?verified=1');
             } else {
                 return redirect()->intended(route('home', absolute: false) . '?verified=1');
             }
         }
-        dd('5');
         return redirect()->intended(route('login'));
     }
 }
