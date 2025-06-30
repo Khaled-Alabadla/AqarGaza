@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Assistance;
 use App\Models\Distribution;
 use App\Models\Donor;
+use App\Models\Property;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class QueriesController extends Controller
 
         $request = request();
 
-        $query = Distribution::query();
+        $query = Property::query();
 
         $formattedStartDate = '';
 
@@ -67,20 +68,18 @@ class QueriesController extends Controller
             $query->where('created_at', '<=', $formattedEndDate . ' 23:59:59');
         }
 
-        $distributes = $query->get();
+        $properties = $query->get();
 
-        return view('queries.users', compact('users', 'distributes'));
+        return view('dashboard.queries.users', compact('users', 'properties'));
     }
 
-    public function donors()
+    public function properties()
     {
-        Gate::authorize('queries.donors');
-
-        $donors = Donor::all();
+        Gate::authorize('queries.properties');
 
         $request = request();
 
-        $query = Assistance::query();
+        $query = Property::query();
 
         $formattedStartDate = '';
 
@@ -108,22 +107,16 @@ class QueriesController extends Controller
             $formattedEndDate = $parsedDate->format('Y-m-d');
         }
 
-        if ($donor = $request->query('donor')) {
-            $query->where('donor_id', $donor);
-        } else {
-            $query->where('donor_id', 0);
-        }
-
         if ($formattedStartDate) {
-            $query->where('date', '>=', $formattedStartDate);
+            $query->where('created_at', '>=', $formattedStartDate);
         }
 
         if ($formattedEndDate) {
-            $query->where('date', '<=', $formattedEndDate);
+            $query->where('created_at', '<=', $formattedEndDate);
         }
 
         $properties = $query->get();
 
-        return view('queries.donors', compact('properties', 'donors'));
+        return view('dashboard.queries.properties', compact('properties'));
     }
 }

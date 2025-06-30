@@ -48,7 +48,7 @@
                         <div class="form-group ">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="form-label">اسم المستخدم الرباعي</label>
+                                    <label class="form-label">اسم المستخدم الرباعي (مطلوب)</label>
                                 </div>
                                 <div class="col-md-9">
                                     <input type="text" value="{{ old('name', '') }}" class="form-control" name="name">
@@ -58,7 +58,7 @@
                         <div class="form-group ">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <label class="form-label">البريد الإلكتروني (مطلوب)</label>
                                 </div>
                                 <div class="col-md-9">
                                     <input type="email" value="{{ old('email', '') }}" class="form-control"
@@ -69,7 +69,29 @@
                         <div class="form-group ">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="form-label">كلمة المرور</label>
+                                    <label class="form-label">رقم الجوال</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="{{ old('phone', '') }}" class="form-control"
+                                        name="phone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">العنوان</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="{{ old('address', '') }}" class="form-control"
+                                        name="address">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">كلمة المرور (مطلوب)</label>
                                 </div>
                                 <div class="col-md-9">
                                     <input type="password" class="form-control" name="password">
@@ -79,20 +101,11 @@
                         <div class="form-group ">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="form-label">رقم الجوال</label>
+                                    <label class="form-label">تأكيد كلمة المرور (مطلوب)</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="phone"
-                                        value="{{ old('phone', '') }}">
+                                    <input type="password" value="" class="form-control" name="password_confirmation">
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12">
-                                    <input type="file" name="file" class="dropify"
-                                        accept=".pdf,.jpg, .png, image/jpeg, image/png" data-height="70" />
-                                </div><br>
                             </div>
                         </div>
 

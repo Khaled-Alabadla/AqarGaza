@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.master')
-@section('title', 'عرض قائمة المساعدات')
+@section('title', 'عرض قائمة العقارات')
 
 @section('css')
     <!-- Internal Data table css -->
@@ -36,8 +36,8 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">المساعدات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    قائمة المساعدات</span>
+                <h4 class="content-title mb-0 my-auto">العقارات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
+                    قائمة العقارات</span>
             </div>
         </div>
 
@@ -52,10 +52,8 @@
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title mg-b-0">المساعدات</h4>
-                        @can('properties.create')
-                            <a href="{{ route('dashboard.properties.create') }}" class="btn btn-primary">إضافة مساعدة جديدة</a>
-                        @endcan
+                        <h4 class="card-title mg-b-0">العقارات</h4>
+
                     </div>
 
                     {{-- <p class="tx-12 tx-gray-500 mb-2">Example of Valex Bordered Table.. <a href="">Learn more</a></p> --}}
@@ -79,14 +77,15 @@
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0">#</th>
-                                    <th class="border-bottom-0">نوع المساعدة</th>
-                                    <th class="border-bottom-0"> الكمية</th>
-                                    <th class="border-bottom-0"> الجهة المانحة</th>
-                                    <th class="border-bottom-0">تاريخ الوصول</th>
-                                    @if (auth()->user()->can('properties.create') ||
-                                            auth()->user()->can('properties.delete') ||
-                                            auth()->user()->can('users.show'))
-                                        <th class="border-bottom-0">العمليات</th>
+                                    <th class="border-bottom-0">نوع العقار</th>
+                                    <th class="border-bottom-0">بيع \ تأجير</th>
+                                    <th class="border-bottom-0">العنوان</th>
+                                    <th class="border-bottom-0">الوصف</th>
+                                    <th class="border-bottom-0">السعر</th>
+                                    <th class="border-bottom-0">حالة العقار</th>
+                                    <th class="border-bottom-0">التاريخ</th>
+                                    @if (auth()->user()->can('properties.delete'))
+                                        <th>العمليات</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -94,36 +93,34 @@
                                 @foreach ($properties as $property)
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
-                                        <td>{{ $property->type }}</td>
-                                        <td>{{ $property->quantity }}</td>
-                                        <td>{{ $property->donor->name }}</td>
-                                        <td>{{ date_format(date_create($property->date), 'd/m/Y') }}</td>
+                                        <td>{{ $property->category->name }}</td>
+                                        <td>{{ $property->type == 'rent' ? 'تأجير' : 'بيع' }}</td>
+                                        <td>{{ $property->title }}</td>
+                                        <td>{{ $property->description }}</td>
+                                        <td>{{ $property->price . ($property->currency == 'ILS' ? 'شيكل ' : ' دولار') }}
+                                        </td>
+                                        <td> {{ $property->status == 'available' ? 'متوفر' : ($property->status == 'rented' ? 'تم التأجير' : ($property->status == 'sold' ? 'تم البيع' : '')) }}
+                                        </td>
+                                        <td>
+                                            {{ $property->status == 'available' ? 'متوفر' : ($property->status == 'rented' ? 'تم التأجير' : ($property->status == 'sold' ? 'تم البيع' : 'غير معروف')) }}
+                                        </td>
 
-                                        @if (auth()->user()->can('properties.update') ||
-                                                auth()->user()->can('properties.delete') ||
-                                                auth()->user()->can('properties.show'))
-                                            <td>
+                                        <td>{{ date_format(date_create($property->created_at), 'd/m/Y') }}</td>
+                                        @if (auth()->user()->can('properties.delete') || auth()->user()->can('properties.show'))
+                                            <td class="d-flex" style="gap: 3px">
                                                 @can('properties.show')
                                                     <a href="{{ route('dashboard.properties.show', $property->id) }}"
-                                                        class="btn btn-primary-gradient btn-sm">عرض التفاصيل</i></a>
+                                                        class="btn btn-primary-gradient btn-sm"> عرض التفاصيل</i></a>
                                                 @endcan
-
-                                                @can('properties.update')
-                                                    <a href="{{ route('dashboard.properties.edit', $property->id) }}"
-                                                        class="btn btn-secondary-gradient btn-sm"> تعديل</i></a>
-                                                @endcan
-
                                                 @can('properties.delete')
-                                                    <a class="btn btn-danger-gradient btn-sm" data-target="#modaldemo1"
-                                                        data-toggle="modal" href=""
+                                                    <a class="btn btn-danger-gradient btn-sm d-flex justify-content-center align-items-center"
+                                                        data-target="#modaldemo1" data-toggle="modal" href=""
                                                         data-id="{{ $property->id }}">حذف</a>
                                                 @endcan
-
                                             </td>
                                         @endif
                                     </tr>
                                 @endforeach
-
                             </tbody>
                         </table>
                     </div>
@@ -134,7 +131,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
-                        <h6 class="modal-title">حذف المساعدة</h6><button aria-label="Close" class="close"
+                        <h6 class="modal-title">حذف العقار</h6><button aria-label="Close" class="close"
                             data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
@@ -201,12 +198,12 @@
     <script>
         $('#modaldemo1').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
-            var assistanceId = button.data('id'); // Extract the ID from data-* attributes
+            var propertyId = button.data('id'); // Extract the ID from data-* attributes
             var modal = $(this);
-            modal.find('form').attr('action', '/properties/' + assistanceId);
+            modal.find('form').attr('action', '/dashboard/properties/' + propertyId);
         });
     </script>
-     <script>
+    <script>
         $(document).ready(function() {
             // Retrieve saved page length or default to 10
             let savedLength = parseInt(localStorage.getItem('pageLength')) || 10;

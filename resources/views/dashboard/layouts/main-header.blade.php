@@ -82,7 +82,7 @@
                 </div>
                 <div class="dropdown main-profile-menu nav nav-item nav-link">
                     <a class="profile-user d-flex" href=""><img alt=""
-                            src="https://cdn-icons-png.freepik.com/512/2552/2552801.png?ga=GA1.1.1883128924.1735321250">
+                            src="{{ Auth::user()->image == null ? 'https://cdn-icons-png.freepik.com/512/2552/2552801.png?ga=GA1.1.1883128924.1735321250' : asset('uploads/' . Auth::user()->image) }}">
                     </a>
                     <div class="dropdown-menu">
                         <div class="main-header-profile bg-primary p-3">

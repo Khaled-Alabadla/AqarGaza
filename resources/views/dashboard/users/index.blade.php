@@ -59,7 +59,7 @@
 
                     {{-- <p class="tx-12 tx-gray-500 mb-2">Example of Valex Bordered Table.. <a href="">Learn more</a></p> --}}
                 </div>
-                <div class="col-3 mb-3">
+                <div class="col-4 mb-3">
                     <div class="col-md-4">
                         <select id="pageLength" class="form-control">
                             <option value="10" selected>10</option>
@@ -82,7 +82,7 @@
                                     <th class="border-bottom-0">البريد الإلكتروني</th>
                                     <th class="border-bottom-0">رقم الجوال</th>
                                     <th class="border-bottom-0">العنوان</th>
-                                    @if (auth()->user()->can('users.create') || auth()->user()->can('users.delete'))
+                                    @if (auth()->user()->can('users.delete'))
                                         <th>العمليات</th>
                                     @endif
                                 </tr>
@@ -95,9 +95,10 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>
                                         <td>{{ $user->address }}</td>
+
                                         @if (auth()->user()->can('users.delete'))
                                             <td class="d-flex" style="gap: 3px">
-                                                @if ($user->id !== auth()->id())
+                                                @if ($user->email !== auth()->user()->email)
                                                     <a class="btn btn-danger-gradient btn-sm d-flex justify-content-center align-items-center"
                                                         data-target="#modaldemo1" data-toggle="modal" href=""
                                                         data-id="{{ $user->id }}">حذف</a>
@@ -186,9 +187,9 @@
     <script>
         $('#modaldemo1').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
-            var employeeId = button.data('id'); // Extract the ID from data-* attributes
+            var adminId = button.data('id'); // Extract the ID from data-* attributes
             var modal = $(this);
-            modal.find('form').attr('action', '/users/' + employeeId);
+            modal.find('form').attr('action', '/dashboard/users/' + adminId);
         });
     </script>
     <script>

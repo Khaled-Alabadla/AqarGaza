@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}" />
 
-    <link rel="stylesheet" href="{{ asset('assets/css/register_styles.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
 
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
 
@@ -30,12 +30,12 @@
                         <label for="fullname">الاسم الرباعي</label>
                         <!-- الحاوية التي ترسم الإطار وتحتوي على الحقل -->
                         <div class="field-container">
-                            <input type="text" id="fullname" name="name"
+                            <input value="{{ old('name') }}" type="text" id="fullname" name="name"
                                 placeholder="مثال: محمد عبدالله أحمد حمدان" required />
-                            @error('name')
-                                <div class="text-danger">{{ $message }}</div>
-                            @enderror
                         </div>
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
@@ -44,7 +44,7 @@
                         <label for="email">البريد الإلكتروني</label>
                         <div class="field-container">
                             <input type="email" id="email" name="email" placeholder="john.doe@gmail.com"
-                                required />
+                                value="{{ old('email') }}" required />
                         </div>
                         @error('email')
                             <small class="text-danger">{{ $message }}</small>

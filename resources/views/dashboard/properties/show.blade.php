@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.master')
 @section('title')
-{{ $property->type }} - {{ $property->donor->name }}
+    {{ $property->title }}
 @endsection
 
 @section('css')
@@ -11,14 +11,13 @@
     <link href="{{ URL::asset('assets/plugins/datatable/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/datatable/css/responsive.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">
-
 @endsection
 @section('page-header')
     <!-- breadcrumb -->
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">المساعدات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
+                <h4 class="content-title mb-0 my-auto">العقارات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
                     عرض التفاصيل </span>
             </div>
         </div>
@@ -34,7 +33,7 @@
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title mg-b-0">المساعدات</h4>
+                        <h4 class="card-title mg-b-0">العقارات</h4>
                         <i class="mdi mdi-dots-horizontal text-gray"></i>
                     </div>
 
@@ -44,60 +43,112 @@
                     @if (session('success'))
                         <div class="alert alert-success" id="success-alert">{{ session('success') }}</div>
                     @endif
-                    <h3 class="mb-3">{{ $property->type }} - {{ $property->donor->name }}
+                    <h3 class="mb-3">{{ $property->category->name }} - {{ $property->title }}
                     </h3>
-                    <div class="table-responsive">
-                        <table id="example" class="table key-buttons text-md-nowrap">
-                            <thead>
-                                <tr>
-                                    <th class="border-bottom-0">#</th>
-                                    <th class="border-bottom-0">اسم المستخدم</th>
-                                    <th class="border-bottom-0">رقم الهوية</th>
-                                    <th class="border-bottom-0">الكمية المستلمة</th>
-                                    <th class="border-bottom-0">تاريخ التسليم</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($property->distributes as $distribute)
-                                    <tr>
-                                        <td>{{ $loop->index + 1 }}</td>
-                                        <td>{{ $distribute->user->name }}</td>
-                                        <td>{{ $distribute->user->identity_number }}</td>
-                                        <td>{{ $distribute->quantity }}</td>
-                                        <td>{{ $distribute->created_at->format('d/m/Y') }}</td>
 
-                                    </tr>
-                                @endforeach
+                    <div class="row row-sm">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body h-100">
+                                    <div class="row row-sm ">
+                                        <div class=" col-xl-5 col-lg-12 col-md-12">
+                                            <div class="preview-pic tab-content">
+                                                <div class="tab-pane active" id="pic-1"><img
+                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-5.png"
+                                                        alt="image"></div>
+                                                <div class="tab-pane" id="pic-2"><img
+                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-2.png"
+                                                        alt="image"></div>
+                                                <div class="tab-pane" id="pic-3"><img
+                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-3.png"
+                                                        alt="image"></div>
+                                                <div class="tab-pane" id="pic-4"><img
+                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-4.png"
+                                                        alt="image"></div>
+                                                <div class="tab-pane" id="pic-5"><img
+                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-1.png"
+                                                        alt="image"></div>
+                                            </div>
+                                            <ul class="preview-thumbnail nav nav-tabs">
+                                                <li class="active"><a data-target="#pic-1" data-toggle="tab"><img
+                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-5.png"
+                                                            alt="image"></a></li>
+                                                <li><a data-target="#pic-2" data-toggle="tab"><img
+                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-2.png"
+                                                            alt="image"></a></li>
+                                                <li><a data-target="#pic-3" data-toggle="tab"><img
+                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-3.png"
+                                                            alt="image"></a></li>
+                                                <li><a data-target="#pic-4" data-toggle="tab"><img
+                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-4.png"
+                                                            alt="image"></a></li>
+                                                <li><a data-target="#pic-5" data-toggle="tab"><img
+                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-1.png"
+                                                            alt="image"></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="details col-xl-7 col-lg-12 col-md-12 mt-4 mt-xl-0">
+                                            <h4 class="product-title mb-1">{{ $property->category->name }}</h4>
+                                            <p class="text-muted tx-13 mb-1">{{ $property->title }}</p>
+                                            <div class="rating mb-1">
+                                                <div class="stars">
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star checked"></span>
+                                                    <span class="fa fa-star text-muted"></span>
+                                                    <span class="fa fa-star text-muted"></span>
+                                                </div>
+                                                <span class="review-no">41 reviews</span>
+                                            </div>
+                                            <div class="price h5 ml-2">السعر:<span
+                                                    class="h5 mr-2">{{ $price }}</span>
+                                            </div>
 
-                            </tbody>
-                        </table>
+                                            <div class="sizes d-flex align-items-center">النوع:
+                                                <span class="size d-flex" data-toggle="tooltip" title=""
+                                                    data-original-title="small"><label class="rdiobox mb-0"><input
+                                                            checked="" name="type" type="radio"
+                                                            @disabled($property->type != 'sale') @checked($property->type == 'sale')> <span
+                                                            class="font-weight-bold">بيع</span></label></span>
+                                                <span class="size d-flex" data-toggle="tooltip" title=""
+                                                    data-original-title="medium"><label class="rdiobox mb-0"><input
+                                                            name="type" type="radio" @disabled($property->type != 'rent')
+                                                            @checked($property->type == 'rent')>
+                                                        <span>تأجير</span></label></span>
+
+                                            </div>
+                                            @if ($property->area)
+                                                <div class="colors d-flex mr-3 mt-2">
+                                                    <span class="mt-2 h5">المساحة:</span>
+                                                    <span class="h5">{{ $property->area }}</span>
+                                                </div>
+                                            @endif
+                                            @if ($property->bedrooms)
+                                                <div class="colors d-flex align-items-center">
+                                                    <p class="h5">عدد الغرف:</p>
+                                                    <span class="h5 mr-1">{{ $property->bedrooms }}</span>
+                                                </div>
+                                            @endif
+                                            @if ($property->bathrooms)
+                                                <div class="colors d-flex mr-3 mt-2">
+                                                    <span class="mt-2 h5">عدد الحمامات:</span>
+                                                    <span class="h5 mr-1">{{ $property->bathrooms }}</span>
+                                                </div>
+                                            @endif
+                                            <p class="product-description">{{ $property->description }}</p>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
-        <div class="modal" id="modaldemo1">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content modal-content-demo">
-                    <div class="modal-header">
-                        <h6 class="modal-title">حذف المساعدة</h6><button aria-label="Close" class="close"
-                            data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        {{-- <h6>Modal Body</h6> --}}
-                        <p>هل أنت متأكد من عملية الحذف؟</p>
-                    </div>
-                    <div class="modal-footer">
-                        <form action="" method="POST" class="mb-0">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn ripple btn-danger">حفظ التغييرات</button>
-                        </form>
-                        <button class="btn ripple btn-secondary" data-dismiss="modal" type="button">إغلاق</button>
-                    </div>
 
-                </div>
-            </div>
-        </div>
         <!-- /row -->
     </div>
     <!-- Container closed -->
@@ -152,4 +203,3 @@
         });
     </script>
 @endsection
-

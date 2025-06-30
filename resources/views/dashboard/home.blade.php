@@ -77,7 +77,8 @@
             <div class="card overflow-hidden sales-card bg-warning-gradient">
                 <div class="pl-3 pt-3 pr-3 pb-2 pt-0">
                     <div class="">
-                        <h6 class="mb-3 tx-12 text-white">عدد المساعدات خلال شهر {{ \Carbon\Carbon::now()->translatedFormat('F') }}
+                        <h6 class="mb-3 tx-12 text-white">عدد المساعدات خلال شهر
+                            {{ \Carbon\Carbon::now()->translatedFormat('F') }}
                         </h6>
                     </div>
                     <div class="pb-0 mt-0">
@@ -189,10 +190,9 @@
                             <span class="font-weight-semibold mb-4 tx-14 ">عدد المساعدات</span> <a href="#"
                                 class="float-left tx-11 text-muted">
                                 @if (true)
-
                                 @endif
                             </a>
-                            <p class="mb-0 text-muted tx-12">{{ "6" }}</p>
+                            <p class="mb-0 text-muted tx-12">{{ '6' }}</p>
                         </li>
                         <li class="mt-0">
                             <i class="ti-bar-chart-alt bg-donors-gradient text-white product-icon"></i>
@@ -202,7 +202,7 @@
                                     {{-- {{ \App\Models\Donor::latest()->first()->created_at->diffForHumans() }} --}}
                                 @endif
                             </a>
-                            <p class="mb-0 text-muted tx-12">{{ "5" }}</p>
+                            <p class="mb-0 text-muted tx-12">{{ '5' }}</p>
                         </li>
 
                     </ul>
@@ -239,9 +239,35 @@
     <script src="{{ URL::asset('assets/js/jquery.vmap.sampledata.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        Chart.defaults.font.size = 16;
-        Chart.defaults.font.family = "Cairo";
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart.defaults.font.size = 16;
+            // Chart.defaults.font.family = "Cairo";
+            const profileImageForm = document.getElementById('profile_image_form'); // Get the form element
+            const profileImageInput = document.getElementById('profile_image_input');
+            const profileImagePreview = document.getElementById('profile_image_preview');
+            const editImageIcon = document.querySelector('#edit_image_icon');
+            console.log(editImageIcon);
 
+            // Get the new icon element
 
+            // Trigger file input when the EDIT ICON is clicked
+            editImageIcon.addEventListener('click', function() {
+                'fdlflkjd';
+                profileImageInput.click();
+            });
+
+            // Display selected image instantly as a preview
+            profileImageInput.addEventListener('change', function(event) {
+                if (event.target.files && event.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileImagePreview.src = e.target.result;
+
+                        profile_image_form.submit();
+                    };
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            });
+        });
     </script>
 @endsection

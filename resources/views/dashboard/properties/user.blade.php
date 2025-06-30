@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.master')
-@section('title', 'عرض المساعدات المستلمة')
+@section('title', 'عرض العقارات المستلمة')
 
 @section('css')
     <!-- Internal Data table css -->
@@ -36,8 +36,8 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">المساعدات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    المساعدات المستلمة</span>
+                <h4 class="content-title mb-0 my-auto">العقارات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
+                    العقارات المستلمة</span>
             </div>
         </div>
 
@@ -54,7 +54,7 @@
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title mg-b-0">المساعدات</h4>
+                        <h4 class="card-title mg-b-0">العقارات</h4>
                         <i class="mdi mdi-dots-horizontal text-gray"></i>
                     </div>
 
@@ -70,7 +70,7 @@
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0">#</th>
-                                    <th class="border-bottom-0">نوع المساعدة</th>
+                                    <th class="border-bottom-0">نوع العقار</th>
                                     <th class="border-bottom-0"> الكمية</th>
                                     <th class="border-bottom-0"> الجهة المانحة</th>
                                     <th class="border-bottom-0">تاريخ الاستلام</th>
@@ -83,7 +83,7 @@
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>{{ $distribute->property->type }}</td>
                                         <td>{{ $distribute->quantity }}</td>
-                                        <td>{{ $distribute->donor->name }}</td>
+                                        <td>{{ $distribute->property->name }}</td>
                                         <td>{{ date_format(date_create($distribute->property->date), 'd/m/Y') }}</td>
 
                                     </tr>
@@ -99,7 +99,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
-                        <h6 class="modal-title">حذف المساعدة</h6><button aria-label="Close" class="close"
+                        <h6 class="modal-title">حذف العقار</h6><button aria-label="Close" class="close"
                             data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">

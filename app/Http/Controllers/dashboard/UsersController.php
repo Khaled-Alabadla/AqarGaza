@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
@@ -19,7 +20,7 @@ class UsersController extends Controller
     {
         Gate::authorize('users.index');
 
-        $users = User::all();
+        $users = User::users()->get();
 
         return view('dashboard.users.index', compact('users'));
     }
@@ -37,58 +38,39 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(Request $request)
-    // {
-    //     Gate::authorize('users.create');
+    public function store(Request $request)
+    {
+        Gate::authorize('users.create');
 
-    //     $request->validate([
-    //         'name' => 'required|min:10|max:70',
-    //         'identity_number' => 'required|size:9|unique:users,identity_number',
-    //         'email' => 'nullable|email',
-    //         'phone' => 'required',
-    //     ], [
-    //         'name.required' => 'الاسم مطلوب',
-    //         'name.min' => 'يجب أن يحتوي الاسم على الأقل 10 أحرف',
-    //         'name.max' => 'يجب ألا يزيد الاسم عن 70 حرف',
-    //         'password.required' => 'كلمة المرور مطلوبة',
-    //         'password.min' => 'يجب ألا تقل كلمة المرور عن 8 أحرف',
-    //         'position.required' => ' المركز الوظيفي مطلوب',
-    //         'position.in' => 'يجب أن يكون المركز الوظيفي أحد الخيارات التالية: عضو كجلس، مثبت، عقد',
-    //         'identity_number.required' => 'رقم الهوية مطلوب',
-    //         'identity_number.size' => 'يجب أن يتكون رقم الهوية من 9 أرقام فقط',
-    //         'identity_number.unique' => 'رقم الهوية مسجل مسبقا',
-    //         'email.email' => 'البريد الإلكتروني غير صالح',
-    //         'phone.required' => 'رقم الجوال مطلوب',
-    //         'family_size.required' => 'عدد أفراد الأسرة مطلوب',
-    //         'wife_name.min' => 'يجب أن يحتوي اسم الزوجة على الأقل 10 أحرف',
-    //         'wife_name.max' => 'يجب ألا يزيد اسم الزوجة عن 70 حرف',
-    //         'status.required' => 'الحالة الاجتماعية مطلوبة',
-    //         'status.in' => 'يجب أن تكون الحالة الاجتماعية إحدى الخيارات التالية: متزوج،أعزب',
-    //         'wife_identity_number.size' => 'يجب أن يتكون رقم هوية الزوجة من 9 أرقام فقط',
-    //         'wife_identity_number.unique' => 'رقم هوية الزوجة مسجل مسبقا',
-
-    //     ]);
+        $request->validate([
+            'name' => 'required|min:10',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ], [
+            'name.required' => 'الاسم مطلوب',
+            'name.min' => 'يجب أن يحتوي الاسم على الأقل 10 أحرف',
+            'password.required' => 'كلمة المرور مطلوبة',
+            'password.confirmed' => 'تأكيد كلمة المرور حاطئ',
+            'password.min' => 'يجب أن تحتوي كلمة المرور على 8 أحرف أو أكثر',
+            'email.required' => 'البريد الإلكتروني مطلوب',
+            'email.email' => 'البريد الإلكتروني غير صالح',
+        ]);
 
 
-    //     $user = User::create([
-    //         'name' => $request->name,
-    //         'identity_number' => $request->identity_number,
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //         'phone' => $request->phone,
-    //         'position' => $request->position,
-    //         'family_size' => $request->family_size,
-    //         'status' => $request->status,
-    //         'wife_name' => $request->wife_name,
-    //         'wife_identity_number' => $request->wife_identity_number
-    //     ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'password' => Hash::make($request->password),
+        ]);
 
-    //     $role = Role::where('name', 'مستخدم')->first();
+        $role = Role::where('name', 'مستخدم')->first();
 
-    //     $user->roles()->attach($role);
+        $user->roles()->attach($role);
 
-    //     return redirect()->route('dashboard.users.index')->with('success', 'تم إضافة المستخدم بنجاح');
-    // }
+        return redirect()->route('dashboard.users.index')->with('success', 'تم إضافة المستخدم بنجاح');
+    }
 
     /**
      * Display the specified resource.
@@ -116,24 +98,20 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|min:10|max:100',
+            'name' => 'required|min:10',
             'email' => 'required|email',
         ], [
             'name.required' => 'الاسم مطلوب',
             'name.min' => 'يجب أن يحتوي الاسم على الأقل 10 أحرف',
-            'name.max' => 'يجب ألا يزيد الاسم عن 100 حرف',
             'email.required' => 'البريد الإلكتروني مطلوب',
             'email.email' => 'البريد الإلكتروني غير صالح',
         ]);
-        // $user->update([
-        //     'name' => $request->name,
-        // ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'address' => $request->address,
             'phone' => $request->phone,
+            'address' => $request->address,
         ]);
 
         return redirect()->back()->with('success', 'تم تعديل الملف الشخصي بنجاح');
@@ -212,5 +190,42 @@ class UsersController extends Controller
         $user->roles()->sync($request->roles);
 
         return redirect()->route('dashboard.users.roles.index')->with('success', 'تم تعديل الصلاحية بنجاح');
+    }
+
+    public function edit_profile(Request $request, $id)
+    {
+        Gate::authorize('users.update');
+
+        $user = Auth::user();
+
+        $request->validate([
+            'image' => 'nullable|image|mimes:png,jpg,jpeg'
+        ], [
+            'image.mimes' => 'الصورة غير صالحة، يرجى إرفاق صورة بامتداد png, jpg, jpeg'
+        ]);
+
+        $file_path = $user->image;
+
+        if ($request->hasFile('image')) {
+            // Define the directory path within the 'public_uploads' disk
+            $directory = "users/profiles";
+
+            // Get the original file name
+            $file_name = rand() . time() . $request->file('image')->getClientOriginalName();
+
+            // Store the file in the public_uploads disk
+            $file_path = $request->file('image')->storeAs($directory, $file_name, 'public_uploads');
+
+            // dd($user->image);
+
+            Storage::disk('public_uploads')->delete($user->image);
+        }
+
+        $user->update([
+            'image' => $file_path,
+        ]);
+
+
+        return redirect()->route('dashboard.index');
     }
 }

@@ -19,7 +19,7 @@ class NewPasswordController extends Controller
     /**
      * Show the password reset page.
      */
-    public function create(Request $request): Response
+    public function create(Request $request, $token): Response
     {
         // dd($request->token);
 

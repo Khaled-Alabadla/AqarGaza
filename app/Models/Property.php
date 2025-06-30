@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Property extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['user_id', 'category_id', 'title', 'description', 'price', 'status', 'type', 'bedrooms', 'bathrooms', 'area'];
 
     public function user()
@@ -37,5 +40,15 @@ class Property extends Model
     public function views()
     {
         return $this->hasMany(PropertyView::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function zone()
+    {
+        return $this->belongsTo(Zone::class);
     }
 }

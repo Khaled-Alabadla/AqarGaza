@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    protected $fillable = ['property_id', 'sender_id', 'receiver_id'];
+    protected $fillable = ['user_id', 'receiver_id', 'last_message_id'];
 
     public function messages()
     {
@@ -16,5 +16,15 @@ class Chat extends Model
     public function lastMessage()
     {
         return $this->belongsTo(Message::class, 'last_message_id', 'id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'receiver_id');
     }
 }

@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.master')
-@section('title', 'عرض قائمة المساعدات المحذوفة')
+@section('title', 'عرض قائمة العقارات المحذوفة')
 
 @section('css')
     <!-- Internal Data table css -->
@@ -36,8 +36,8 @@
     <div class="breadcrumb-header justify-content-between">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">المساعدات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
-                    المساعدات المحذوفة</span>
+                <h4 class="content-title mb-0 my-auto">العقارات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/
+                    العقارات المحذوفة</span>
             </div>
         </div>
 
@@ -54,7 +54,7 @@
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title mg-b-0">المساعدات</h4>
+                        <h4 class="card-title mg-b-0">العقارات</h4>
                         <i class="mdi mdi-dots-horizontal text-gray"></i>
                     </div>
 
@@ -69,12 +69,14 @@
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0">#</th>
-                                    <th class="border-bottom-0">نوع المساعدة</th>
-                                    <th class="border-bottom-0"> الكمية</th>
-                                    <th class="border-bottom-0"> الجهة المانحة</th>
-                                    <th class="border-bottom-0">تاريخ الوصول</th>
-                                    @if (auth()->user()->can('properties.restore') || auth()->user()->can('properties.force_delete'))
-                                        <th class="border-bottom-0">العمليات</th>
+                                    <th class="border-bottom-0">نوع العقار</th>
+                                    <th class="border-bottom-0">بيع \ تأجير</th>
+                                    <th class="border-bottom-0">العنوان</th>
+                                    <th class="border-bottom-0">السعر</th>
+                                    <th class="border-bottom-0">حالة العقار</th>
+                                    <th class="border-bottom-0">التاريخ</th>
+                                    @if (auth()->user()->can('properties.delete'))
+                                        <th>العمليات</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -82,10 +84,15 @@
                                 @foreach ($properties as $property)
                                     <tr>
                                         <td>{{ $loop->index + 1 }}</td>
-                                        <td>{{ $property->type }}</td>
-                                        <td>{{ $property->quantity }}</td>
-                                        <td>{{ $property->donor->name }}</td>
-                                        <td>{{ $property->date }}</td>
+                                        <td>{{ $property->category->name }}</td>
+                                        <td>{{ $property->type == 'rent' ? 'تأجير' : 'بيع' }}</td>
+                                        <td>{{ $property->title }}</td>
+                                        <td>{{ $property->price . ($property->currency == 'ILS' ? 'شيكل ' : ' دولار') }}
+                                        </td>
+                                        <td>{{ (($property->status == 'available' ? 'متوفر' : $property->status == 'rented') ? '' : $property->status == 'sold') ? 'تم البيع' : 'تم التأجير' }}
+                                        </td>
+                                        <td>{{ date_format(date_create($property->created_at), 'd/m/Y') }}</td>
+
                                         @if (auth()->user()->can('properties.restore') || auth()->user()->can('properties.force_delete'))
                                             <td>
                                                 @can('properties.restore')
@@ -115,12 +122,12 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
-                        <h6 class="modal-title">حذف المساعدة</h6><button aria-label="Close" class="close"
+                        <h6 class="modal-title">حذف العقار</h6><button aria-label="Close" class="close"
                             data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
                         {{-- <h6>Modal Body</h6> --}}
-                        <p>هل أنت متأكد من عملية حذف المساعدة بشكل نهائي؟</p>
+                        <p>هل أنت متأكد من عملية حذف العقار بشكل نهائي؟</p>
                     </div>
                     <div class="modal-footer">
                         <form action="" method="POST" class="mb-0">
@@ -182,9 +189,9 @@
     <script>
         $('#modaldemo1').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
-            var assistanceId = button.data('id'); // Extract the ID from data-* attributes
+            var propertyId = button.data('id'); // Extract the ID from data-* attributes
             var modal = $(this);
-            modal.find('form').attr('action', '/properties/' + assistanceId + '/force-delete');
+            modal.find('form').attr('action', '/dashboard/properties/' + propertyId + '/force-delete');
         });
     </script>
 @endsection

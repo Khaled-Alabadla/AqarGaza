@@ -70,9 +70,7 @@
                                 <tr>
                                     {{-- <th class="border-bottom-0">#</th> --}}
                                     <th class="border-bottom-0">الاسم</th>
-                                    <th class="border-bottom-0">رقم الهوية</th>
-                                    <th class="border-bottom-0">المركز الوظيفي</th>
-                                    <th class="border-bottom-0">عدد أفراد الأسرة</th>
+                                    <th class="border-bottom-0">البريد الإلكتروني</th>
                                     <th cla\ss="border-bottom-0">رقم الجوال</th>
                                     @if (auth()->user()->can('users.restore') || auth()->user()->can('users.force_delete'))
                                         <th cla\ss="border-bottom-0">العمليات</th>
@@ -82,11 +80,8 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr>
-                                        {{-- <td>{{ $loop->index + 1 }}</td> --}}
                                         <td>{{ $user->name }}</td>
-                                        <td>{{ $user->identity_number }}</td>
-                                        <td>{{ $user->position }}</td>
-                                        <td>{{ $user->family_size }}</td>
+                                        <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>
                                         @if (auth()->user()->can('users.restore') || auth()->user()->can('users.force_delete'))
                                             <td>
@@ -207,9 +202,9 @@
     <script>
         $('#modaldemo1').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget); // Button that triggered the modal
-            var employeeId = button.data('id'); // Extract the ID from data-* attributes
+            var userId = button.data('id'); // Extract the ID from data-* attributes
             var modal = $(this);
-            modal.find('form').attr('action', '/users/' + employeeId + '/force-delete');
+            modal.find('form').attr('action', '/dashboard/users/' + userId + '/force-delete');
         });
     </script>
 @endsection

@@ -74,7 +74,9 @@ class PropertiesController extends Controller
 
         $property = Property::with('user')->latest()->findOrFail($id);
 
-        return view('dashboard.properties.show', compact('property'));
+        $price = $property->price . ' ' .  ($property->currency == 'ILS' ? 'شيكل' : 'دولار');
+
+        return view('dashboard.properties.show', compact('property', 'price'));
     }
 
     /**

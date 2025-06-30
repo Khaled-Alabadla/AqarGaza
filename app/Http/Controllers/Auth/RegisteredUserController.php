@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,7 +64,6 @@ class RegisteredUserController extends Controller
         // Login the user
         Auth::login($user);
 
-        // Redirect to email verification notice
         return redirect()->route('verification.notice')->with('status', 'Registration successful. Please check your email to verify your account.');
     }
 }
