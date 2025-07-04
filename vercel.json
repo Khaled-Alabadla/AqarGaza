@@ -1,19 +1,11 @@
 {
     "version": 2,
     "framework": null,
-    "builds": [
-        {
-            "src": "api/*.php",
-            "use": "@vercel/php@0.7.3",
-            "config": {
-                "buildCommand": "rm -rf /tmp/* && composer install --no-dev --optimize-autoloader"
-            }
-        },
-        {
-            "src": "vite.config.js",
-            "use": "@vercel/node"
+    "functions": {
+        "api/*.php": {
+            "runtime": "vercel-php@0.7.1"
         }
-    ],
+    },
     "routes": [
         {
             "src": "/(.*\\.(?:css|js|png|jpg|jpeg|gif|svg|ico|ttf|woff|woff2|eot|otf|webp|avif|txt))$",
@@ -28,6 +20,7 @@
         "APP_ENV": "production",
         "APP_DEBUG": "false",
         "APP_URL": "https://app.bintangdeveloper.eu.org",
+
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
