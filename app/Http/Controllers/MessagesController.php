@@ -7,8 +7,6 @@ use App\Events\MessageCreated;
 use App\Events\MessageDeleted;
 use App\Models\Chat;
 use App\Models\Message;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +20,7 @@ class MessagesController extends Controller
      */
     public function index($chatId)
     {
+
         $chat = Chat::with(['messages.sender', 'messages.receiver'])
             ->findOrFail($chatId);
 
@@ -72,13 +71,17 @@ class MessagesController extends Controller
 
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
+
+                $type = 'attachment';
+                $directory = 'messages/';
+                $file_name = time() . $request->file('attachment')->getClientOriginalName();
                 $messageContent = json_encode([
                     'file_name' => $file->getClientOriginalName(),
                     'file_size' => $file->getSize(),
                     'mimetype' => $file->getMimeType(),
-                    'file_path' => $file->store('attachments', ['disk' => 'public']),
+                    'file_path' => $file_name,
                 ]);
-                $type = 'attachment';
+                $file_path = $request->file('attachment')->storeAs($directory, $file_name, 'public_uploads');
             }
 
             // 3. Create the message
@@ -105,6 +108,7 @@ class MessagesController extends Controller
         return response()->json([
             'chat_id' => $chat->id,
             'message' => $message,
+            'message_content' => $messageContent,
         ], 201);
     }
 
@@ -203,6 +207,13 @@ class MessagesController extends Controller
         DB::beginTransaction();
 
         try {
+            if ($message->type == 'attachment') {
+                // Delete the attachment file if it exists
+                $attachment = json_decode($message->message, true);
+                if (isset($attachment['file_path'])) {
+                    Storage::disk('public_uploads')->delete('messages/' . $attachment['file_path']);
+                }
+            }
             // Mark the message as deleted
             $message->update([
                 'message' => 'تم حذف الرسالة',
@@ -236,6 +247,7 @@ class MessagesController extends Controller
             broadcast(new MessageDeleted($message));
 
             DB::commit();
+
 
             return response()->json([
                 'message' => 'Message deleted successfully',

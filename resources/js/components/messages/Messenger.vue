@@ -1,5 +1,4 @@
-<script lang="ts">
-// Messenger.vue
+<script>
 import { defineComponent, ref } from 'vue';
 import ChatHeader from './ChatHeader.vue';
 import ChatContent from './ChatContent.vue';
@@ -69,7 +68,8 @@ export default defineComponent({
             const user = this.getOtherUser(chat);
             const name = user?.name || 'Unknown';
             const image = user?.image;
-            return image ? `/Uploads/${image}` : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(name)}`;
+            return image ? `/Uploads/${image}` :
+                `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(name)}`;
         },
         getChatName(chat) {
             if (!chat) {
@@ -126,27 +126,22 @@ export default defineComponent({
         },
     },
     mounted() {
-
-        console.log('Root chats on mount:', this.$root.chats);
         if (this.$root.chats) {
             this.chats = this.$root.chats.map(chat => ({ ...chat, display: 'flex' }));
-            console.log('Messenger chats initialized:', this.chats);
         } else {
             console.warn('No chats found in $root.chats on mount');
         }
-        // this.$watch(
-        //     () => this.$root.chats,
-        //     newChats => {
-        //         console.log('Root chats updated:', newChats);
-        //         this.chats = newChats.map(chat => ({ ...chat, display: 'flex' }));
-        //         console.log('Messenger chats updated:', this.chats);
-        //         if (this.selectedChat && !newChats.some(chat => chat.id === this.selectedChat.id)) {
-        //             this.selectedChat = null;
-        //             this.$root.chat = null;
-        //             this.$root.messages = [];
-        //         }
-        //     }
-        // );
+        this.$watch(
+            () => this.$root.chats,
+            newChats => {
+                this.chats = newChats.map(chat => ({ ...chat, display: 'flex' }));
+                if (this.selectedChat && !newChats.some(chat => chat.id === this.selectedChat.id)) {
+                    this.selectedChat = null;
+                    this.$root.chat = null;
+                    this.$root.messages = [];
+                }
+            }
+        );
     }
 });
 </script>

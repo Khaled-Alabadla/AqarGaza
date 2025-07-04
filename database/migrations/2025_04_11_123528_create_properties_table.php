@@ -21,15 +21,17 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->decimal('price', 10, 2)->nullable();
-            $table->enum('currency', ['USD', 'ILS'])->default('ILS');
-            $table->enum('status', ['available', 'rented', 'sold'])->default('available');
+            $table->enum('currency', ['USD', 'ILS', 'JOD'])->default('ILS');
+            $table->text('location')->nullable();
+            $table->enum('status', ['available', 'finished'])->default('available');
             $table->enum('type', ['rent', 'sale']);
             $table->string('main_image');
-            $table->integer('bedrooms')->nullable();
+            $table->integer('rooms')->nullable();
             $table->integer('bathrooms')->nullable();
             $table->float('area')->nullable(); // in square meters
             $table->date('date');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

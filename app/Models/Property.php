@@ -9,7 +9,7 @@ class Property extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['user_id', 'category_id', 'title', 'description', 'price', 'status', 'type', 'bedrooms', 'bathrooms', 'area'];
+    protected $guarded = [];
 
     public function user()
     {

@@ -10,8 +10,8 @@ class MessengerController extends Controller
 {
     public function index()
     {
-        // $user = Auth::user();
-        $user = User::find(28);
+        $user = Auth::user();
+        // $user = User::find(28);
 
         $chats = $user->participatedChats()
             ->with(['messages.sender', 'messages.receiver', 'lastMessage'])

@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar" :class="{ open: isSidebarOpen }" aria-hidden="!isSidebarOpen">
-        <div class="sidebar-header">
+        <div class="sidebar_header">
             <a href="#" class="sidebar-toggle" @click.prevent="toggleSidebar">
                 <i :class="isSidebarOpen ? 'fas fa-x' : 'fas fa-bars'"></i>
             </a>
@@ -20,12 +20,22 @@
                     ? `/Uploads/${getOtherUser(chat).image}`
                     : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                         getOtherUser(chat)?.name || 'Unknown'
-                    )}`
-                    " alt="Avatar" />
+                    )}`" alt="Avatar" />
                 <div class="info">
                     <div class="name">{{ getOtherUser(chat)?.name || 'Unknown' }}</div>
                     <div class="time">{{ formatTime(chat.last_message?.created_at) }}</div>
-                    <div class="preview">{{ chat.last_message?.message || 'لا رسائل' }}</div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div :class="{ 'text-bold': chat.unread_count > 0 }" class="preview">
+                            {{
+                                isJson(chat.last_message?.message)
+                                    ? JSON.parse(chat.last_message.message).file_name
+                                    : chat.last_message?.message || 'لا رسائل'
+                            }}
+                        </div>
+                        <div v-if="(chat.unread_count || chat.new_messages || 0) > 0" class="unread-count">
+                            {{ chat.unread_count || chat.new_messages || 0 }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,6 +103,15 @@ export default defineComponent({
         };
     },
     methods: {
+        isJson(str: string): boolean {
+            if (!str || typeof str !== 'string') return false;
+            try {
+                const parsed = JSON.parse(str);
+                return parsed && typeof parsed === 'object';
+            } catch (e) {
+                return false;
+            }
+        },
         toggleSidebar() {
             this.isSidebarOpen = !this.isSidebarOpen;
         },
@@ -132,7 +151,6 @@ export default defineComponent({
                 return;
             }
             this.loading = true;
-            console.log('Fetching chats for user:', (this.$root as any).userId);
             try {
                 const response = await fetch('/chats', {
                     headers: {
@@ -140,17 +158,14 @@ export default defineComponent({
                         'X-CSRF-TOKEN': (this.$root as any).csrf_token,
                     },
                 });
-                console.log('Response status:', response.status);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data: Chat[] = await response.json();
-                console.log('Fetched chats:', data);
                 this.localChats = this.sortChats(data || []);
                 this.filterChats(this.searchTerm);
                 (this.$root as any).chats = this.localChats;
             } catch (error: any) {
-                console.error('Fetch chats error:', error);
                 this.error = error.message.includes('401')
                     ? 'يرجى تسجيل الدخول لعرض المحادثات'
                     : 'فشل في تحميل المحادثات. حاول مرة أخرى.';
@@ -240,6 +255,7 @@ export default defineComponent({
         },
     },
     mounted() {
+
         this.fetchChats();
         if (this.chats.length > 0) {
             this.localChats = this.sortChats([...this.chats]);
@@ -251,9 +267,9 @@ export default defineComponent({
         } else {
             this.startPolling();
         }
-        this.$root.$on('message-updated', ({ message, chatId, isTemp, failed }: { message: Message; chatId: number; isTemp?: boolean; failed?: boolean }) => {
-            this.updateChatMessage(message, chatId, isTemp, failed);
-        });
+        // this.$root.$on('message-updated', ({ message, chatId, isTemp, failed }: { message: Message; chatId: number; isTemp?: boolean; failed?: boolean }) => {
+        //     this.updateChatMessage(message, chatId, isTemp, failed);
+        // });
     },
     beforeUnmount() {
         if (this.pollingInterval) {
@@ -266,13 +282,8 @@ export default defineComponent({
     },
 });
 </script>
-
 <style scoped>
-.contact img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
+.text-bold {
+    font-weight: bold;
 }
 </style>

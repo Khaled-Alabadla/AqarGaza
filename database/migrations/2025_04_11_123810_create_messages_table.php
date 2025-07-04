@@ -17,7 +17,10 @@ return new class extends Migration
             $table->foreignId('sender_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('receiver_id')->nullable()->constrained('users')->nullOnDelete();
             $table->text('message');
+            $table->enum('type', ['text', 'attachment'])->default('text');
             $table->timestamps();
+            $table->timestamp('read_at')->nullable();
+            $table->softDeletes();
         });
     }
 

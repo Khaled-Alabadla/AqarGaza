@@ -16,11 +16,11 @@
                 <div class="footer-column">
                     <h4>استكشف عقاراتنا</h4>
                     <ul>
-                        <li><a href="#">البريج</a></li>
-                        <li><a href="#">النصيرات</a></li>
-                        <li><a href="#">الزوايدة</a></li>
-                        <li><a href="#">المغازي</a></li>
-                        <li><a href="#">دير البلح</a></li>
+                        <li><a href="/properties?city=1">غزة</a></li>
+                        <li><a href="/properties?city=2">خانيونس</a></li>
+                        <li><a href="/properties?city=3">رفح</a></li>
+                        <li><a href="/properties?city=4">الوسطى</a></li>
+                        <li><a href="/properties?city=5">الشمال</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">

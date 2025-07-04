@@ -19,11 +19,11 @@ class NewPasswordController extends Controller
     /**
      * Show the password reset page.
      */
-    public function create(Request $request, $token): Response
+    public function create(Request $request, $token)
     {
         // dd($request->token);
 
-        return Inertia::render('auth/ResetPassword', [
+        return view('auth.reset_password', [
             'email' => $request->email,
             'token' => $request->route('token'),
         ]);

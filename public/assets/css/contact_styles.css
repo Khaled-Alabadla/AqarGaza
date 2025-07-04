@@ -1283,3 +1283,10 @@ textarea {
         min-height: 120px;
     }
 }
+
+.logout-btn {
+    background-color: transparent;
+}
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}

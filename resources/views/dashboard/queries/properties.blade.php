@@ -1,7 +1,6 @@
 @extends('dashboard.layouts.master')
 @section('title', ' الاستعلامات والتقارير عن العقار')
 
-@section('css')
     <!-- Internal Data table css -->
 @section('css')
     <link href="{{ URL::asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet">

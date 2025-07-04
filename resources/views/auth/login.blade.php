@@ -7,7 +7,7 @@
     <title>أهلا بكم في عقاري</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/login_styles.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
     {{-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> --}}
 
@@ -19,7 +19,8 @@
             <h1 class="welcome-text">أهلا بكم في عقاري</h1>
 
             <div class="social-login">
-                <a href="{{ route('auth.redirect', 'google') }}" class="social-login-button google-button">
+                <a href="{{ route('auth.redirect', 'google') }}" class="social-login-button google-button"
+                    style="text-decoration: none">
                     <div class="icon-wrapper google">
                         <img style="max-width: 120%;" src="{{ asset('assets/img/google.png') }}" alt="google"
                             class="social-image" />

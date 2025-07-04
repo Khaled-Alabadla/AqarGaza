@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\QueriesController;
 use App\Http\Controllers\Dashboard\RolesController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FrontAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessagesController;
@@ -114,18 +115,24 @@ Route::get('chats/{chat}', [ChatsController::class, 'show']);
 
 Route::delete('chats/{chat}', [ChatsController::class, 'destroy']);
 
-Route::put('chats/{chat}/read', [ChatsController::class, 'markAsRead']);
+Route::put('chats/{chat}/read', [ChatsController::class, 'markMessagesAsRead']);
 
 // Properties
 Route::get('/properties', [FrontPropertiesController::class, 'index'])->name('front.properties.index');
 
 Route::get('/properties/create', [FrontPropertiesController::class, 'create'])->name('front.properties.create');
 
+Route::post('/properties', [FrontPropertiesController::class, 'store'])->name('front.properties.store');
+
 Route::get('/properties/{property}', [FrontPropertiesController::class, 'show'])->name('front.properties.show');
+
+Route::match(['post', 'delete'], '/favorites/{propertyId}', [PropertiesController::class, 'toggleFavorite'])->name('front.favorites.toggle')->middleware('auth');
 
 Route::get('/profile', [ProfileController::class, 'index'])->name('front.profile');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('front.contact');
+
+Route::get('/favorites', [FavoriteController::class, 'index'])->name('front.favorites.index');
 
 Route::get('edit-password', [FrontAuthController::class, 'edit_password'])->name('front.auth.edit_password');
 

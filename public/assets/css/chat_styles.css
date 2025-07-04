@@ -656,6 +656,7 @@ body {
     display: flex;
     overflow: hidden;
     justify-content: center;
+    padding: 20px;
 }
 
 .sidebar {
@@ -710,7 +711,7 @@ body {
     width: 240px;
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 13px;
     border-radius: 30px;
     margin-bottom: 10px;
     cursor: pointer;
@@ -911,15 +912,16 @@ body {
 .chat-window .message {
     display: flex;
     align-items: center;
-    flex-direction: row-reverse;
 }
 
 .chat-window .message.received {
     justify-content: flex-start;
+    flex-direction: row;
 }
 
 .chat-window .message.sent {
     justify-content: flex-end;
+    flex-direction: row-reverse;
 }
 
 .chat-window .avatar {
@@ -932,7 +934,6 @@ body {
 
 .chat-window .bubble {
     display: inline-block;
-    max-width: 70%;
     background: #ececec;
     padding: 10px 14px;
     border-radius: 20px 20px 20px 0;
@@ -1316,4 +1317,11 @@ body {
     .side-chat {
         display: none !important;
     }
+}
+
+.logout-btn {
+    background-color: transparent;
+}
+.logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }

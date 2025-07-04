@@ -4,27 +4,23 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/properties_styles.css') }}">
+    <style>
+        .property-card:not(:nth-child(3)) {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
 @endpush
 
-<button class="chat-fab-simple" aria-label="الدردشات">
-    <i class="fas fa-comment-dots"></i>
-</button>
-
-<aside class="chat-sidebar-simple" aria-hidden="true">
-    <div class="chat-sidebar-header-simple">
-        <h3>الدردشات</h3>
-        <button class="chat-close-btn-simple" aria-label="إغلاق الدردشات">
-            <i class="fas fa-xmark"></i>
-        </button>
-    </div>
-    <ul class="chat-list-simple">
-    </ul>
-    <div class="chat-sidebar-footer-simple">
-        <a href="chats.html" class="all-chats-btn-simple">كل الدردشات</a>
-    </div>
-</aside>
+<!-- Add CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 @section('content')
+
+    @include('front.components.favorites')
+
+    @include('front.components.chat')
+
     @include('layouts.hero', [
         'title' => 'جميع العقارات',
         'description' => 'يمكنك تصفح جميع العقارات وفلترتها لإيجاد العقار المناسب لك',
@@ -48,35 +44,32 @@
                         <div class="selected-option">النوع</div>
                         <div class="options-container">
                             <div class="option" data-value="all">الكل</div>
-                            <div class="option" data-value="شقة">شقة</div>
-                            <div class="option" data-value="فيلا">فيلا</div>
-                            <div class="option" data-value="منزل">منزل</div>
-                            <div class="option" data-value="استوديو">استوديو</div>
+                            @foreach ($categories as $category)
+                                <div class="option" data-value="{{ $category->id }}">{{ $category->name }}</div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
                 <div class="filter-group">
                     <div class="select-box" data-filter-name="city">
-                        <div class="selected-option">العنوان </div>
+                        <div class="selected-option">المحافظة</div>
                         <div class="options-container">
                             <div class="option" data-value="all">الكل</div>
-                            <div class="option" data-value="غزة">غزة</div>
-                            <div class="option" data-value="خانيونس">خانيونس</div>
-                            <div class="option" data-value="رفح">رفح</div>
-                            <div class="option" data-value="الوسطى">الوسطى</div>
-                            <div class="option" data-value="شمال غزة">شمال غزة</div>
-                            <div class="option" data-value="القدس">القدس</div>
-                            <div class="option" data-value="رام الله">رام الله</div>
-                            <div class="option" data-value="نابلس">نابلس</div>
-                            <div class="option" data-value="الخليل">الخليل</div>
-                            <div class="option" data-value="بيت لحم">بيت لحم</div>
-                            <div class="option" data-value="يافا">يافا</div>
-                            <div class="option" data-value="حيفا">حيفا</div>
-                            <div class="option" data-value="عكا">عكا</div>
+                            @foreach ($cities as $city)
+                                <div class="option" data-value="{{ $city->id }}">{{ $city->name }}</div>
+                            @endforeach
                         </div>
                     </div>
+                </div>
 
+                <div class="filter-group">
+                    <div class="select-box" data-filter-name="zone">
+                        <div class="selected-option">المنطقة</div>
+                        <div class="options-container">
+                            <div class="option" data-value="all">الكل</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="filter-group">
@@ -117,40 +110,57 @@
                         </div>
                     </div>
                 </div>
-
-                <button class="btn btn-search">
-                    <i class="fas fa-search"></i>
-                    بحث
-                </button>
             </div>
         </section>
         <section class="property-listings">
             <div class="property-grid">
-                <div class="property-card">
-                    <div class="property-image">
-                        <img src="{{ asset('assets/img/landing.jpg') }}" alt="Property Image">
-                        <button class="favorite-btn"><i class="far fa-heart"></i></button>
-                    </div>
-                    <div class="property-info">
-                        <span class="property-price">1,250.00$</span>
-                        <p class="property-location">القدس، فلسطين</p>
-                        <div class="property-features">
-                            <div><i class="fas fa-bed"></i> <span>3 غرف</span></div>
-                            <div><i class="fas fa-bath"></i> <span>2 حمام</span></div>
-                            <div><i class="fas fa-ruler-combined"></i> <span>150 م²</span></div>
+                @foreach ($properties as $property)
+                    <div class="card">
+                        <div class="property-card">
+                            <div class="property-image">
+                                <img src="{{ asset('Uploads/' . $property->main_image) }}" alt="Property Image">
+                                <button class="favorite-btn"><i class="far fa-heart"></i></button>
+                            </div>
+                            <div class="property-info">
+                                <h2 class="property-name">{{ $property->title }}</h2>
+                                <span class="property-price">{{ $property->price }}
+                                    @if ($property->currency == 'USD')
+                                        <span class="currency">دولار</span>
+                                    @elseif ($property->currency == 'ILS')
+                                        <span class="currency">شيكل</span>
+                                    @elseif ($property->currency == 'JOD')
+                                        <span class="currency">دينار</span>
+                                    @else
+                                    @endif
+                                </span>
+                                <p class="property-type">
+                                    @if ($property->type == 'rent')
+                                        <span class="badge badge-rent">إيجار</span>
+                                    @elseif ($property->type == 'sale')
+                                        <span class="badge badge-sale">بيع</span>
+                                    @else
+                                    @endif
+                                </p>
+                                <p class="property-location">{{ $property->city->name }}، {{ $property->zone->name }}</p>
+                                <div class="property-features">
+                                    @if ($property->rooms)
+                                        <div><i class="fas fa-bed"></i> <span>{{ $property->rooms }} غرف</span></div>
+                                    @endif
+                                    @if ($property->bathrooms)
+                                        <div><i class="fas fa-bath"></i> <span>{{ $property->bathrooms }} حمامات</span>
+                                        </div>
+                                    @endif
+                                    <div><i class="fas fa-ruler-combined"></i> <span>{{ $property->area }} م²</span></div>
+                                </div>
+                                <a class="btn_card" href="{{ route('front.properties.show', $property->id) }}">المزيد من
+                                    التفاصيل</a>
+                            </div>
                         </div>
-                        <p class="property-status">مستقل بموقع بناء خاص بي</p>
                     </div>
-                </div>
+                @endforeach
             </div>
-            <div class="pagination">
-                <span class="pagination-dot active"></span>
-                <span class="pagination-dot"></span>
-                <span class="pagination-dot"></span>
-                <span class="pagination-dot"></span>
-            </div>
+            {{ $properties->links() }}
         </section>
-
     </main>
 @endsection
 

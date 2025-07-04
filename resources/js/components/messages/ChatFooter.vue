@@ -6,14 +6,25 @@
                 <i class="far fa-smile smile"></i>
                 <input type="text" placeholder="اكتب رسالة..." id="message-input" v-model.trim="messageText"
                     ref="messageInput" @keypress.enter.prevent="sendMessage" />
+                <input type="file" ref="fileInput" @change="handleFileSelect" style="display: none;" />
                 <i class="fas fa-paper-plane send" id="send-message" @click.prevent="sendMessage"></i>
             </div>
             <div class="footer-icons">
                 <i class="fas fa-microphone"></i>
-                <i class="fas fa-paperclip"></i>
+                <i class="fas fa-paperclip" @click="triggerFileInput" style="cursor: pointer;"></i>
                 <i class="fas fa-ellipsis-h"></i>
             </div>
         </form>
+
+        <!-- File preview when file is selected -->
+        <div v-if="selectedFile" class="file-preview">
+            <div class="file-info">
+                <i class="fas fa-file-alt"></i>
+                <span class="file-name">{{ selectedFile.name }}</span>
+                <span class="file-size">({{ formatFileSize(selectedFile.size) }})</span>
+                <i class="fas fa-times" @click="clearFile" style="cursor: pointer; color: red;"></i>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -30,6 +41,7 @@ interface Message {
     chat_id: number | string;
     receiver_id: number;
     created_at: string;
+    type: 'text' | 'attachment';
     sender: { name: string; image?: string };
 }
 
@@ -49,6 +61,8 @@ export default defineComponent({
     setup(props) {
         const messageText = ref<string>('');
         const messageInput = ref<HTMLInputElement | null>(null);
+        const fileInput = ref<HTMLInputElement | null>(null);
+        const selectedFile = ref<File | null>(null);
 
         watch(() => props.editingMessage, (newMessage) => {
             if (newMessage) {
@@ -64,20 +78,50 @@ export default defineComponent({
         return {
             messageText,
             messageInput,
+            fileInput,
+            selectedFile,
         };
     },
     data() {
         return {
             csrfToken: (this.$root as any).csrf_token as string,
             userId: (this.$root as any).userId as number,
-            userName: (this.$root as any).userName || 'User', // Fallback name
-            userImage: (this.$root as any).userImage as string | undefined, // User image
+            userName: (this.$root as any).userName || 'User',
+            userImage: (this.$root as any).userImage as string | undefined,
             isSending: false,
         };
     },
     methods: {
+        triggerFileInput() {
+            this.fileInput?.click();
+        },
+
+        handleFileSelect(event: Event) {
+            const target = event.target as HTMLInputElement;
+            if (target.files && target.files.length > 0) {
+                this.selectedFile = target.files[0];
+                // Automatically send the message when a file is selected
+                this.sendMessage();
+            }
+        },
+
+        clearFile() {
+            this.selectedFile = null;
+            if (this.fileInput) {
+                this.fileInput.value = '';
+            }
+        },
+
+        formatFileSize(bytes: number): string {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        },
+
         async sendMessage() {
-            if (!this.messageText || this.isSending || !this.chatId) return;
+            if ((!this.messageText && !this.selectedFile) || this.isSending || !this.chatId) return;
 
             this.isSending = true;
             const receiverId =
@@ -99,7 +143,7 @@ export default defineComponent({
                     };
 
             if (this.editingMessage) {
-                // Update existing message
+                // Update existing message (text only, no file editing)
                 const messageToUpdate = this.editingMessage;
                 try {
                     const response = await fetch(`/messages/${messageToUpdate.id}`, {
@@ -147,20 +191,31 @@ export default defineComponent({
                 }
             } else {
                 // Send new message
+                const messageType = this.selectedFile ? 'attachment' : 'text';
                 const tempMessage: Message = {
                     id: generateTempId(),
-                    message: this.messageText,
+                    message: this.selectedFile ? JSON.stringify({
+                        file_name: this.selectedFile.name,
+                        file_size: this.selectedFile.size,
+                        mimetype: this.selectedFile.type,
+                        file_path: 'uploading...'
+                    }) : this.messageText,
                     sender_id: this.userId,
                     chat_id: this.chatId,
                     receiver_id: receiverId,
                     created_at: new Date().toISOString(),
+                    type: messageType,
                     sender,
                 };
 
                 // Add temporary message immediately
                 (this.$root as any).messages.push(tempMessage);
                 const messageText = this.messageText;
+                const fileToSend = this.selectedFile;
+
+                // Clear inputs
                 this.messageText = '';
+                this.clearFile();
 
                 // Emit optimistic update
                 this.$emit('message-updated', {
@@ -170,19 +225,27 @@ export default defineComponent({
                 });
 
                 try {
+                    const formData = new FormData();
+                    formData.append('chat_id', this.chatId.toString());
+                    formData.append('sender_id', this.userId.toString());
+                    formData.append('receiver_id', receiverId.toString());
+                    formData.append('_token', this.csrfToken);
+
+                    if (fileToSend) {
+                        formData.append('attachment', fileToSend);
+                    }
+
+                    if (messageText) {
+                        formData.append('message', messageText);
+                    }
+
                     const response = await fetch('/messages', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': this.csrfToken,
                         },
-                        body: JSON.stringify({
-                            message: messageText,
-                            chat_id: this.chatId,
-                            sender_id: this.userId,
-                            receiver_id: receiverId,
-                        }),
+                        body: formData,
                     });
 
                     if (!response.ok) {
@@ -211,6 +274,7 @@ export default defineComponent({
                         (this.$root as any).messages.splice(index, 1);
                     }
                     this.messageText = messageText;
+                    this.selectedFile = fileToSend;
 
                     // Notify ChatList to remove temporary message
                     this.$emit('message-updated', {
@@ -229,3 +293,37 @@ export default defineComponent({
     },
 });
 </script>
+
+<style scoped>
+.file-preview {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.file-size {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.footer-icons i:hover {
+    color: #007bff;
+}
+</style>

@@ -1012,7 +1012,7 @@ body {
     margin-top: 30px;
 }
 
-.property-card {
+{
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -1270,4 +1270,206 @@ body {
     .btn-search {
         width: 220px;
     }
+
 }
+
+/* بطاقة العقار نفسها */
+.property-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px var(--shadow-light);
+    overflow: hidden;
+    transition: transform var(--transition-speed) ease,
+      box-shadow var(--transition-speed) ease;
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .property-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px var(--shadow-strong);
+  }
+
+  .property-image {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+  }
+
+  .property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .favorite-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #e74c3c;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .favorite-btn:hover {
+    background-color: white;
+  }
+
+  .property-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .property-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--dark-blue-text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .property-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .property-type {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    width: fit-content;
+    margin-bottom: 10px;
+  }
+
+  .property-location {
+    font-size: 15px;
+    color: var(--text-color-light);
+    margin-bottom: 15px;
+  }
+
+  .property-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text-color-light);
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+  }
+
+  .property-features div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .property-features i {
+    color: var(--primary-blue);
+    font-size: 16px;
+  }
+
+  .btn_card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color var(--transition-speed) ease,
+      transform var(--transition-speed) ease;
+    margin-top: auto;
+  }
+
+  .btn_card:hover {
+    background-color: var(--hover-blue);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 600px) {
+    .property-card {
+      max-width: 320px;
+    }
+    .property-image {
+      height: 180px;
+    }
+
+    .property-name {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .property-price {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+    .property-type {
+      font-size: 12px;
+      padding: 3px 8px;
+      margin-bottom: 8px;
+    }
+    .property-location {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .property-features {
+      font-size: 13px;
+      gap: 10px;
+      padding-top: 10px;
+      margin-bottom: 15px;
+    }
+    .property-features i {
+      font-size: 14px;
+    }
+    .btn_card {
+      padding: 10px 20px;
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .property-image {
+      height: 160px;
+    }
+
+    .property-name {
+      font-size: 17px;
+    }
+    .property-price {
+      font-size: 20px;
+    }
+  }
+
+  .logout-btn {
+    background-color: transparent;
+  }
+  .logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+

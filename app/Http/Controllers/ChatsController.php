@@ -12,13 +12,30 @@ class ChatsController extends Controller
 {
     public function index()
     {
-        // $user = Auth::user();
-        $user = User::find(1);
-
-        return $user->participatedChats()
+        $user = Auth::user();
+        $chats = Chat::where('user_id', $user->id)
+            ->orWhere('receiver_id', $user->id)
             ->with(['creator', 'receiver', 'lastMessage', 'messages'])
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($chat) use ($user) {
+                $unreadCount = Message::where('chat_id', $chat->id)
+                    ->where('receiver_id', $user->id)
+                    ->whereNull('read_at')
+                    ->count();
+                return [
+                    'id' => $chat->id,
+                    'user_id' => $chat->user_id,
+                    'receiver_id' => $chat->receiver_id,
+                    'creator' => $chat->creator,
+                    'receiver' => $chat->receiver,
+                    'last_message' => $chat->lastMessage,
+                    'unread_count' => $unreadCount,
+                    'messages' => $chat->messages,
+                ];
+            });
+
+        return response()->json($chats);
     }
 
     public function show($id)

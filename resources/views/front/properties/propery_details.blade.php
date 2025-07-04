@@ -6,159 +6,189 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/property_details_styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
 @endpush
 
-<button class="chat-fab-simple" aria-label="الدردشات">
-    <i class="fas fa-comment-dots"></i>
-</button>
-
-<aside class="chat-sidebar-simple" aria-hidden="true">
-    <div class="chat-sidebar-header-simple">
-        <h3>الدردشات</h3>
-        <button class="chat-close-btn-simple" aria-label="إغلاق الدردشات">
-            <i class="fas fa-xmark"></i>
-        </button>
-    </div>
-    <ul class="chat-list-simple">
-    </ul>
-    <div class="chat-sidebar-footer-simple">
-        <a href="chats.html" class="all-chats-btn-simple">كل الدردشات</a>
-    </div>
-</aside>
 
 @section('content')
+    @include('front.components.favorites')
+
+    @include('front.components.chat')
+
     <div class="page-header">
-        <h1>شقة مفروشة بالقرب من سوبر ماركت العبادلة - خانيونس</h1>
+        <h1>{{ $property->title }}</h1>
     </div>
 
     <div class="add">
-
         <div class="property-main-column">
             <section class="property-overview card">
                 <div class="overview-header">
                     <i class="fas fa-check-circle property-type-icon"></i>
-                    <h2>شقة</h2>
+                    <h2>{{ $property->category->name }}</h2>
                 </div>
                 <div class="property-address-info">
-                    <p class="location-details"><i class="fas fa-map-marker-alt"></i> فلسطين - غزة - خانيونس</p>
-                    <p class="detailed-location">غزة - خانيونس - الرمال - شارع العباسي - بالقرب من سوبر ماركت العبادلة</p>
-                    <p class="area-details"><i class="fas fa-ruler-combined"></i> المساحة: 180 م²</p>
-                    <p class="price-details"><i class="fas fa-dollar-sign"></i> 1,250.00$</p>
+                    <p class="location-details"><i class="fas fa-map-marker-alt"></i> {{ $property->city->name }} -
+                        {{ $property->zone->name }}</p>
+                    <p class="detailed-location">{{ $property->location }}</p>
+                    <p class="area-details"><i class="fas fa-ruler-combined"></i> المساحة: {{ $property->area }} م²</p>
+                    <p class="price-details"><i class="fas fa-dollar-sign"></i> {{ number_format($property->price, 2) }}
+                        @if ($property->currency == 'USD')
+                            <span class="currency">دولار</span>
+                        @elseif ($property->currency == 'ILS')
+                            <span class="currency">شيكل</span>
+                        @elseif ($property->currency == 'JOD')
+                            <span class="currency">دينار</span>
+                        @else
+                        @endif
+                    </p>
                 </div>
-                <button class="btn btn-more-details">
-                    <i class="fas fa-info-circle"></i>
-                    المزيد
-                </button>
+
             </section>
 
             <section class="other-details card">
                 <h2>تفاصيل أخرى</h2>
                 <div class="details-grid">
-                    <div><i class="fas fa-bed"></i> 3 غرف نوم</div>
-                    <div><i class="fas fa-bath"></i> 2 حمامات</div>
-                    <div><i class="fas fa-couch"></i> 2 صالون</div>
-                    <div><i class="fas fa-building"></i> الطابق الثالث</div>
-                    <div><i class="fa-solid fa-house-chimney"></i> بلكونة</div>
-                    <div><i class="fas fa-elevator"></i> مصعد</div>
-                    <div><i class="fas fa-parking"></i> موقف سيارات</div>
-                    <div><i class="fas fa-utensils"></i> مطبخ</div>
+                    @if ($property->category->name == 'منزل' || $property->category->name == 'شقة' || $property->category->name == 'شاليه')
+                        <div><i class="fas fa-bed"></i> {{ $property->rooms }} غرف</div>
+                        <div><i class="fas fa-bath"></i> {{ $property->bathrooms }} حمامات</div>
+                    @endif
+                    {{-- <div><i class="fas fa-couch"></i> {{ $property->salons ?? 'غير محدد' }} صالون</div> --}}
+                    {{-- <div><i class="fas fa-building"></i> الطابق {{ $property->floor ?? 'غير محدد' }}</div> --}}
+                    {{-- <div><i class="fa-solid fa-house-chimney"></i> {{ $property->has_balcony ? 'بلكونة' : 'لا بلكونة' }}
+                    </div> --}}
+                    {{-- <div><i class="fas fa-elevator"></i> {{ $property->has_elevator ? 'مصعد' : 'لا مصعد' }}</div> --}}
+                    {{-- <div><i class="fas fa-parking"></i> {{ $property->has_parking ? 'موقف سيارات' : 'لا موقف سيارات' }}
+                    </div> --}}
+                    {{-- <div><i class="fas fa-utensils"></i> {{ $property->has_kitchen ? 'مطبخ' : 'لا مطبخ' }}</div> --}}
                 </div>
             </section>
 
             <section class="about-property card">
                 <h2>عن العقار</h2>
-                <p>شقة، مفروشة، للإيجار، بالجيش، بالقرب من سوبر ماركت العبادلة، منطقة حيوية، يوجد بها، مصعد، غرفتين نوم،
-                    صالون، مطبخ، حمامين، يوجد بها عداد مياه، عداد كهرباء، غاز، انترنت، تلفون، مولد كهرباء، تدفئة مركزية،
-                    إطلالة جميلة على الطبيعة.
-                    البرج الأفضل.</p>
+                <p>{{ $property->description }}</p>
             </section>
+
             <section class="main-hero-property-image card">
                 <h2>الصورة الرئيسية</h2>
                 <div class="main-hero-image-container">
-                    <img src="{{ asset('assets/img/account_settings.png') }}" alt="صورة العقار الرئيسية">
+                    <img src="{{ asset('uploads/' . $property->main_image) }}" alt="صورة العقار الرئيسية">
                 </div>
             </section>
 
             <section class="property-images card">
                 <h2>صور إضافية</h2>
                 <div class="main-image-container">
-                    <img id="main-property-img" src="{{ asset('assets/img/landing.jpg') }}" alt="Property Main Image">
+                    <img id="main-property-img"
+                        src="{{ $property->images->first() ? asset('uploads/' . $property->images->first()->image_path) : '' }}"
+                        alt="Property Main Image">
                 </div>
                 <div class="thumbnails-container">
-                    <img class="thumbnail active" src="{{ asset('assets/img/landing.jpg') }}" alt="Thumbnail 1"
-                        data-full-src="{{ asset('assets/img/landing.jpg') }}">
-                    <img class="thumbnail" src="{{ asset('assets/img/account_settings.png') }}" alt="Thumbnail 2"
-                        data-full-src="{{ asset('assets/img/account_settings.png') }}">
-                    <img class="thumbnail" src="{{ asset('assets/img/ho.png') }}" alt="Thumbnail 3"
-                        data-full-src="{{ asset('assets/img/ho.png') }}">
-                    <img class="thumbnail" src="{{ asset('assets/img/landing.jpg') }}" alt="Thumbnail 4"
-                        data-full-src="{{ asset('assets/img/landing.jpg') }}">
+                    @foreach ($property->images as $image)
+                        <img class="thumbnail {{ $loop->first ? 'active' : '' }}"
+                            src="{{ asset('uploads/' . $image->image_path) }}" alt="Thumbnail {{ $loop->iteration }}"
+                            data-full-src="{{ asset('uploads/' . $image->image_path) }}">
+                    @endforeach
                 </div>
             </section>
 
-            <section class="comment-section card">
-                <h2>اترك تعليقاً أو استفساراً</h2>
-                <textarea placeholder="اكتب تعليقاً أو استفساراً هنا"></textarea>
-                <button class="btn btn-send-comment">إرسال
-                    <i class="fas fa-paper-plane send"></i>
-                </button>
-            </section>
+            {{-- <section class="comment-section card">
+                <h2>اترك تعليقاً أو استفساراً</ “[Your comment or inquiry]”>
+                    <form action="{{ route('front.comments.store', $property->id) }}" method="POST">
+                        @csrf
+                        <textarea name="comment" placeholder="اكتب تعليقاً أو استفساراً هنا" required></textarea>
+                        @error('comment')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
+                        <button type="submit" class="btn btn-send-comment">إرسال
+                            <i class="fas fa-paper-plane send"></i>
+                        </button>
+                    </form>
+            </section> --}}
         </div>
 
         <div class="side-info-column">
             <section class="owner-info card">
                 <h2>صاحب ملك العقار</h2>
                 <div class="owner-details">
-                    <div class="owner-avatar"><i class="fas fa-user"></i></div>
-                    <p class="owner-name">بلال رضوان حماد شقورة</p>
-                    <p class="owner-address"><i class="fas fa-map-marker-alt"></i> فلسطين - غزة - خانيونس - حي الأمل - بئر
-                        خمسة</p>
-                    <p class="owner-phone"><i class="fas fa-phone-alt"></i> +970599441544</p>
+                    <div class="owner-avatar">
+                        @if ($property->user->image)
+                            <img src="{{ asset('uploads/' . $property->user->image) }}" alt="">
+                        @else
+                            <i class="fas fa-user"></i>
+                        @endif
+                    </div>
+                    <p class="owner-name">{{ $property->user->name }}</p>
+                    @if ($property->user->address)
+                        <p class="owner-address"><i class="fas fa-map-marker-alt"></i>{{ $property->user->address }}</p>
+                    @endif
+                    @if ($property->user->phone)
+                        <p class="owner-phone"><i class="fas fa-phone-alt"></i>{{ $property->user->phone }}</p>
+                    @endif
                 </div>
                 <button class="btn btn-contact-owner">تواصل مع المالك</button>
             </section>
 
-            <section class="similar-properties">
-                <h2>عقارات أخرى مشابهة لهذه الأوصاف</h2>
+            {{-- <section class="similar-properties">
+                <h2>عقارات أخرى مشابهة</h2>
                 <div class="similar-grid">
-                    <div class="property-card">
-                        <div class="property-image">
-                            <img src="{{ asset('assets/img/landing.jpg') }}" alt="Similar Property Image">
-                            <button class="favorite-btn"><i class="far fa-heart"></i></button>
-                        </div>
-                        <div class="property-info">
-                            <span class="property-price">1,250.00$</span>
-                            <p class="property-location">القدس، فلسطين</p>
-                            <div class="property-features">
-                                <div><i class="fas fa-bed"></i> <span>3 غرف</span></div>
-                                <div><i class="fas fa-bath"></i> <span>2 حمام</span></div>
-                                <div><i class="fas fa-ruler-combined"></i> <span>150 م²</span></div>
+                    @foreach ($similarProperties as $similarProperty)
+                        <div class="property-card">
+                            <div class="property-image">
+                                <img src="{{ $similarProperty->main_image ? asset('storage/' . $similarProperty->main_image) : asset('assets/img/default_property.png') }}"
+                                    alt="Similar Property Image">
+                                <button class="favorite-btn" data-property-id="{{ $similarProperty->id }}"><i
+                                        class="far fa-heart"></i></button>
                             </div>
-                            <p class="property-status">مستقل بموقع بناء خاص بي</p>
-                        </div>
-                    </div>
-                    <div class="property-card">
-                        <div class="property-image">
-                            <img src="{{ asset('assets/img/landing.jpg') }}" alt="Similar Property Image">
-                            <button class="favorite-btn"><i class="far fa-heart"></i></button>
-                        </div>
-                        <div class="property-info">
-                            <span class="property-price">980.00$</span>
-                            <p class="property-location">غزة، فلسطين</p>
-                            <div class="property-features">
-                                <div><i class="fas fa-bed"></i> <span>2 غرف</span></div>
-                                <div><i class="fas fa-bath"></i> <span>1 حمام</span></div>
-                                <div><i class="fas fa-ruler-combined"></i> <span>120 م²</span></div>
+                            <div class="property-info">
+                                <span class="property-price">{{ number_format($similarProperty->price, 2) }}
+                                    {{ $similarProperty->currency }}</span>
+                                <p class="property-location">{{ $similarProperty->city->name }}،
+                                    {{ $similarProperty->zone->name }}</p>
+                                <div class="property-features">
+                                    <div><i class="fas fa-bed"></i> <span>{{ $similarProperty->rooms ?? 'غير محدد' }}
+                                            غرف</span></div>
+                                    <div><i class="fas fa-bath"></i> <span>{{ $similarProperty->bathrooms ?? 'غير محدد' }}
+                                            حمام</span></div>
+                                    <div><i class="fas fa-ruler-combined"></i> <span>{{ $similarProperty->area }} م²</span>
+                                    </div>
+                                </div>
+                                <p class="property-status">{{ $similarProperty->title }}</p>
                             </div>
-                            <p class="property-status">شقة سكنية عصرية</p>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-            </section>
+            </section> --}}
         </div>
     </div>
 @endsection
 
 @push('scripts')
     <script src="{{ asset('assets/js/property_details.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thumbnail click handler for image gallery
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const mainImage = document.getElementById('main-property-img');
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    mainImage.src = this.dataset.fullSrc;
+                });
+            });
+
+
+
+            // Chat sidebar toggle
+            const chatFab = document.querySelector('.chat-fab-simple');
+            const chatSidebar = document.querySelector('.chat-sidebar-simple');
+            const closeBtn = document.querySelector('.chat-close-btn-simple');
+            chatFab.addEventListener('click', () => {
+                chatSidebar.setAttribute('aria-hidden', 'false');
+            });
+            closeBtn.addEventListener('click', () => {
+                chatSidebar.setAttribute('aria-hidden', 'true');
+            });
+        });
+    </script>
 @endpush

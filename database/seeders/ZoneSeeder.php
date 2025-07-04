@@ -66,7 +66,7 @@ class ZoneSeeder extends Seeder
         if ($rafah) {
             Zone::firstOrCreate(['city_id' => $rafah->id, 'name' => 'الشوكة']);
             Zone::firstOrCreate(['city_id' => $rafah->id, 'name' => 'الحي السعودي']);
-            Zone::firstOrCreate(['cit y_id' => $rafah->id, 'name' => 'مواصي رفح']);
+            Zone::firstOrCreate(['city_id' => $rafah->id, 'name' => 'مواصي رفح']);
             Zone::firstOrCreate(['city_id' => $rafah->id, 'name' => 'الجنينة']);
             Zone::firstOrCreate(['city_id' => $rafah->id, 'name' => 'الشابورة']);
             Zone::firstOrCreate(['city_id' => $rafah->id, 'name' => 'السلام']);
