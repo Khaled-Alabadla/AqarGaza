@@ -5,17 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Property;
-use App\Models\Zone;
-use Flasher\Prime\FlasherInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class PropertiesController extends Controller
 {
-    public function index(Request $request, FlasherInterface $flasher)
+    public function index(Request $request)
 
     {
         $query = Property::with(['user', 'category', 'zone', 'city']);
@@ -69,8 +66,11 @@ class PropertiesController extends Controller
 
         $properties = $query->paginate(12);
 
-        $properties->getCollection()->transform(function ($property) {
-            $property->is_favorited = Auth::check() && Auth::user()->favorites()->where('property_id', $property->id)->exists();
+        /** @var App/Model/User */
+        $user = Auth::user();
+
+        $properties->getCollection()->transform(function ($property) use ($user) {
+            $property->is_favorited = Auth::check() && $user->favorites()->where('property_id', $property->id)->exists();
             return $property;
         });
 
@@ -85,6 +85,7 @@ class PropertiesController extends Controller
 
         $cities = City::all();
         $categories = Category::all();
+        // $zones = Zone::all();
 
         return view('front.properties.index', compact('properties', 'cities', 'categories'));
     }
@@ -96,9 +97,6 @@ class PropertiesController extends Controller
 
     public function store(Request $request)
     {
-        // Define categories that require rooms and bathrooms
-        $roomCategories = Category::whereIn('name', ['منزل', 'شقة', 'شاليه'])->pluck('id')->toArray();
-
         // Custom error messages
         $messages = [
             'city_id.required' => 'المدينة مطلوبة.',
@@ -180,7 +178,7 @@ class PropertiesController extends Controller
 
         // Handle main image upload
         if ($request->hasFile('main-property-image')) {
-            $directory = 'properties/main';
+            $directory = 'uploads/properties/main';
             $file_name = rand() . time() . $request->file('main-property-image')->getClientOriginalName();
             $file_path = $request->file('main-property-image')->storeAs($directory, $file_name, 'public_uploads');
             $propertyData['main_image'] = $file_path;
@@ -192,7 +190,7 @@ class PropertiesController extends Controller
         // Handle additional images upload (max 5)
         if ($request->hasFile('property-images')) {
             foreach ($request->file('property-images') as $image) {
-                $directory = 'properties/additional';
+                $directory = 'uploads/properties/additional';
                 $file_name = rand() . time() . $image->getClientOriginalName();
                 $image_path = $image->storeAs($directory, $file_name, 'public_uploads');
                 $property->images()->create([
@@ -206,9 +204,19 @@ class PropertiesController extends Controller
 
     public function show($id)
     {
+        // Fetch the current property with related data
         $property = Property::with('user', 'category', 'images', 'city', 'zone')->findOrFail($id);
 
-        return view('front.properties.propery_details', compact('property'));
+        // Fetch similar properties
+        $similarProperties = Property::where('id', '!=', $id) // Exclude the current property
+            ->where('category_id', $property->category_id) // Same category
+            ->where('city_id', $property->city_id) // Same city
+            ->where('status', 'active') // Optional: Only active properties
+            ->with('user', 'category', 'images', 'city', 'zone')
+            ->take(4) // Limit to 4 similar properties
+            ->get();
+
+        return view('front.properties.propery_details', compact('property', 'similarProperties'));
     }
 
     public function toggleFavorite(Request $request, $propertyId)
@@ -216,6 +224,8 @@ class PropertiesController extends Controller
         if (!Auth::check()) {
             return response()->json(['success' => false, 'message' => 'يجب تسجيل الدخول لإضافة المفضلة.'], 401);
         }
+
+        /** @var App/Model/User */
 
         $user = Auth::user();
         $exists = $user->favorites()->where('property_id', $propertyId)->exists();

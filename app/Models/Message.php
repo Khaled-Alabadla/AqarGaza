@@ -9,7 +9,7 @@ class Message extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['chat_id', 'sender_id', 'message', 'type', 'receiver_id'];
+    protected $guarded = [];
 
     public function chat()
     {

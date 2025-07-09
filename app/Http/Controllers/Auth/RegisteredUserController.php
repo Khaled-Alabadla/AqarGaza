@@ -64,6 +64,6 @@ class RegisteredUserController extends Controller
         // Login the user
         Auth::login($user);
 
-        return redirect()->route('verification.notice')->with('status', 'Registration successful. Please check your email to verify your account.');
+        return redirect()->route('verification.notice')->with('status', 'تم التسجيل بنجاح، الرجاء فحص البريد الإلكتروني لتأكيد تسجيل الدخو');
     }
 }

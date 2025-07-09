@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PropertyView extends Model
 {
-    protected $fillable = ['property_id', 'user_id', 'ip'];
+    protected $guarded = [];
 
     public function property()
     {

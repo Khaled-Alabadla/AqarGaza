@@ -71,10 +71,9 @@ class MessagesController extends Controller
 
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
-
                 $type = 'attachment';
-                $directory = 'messages/';
-                $file_name = time() . $request->file('attachment')->getClientOriginalName();
+                $directory = 'uploads/messages';
+                $file_name = rand() . time() . $request->file('attachment')->getClientOriginalName();
                 $messageContent = json_encode([
                     'file_name' => $file->getClientOriginalName(),
                     'file_size' => $file->getSize(),

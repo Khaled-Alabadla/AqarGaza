@@ -2,13 +2,25 @@
     <div class="footer-top">
         <div class="container footer-top__inner">
             <div class="footer-newsletter">
-                <img src="{{ asset('assets/img/ho.png') }}" alt="شعار الموقع في الفوتر" class="footer-logo-img">
+                <img src="{{ cache('settings')['site_logo'] ?? asset('assets/img/ho.png') }}" alt="شعار الموقع في الفوتر"
+                    class="footer-logo-img">
                 <p class="footer-newsletter__follow">ابق على اطلاع ومتابعة</p>
                 <div class="social-links">
-                    <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    @if (cache('settings')['linkedin'] ?? '')
+                        <a href="{{ cache('settings')['linkedin'] ?? '' }}" aria-label="LinkedIn"><i
+                                class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                    @endif
+
+                    @if (cache('settings')['facebook'])
+                        <a href="{{ cache('settings')['facebook'] }}" aria-label="Facebook"><i
+                                class="fa-brands fa-facebook-f"></i></a>
+                    @endif
+
+                    @if (cache('settings')['twitter'])
+                        <a href="{{ cache('settings')['twitter'] }}" aria-label="Twitter"><i
+                                class="fa-brands fa-twitter"></i></a>
+                    @endif
                 </div>
             </div>
 
@@ -16,11 +28,11 @@
                 <div class="footer-column">
                     <h4>استكشف عقاراتنا</h4>
                     <ul>
-                        <li><a href="/properties?city=1">غزة</a></li>
-                        <li><a href="/properties?city=2">خانيونس</a></li>
-                        <li><a href="/properties?city=3">رفح</a></li>
-                        <li><a href="/properties?city=4">الوسطى</a></li>
-                        <li><a href="/properties?city=5">الشمال</a></li>
+                        <li><a href="{{ route('front.properties.index', ['city' => 1]) }}">غزة</a></li>
+                        <li><a href="{{ route('front.properties.index', ['city' => 2]) }}">خانيونس</a></li>
+                        <li><a href="{{ route('front.properties.index', ['city' => 3]) }}">رفح</a></li>
+                        <li><a href="{{ route('front.properties.index', ['city' => 4]) }}">الوسطى</a></li>
+                        <li><a href="{{ route('front.properties.index', ['city' => 5]) }}">الشمال</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -54,9 +66,11 @@
                 <a href="#">سياسة الخصوصية</a>
                 <a href="#">الشروط والأحكام</a>
             </div>
-            <div class="footer-bottom__copy">
-                جميع الحقوق محفوظة &copy; <span id="current-year"></span> خالد.
-            </div>
+            @if (cache('settings')['copyright'])
+                <div class="footer-bottom__copy">
+                    {{ cache('settings')['copyright'] }}
+                </div>
+            @endif
         </div>
     </div>
 </footer>

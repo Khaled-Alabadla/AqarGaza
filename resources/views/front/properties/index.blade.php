@@ -4,60 +4,115 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/properties_styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
     <style>
         .property-card:not(:nth-child(3)) {
             cursor: pointer;
         }
+
+        .select-box .selected-option {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .select-box .options-container {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .select-box .options-container.active {
+            display: block;
+        }
+
+        .select-box .option {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .select-box .option:hover,
+        .select-box .option.selected {
+            background-color: #f0f0f0;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
     </style>
-    <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
 @endpush
 
-<!-- Add CSRF Token -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
 @section('content')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @include('front.components.favorites')
-
     @include('front.components.chat')
 
     @include('layouts.hero', [
         'title' => 'جميع العقارات',
         'description' => 'يمكنك تصفح جميع العقارات وفلترتها لإيجاد العقار المناسب لك',
     ])
+
     <main class="main-content">
         <section class="filter-section">
             <div class="filter-container">
                 <div class="filter-group">
-                    <div class="select-box" data-filter-name="type">
-                        <div class="selected-option">إيجار / بيع</div>
+                    <div class="select-box" data-filter-name="type" data-selected-value="{{ request('type', 'all') }}">
+                        <div class="selected-option">
+                            {{ request('type') == 'rent' ? 'إيجار' : (request('type') == 'sale' ? 'بيع' : 'إيجار / بيع') }}
+                        </div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
-                            <div class="option" data-value="rent">إيجار</div>
-                            <div class="option" data-value="sale">بيع</div>
+                            <div class="option {{ request('type') == 'all' ? 'selected' : '' }}" data-value="all">الكل</div>
+                            <div class="option {{ request('type') == 'rent' ? 'selected' : '' }}" data-value="rent">إيجار
+                            </div>
+                            <div class="option {{ request('type') == 'sale' ? 'selected' : '' }}" data-value="sale">بيع
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="filter-group">
-                    <div class="select-box" data-filter-name="propertyType">
-                        <div class="selected-option">النوع</div>
+                    <div class="select-box" data-filter-name="propertyType"
+                        data-selected-value="{{ request('propertyType', 'all') }}">
+                        <div class="selected-option">
+                            @if (request('propertyType') && $categories->find(request('propertyType')))
+                                {{ $categories->find(request('propertyType'))->name }}
+                            @else
+                                النوع
+                            @endif
+                        </div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
+                            <div class="option {{ request('propertyType') == 'all' ? 'selected' : '' }}" data-value="all">
+                                الكل</div>
                             @foreach ($categories as $category)
-                                <div class="option" data-value="{{ $category->id }}">{{ $category->name }}</div>
+                                <div class="option {{ request('propertyType') == $category->id ? 'selected' : '' }}"
+                                    data-value="{{ $category->id }}">{{ $category->name }}</div>
                             @endforeach
                         </div>
                     </div>
                 </div>
 
                 <div class="filter-group">
-                    <div class="select-box" data-filter-name="city">
-                        <div class="selected-option">المحافظة</div>
+                    <div class="select-box" data-filter-name="city" data-selected-value="{{ request('city', 'all') }}">
+                        <div class="selected-option">
+                            @if (request('city') && $cities->find(request('city')))
+                                {{ $cities->find(request('city'))->name }}
+                            @else
+                                المحافظة
+                            @endif
+                        </div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
+                            <div class="option {{ request('city') == 'all' ? 'selected' : '' }}" data-value="all">الكل
+                            </div>
                             @foreach ($cities as $city)
-                                <div class="option" data-value="{{ $city->id }}">{{ $city->name }}</div>
+                                <div class="option {{ request('city') == $city->id ? 'selected' : '' }}"
+                                    data-value="{{ $city->id }}">{{ $city->name }}</div>
                             @endforeach
                         </div>
                     </div>
@@ -73,93 +128,71 @@
                 </div>
 
                 <div class="filter-group">
-                    <div class="select-box" data-filter-name="area">
-                        <div class="selected-option">المساحة</div>
+                    <div class="select-box" data-filter-name="area" data-selected-value="{{ request('area', 'all') }}">
+                        <div class="selected-option">
+                            {{ request('area') ? str_replace('-', ' - ', request('area')) . (request('area') == '301+' ? ' م²' : ' م²') : 'المساحة' }}
+                        </div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
-                            <div class="option" data-value="50-100">50-100 م²</div>
-                            <div class="option" data-value="101-150">101-150 م²</div>
-                            <div class="option" data-value="151-200">151-200 م²</div>
-                            <div class="option" data-value="201-300">201-300 م²</div>
-                            <div class="option" data-value="301+">301+ م²</div>
+                            <div class="option {{ request('area') == 'all' ? 'selected' : '' }}" data-value="all">الكل
+                            </div>
+                            <div class="option {{ request('area') == '50-100' ? 'selected' : '' }}" data-value="50-100">
+                                50-100 م²</div>
+                            <div class="option {{ request('area') == '101-150' ? 'selected' : '' }}" data-value="101-150">
+                                101-150 م²</div>
+                            <div class="option {{ request('area') == '151-200' ? 'selected' : '' }}" data-value="151-200">
+                                151-200 م²</div>
+                            <div class="option {{ request('area') == '201-300' ? 'selected' : '' }}" data-value="201-300">
+                                201-300 م²</div>
+                            <div class="option {{ request('area') == '301+' ? 'selected' : '' }}" data-value="301+">301+ م²
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="filter-group">
-                    <div class="select-box" data-filter-name="currency">
-                        <div class="selected-option">العملة</div>
+                    <div class="select-box" data-filter-name="currency"
+                        data-selected-value="{{ request('currency', 'all') }}">
+                        <div class="selected-option">
+                            {{ request('currency') == 'USD' ? 'دولار ($)' : (request('currency') == 'ILS' ? 'شيكل (₪)' : (request('currency') == 'JOD' ? 'دينار (JD)' : 'العملة')) }}
+                        </div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
-                            <div class="option" data-value="USD">دولار ($)</div>
-                            <div class="option" data-value="ILS">شيكل (₪)</div>
-                            <div class="option" data-value="JOD">دينار (JD)</div>
+                            <div class="option {{ request('currency') == 'all' ? 'selected' : '' }}" data-value="all">الكل
+                            </div>
+                            <div class="option {{ request('currency') == 'USD' ? 'selected' : '' }}" data-value="USD">دولار
+                                ($)</div>
+                            <div class="option {{ request('currency') == 'ILS' ? 'selected' : '' }}" data-value="ILS">شيكل
+                                (₪)</div>
+                            <div class="option {{ request('currency') == 'JOD' ? 'selected' : '' }}" data-value="JOD">دينار
+                                (JD)</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="filter-group">
-                    <div class="select-box" data-filter-name="price">
-                        <div class="selected-option">السعر</div>
+                    <div class="select-box" data-filter-name="price" data-selected-value="{{ request('price', 'all') }}">
+                        <div class="selected-option">
+                            {{ request('price') ? str_replace('-', ' - ', request('price')) . (request('price') == '2001+' ? '+' : '') : 'السعر' }}
+                        </div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
-                            <div class="option" data-value="0-500">0-500</div>
-                            <div class="option" data-value="501-1000">501-1000</div>
-                            <div class="option" data-value="1001-2000">1001-2000</div>
-                            <div class="option" data-value="2001+">2001+</div>
+                            <div class="option {{ request('price') == 'all' ? 'selected' : '' }}" data-value="all">الكل
+                            </div>
+                            <div class="option {{ request('price') == '0-500' ? 'selected' : '' }}" data-value="0-500">
+                                0-500</div>
+                            <div class="option {{ request('price') == '501-1000' ? 'selected' : '' }}"
+                                data-value="501-1000">501-1000</div>
+                            <div class="option {{ request('price') == '1001-2000' ? 'selected' : '' }}"
+                                data-value="1001-2000">1001-2000</div>
+                            <div class="option {{ request('price') == '2001+' ? 'selected' : '' }}" data-value="2001+">
+                                2001+</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
         <section class="property-listings">
-            <div class="property-grid">
-                @foreach ($properties as $property)
-                    <div class="card">
-                        <div class="property-card">
-                            <div class="property-image">
-                                <img src="{{ asset('Uploads/' . $property->main_image) }}" alt="Property Image">
-                                <button class="favorite-btn"><i class="far fa-heart"></i></button>
-                            </div>
-                            <div class="property-info">
-                                <h2 class="property-name">{{ $property->title }}</h2>
-                                <span class="property-price">{{ $property->price }}
-                                    @if ($property->currency == 'USD')
-                                        <span class="currency">دولار</span>
-                                    @elseif ($property->currency == 'ILS')
-                                        <span class="currency">شيكل</span>
-                                    @elseif ($property->currency == 'JOD')
-                                        <span class="currency">دينار</span>
-                                    @else
-                                    @endif
-                                </span>
-                                <p class="property-type">
-                                    @if ($property->type == 'rent')
-                                        <span class="badge badge-rent">إيجار</span>
-                                    @elseif ($property->type == 'sale')
-                                        <span class="badge badge-sale">بيع</span>
-                                    @else
-                                    @endif
-                                </p>
-                                <p class="property-location">{{ $property->city->name }}، {{ $property->zone->name }}</p>
-                                <div class="property-features">
-                                    @if ($property->rooms)
-                                        <div><i class="fas fa-bed"></i> <span>{{ $property->rooms }} غرف</span></div>
-                                    @endif
-                                    @if ($property->bathrooms)
-                                        <div><i class="fas fa-bath"></i> <span>{{ $property->bathrooms }} حمامات</span>
-                                        </div>
-                                    @endif
-                                    <div><i class="fas fa-ruler-combined"></i> <span>{{ $property->area }} م²</span></div>
-                                </div>
-                                <a class="btn_card" href="{{ route('front.properties.show', $property->id) }}">المزيد من
-                                    التفاصيل</a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-            {{ $properties->links() }}
+            <div class="property-grid"></div>
+            <div class="pagination"></div>
         </section>
     </main>
 @endsection

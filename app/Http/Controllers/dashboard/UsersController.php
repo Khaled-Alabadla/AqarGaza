@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\UserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -38,25 +39,8 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        Gate::authorize('users.create');
-
-        $request->validate([
-            'name' => 'required|min:10',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:8',
-        ], [
-            'name.required' => 'الاسم مطلوب',
-            'name.min' => 'يجب أن يحتوي الاسم على الأقل 10 أحرف',
-            'password.required' => 'كلمة المرور مطلوبة',
-            'password.confirmed' => 'تأكيد كلمة المرور حاطئ',
-            'password.min' => 'يجب أن تحتوي كلمة المرور على 8 أحرف أو أكثر',
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صالح',
-        ]);
-
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -91,21 +75,9 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        Gate::authorize('users.update');
-
         $user = User::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|min:10',
-            'email' => 'required|email',
-        ], [
-            'name.required' => 'الاسم مطلوب',
-            'name.min' => 'يجب أن يحتوي الاسم على الأقل 10 أحرف',
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صالح',
-        ]);
 
         $user->update([
             'name' => $request->name,
@@ -155,47 +127,9 @@ class UsersController extends Controller
         return redirect()->route('dashboard.users.index')->with('success', 'تمت عملية الحذف بنجاح');
     }
 
-    public function roles()
-    {
-        Gate::authorize('roles.users.index');
-
-        $users = User::with('roles')->get();
-
-        return view('dashboard.users.roles.index', compact('users'));
-    }
-
-    public function editRoles($id)
-    {
-        Gate::authorize('roles.users.update');
-
-        $user = User::with('roles')->findOrFail($id);
-
-        $roles = Role::all();
-
-        return view('dashboard.users.roles.edit', compact('user', 'roles'));
-    }
-
-    public function updateRoles(Request $request, $id)
-    {
-        Gate::authorize('roles.users.update');
-
-        $request->validate([
-            'roles' => 'required',
-        ], [
-            'roles.required' => 'قم بإضافة صلاحيات',
-        ]);
-
-        $user = User::findOrFail($id);
-
-        $user->roles()->sync($request->roles);
-
-        return redirect()->route('dashboard.users.roles.index')->with('success', 'تم تعديل الصلاحية بنجاح');
-    }
-
     public function edit_profile(Request $request, $id)
     {
-        Gate::authorize('users.update');
-
+        /** @var App/Model/User */
         $user = Auth::user();
 
         $request->validate([

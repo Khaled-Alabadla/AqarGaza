@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\dashboard;
+namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\AdminRequest;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
@@ -14,6 +14,8 @@ class AdminsController extends Controller
 {
     public function index()
     {
+        Gate::authorize('admins.index');
+
         $admins = User::admins()->get();
 
         return view('dashboard.admins.index', compact('admins'));
@@ -29,19 +31,8 @@ class AdminsController extends Controller
         return view('dashboard.admins.create', compact('roles', 'users'));
     }
 
-    public function store(Request $request)
+    public function store(AdminRequest $request)
     {
-        Gate::authorize('admins.create');
-
-        $request->validate([
-            'email' => 'required|exists:users,email',
-            'roles' => 'required',
-        ], [
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.exists' => 'البريد الإلكتروني غير مسجل لدينا',
-            'roles.required' => 'قم بإضافة صلاحيات',
-        ]);
-
         try {
             DB::beginTransaction();
 
@@ -72,16 +63,8 @@ class AdminsController extends Controller
         return view('dashboard.admins.edit', compact('admin', 'roles'));
     }
 
-    public function update(Request $request, $id)
+    public function update(AdminRequest $request, $id)
     {
-        Gate::authorize('admin.update');
-
-        $request->validate([
-            'roles' => 'required',
-        ], [
-            'roles.required' => 'قم بإضافة صلاحيات',
-        ]);
-
         $admin = User::findOrFail($id);
 
         $admin->roles()->sync($request->roles);
@@ -91,6 +74,8 @@ class AdminsController extends Controller
 
     public function destroy($id)
     {
+        Gate::authorize('admins.delete');
+
         $admin = User::findOrFail($id);
         $roles = Role::all();
 

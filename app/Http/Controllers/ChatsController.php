@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chat;
 use App\Models\Message;
-use App\Models\User;
+use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +36,42 @@ class ChatsController extends Controller
             });
 
         return response()->json($chats);
+    }
+
+    public function initiateChat(Request $request, $propertyId)
+    {
+        // Ensure the user is authenticated
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $user = Auth::user();
+        $property = Property::findOrFail($propertyId);
+        $owner = $property->user;
+
+        // Prevent users from initiating a chat with themselves
+        if ($user->id === $owner->id) {
+            return response()->json(['error' => 'لا يمكنك التواصل مع نفسك'], 403);
+        }
+
+        // Check for an existing chat
+        $chat = Chat::where(function ($query) use ($user, $owner) {
+            $query->where('user_id', $user->id)->where('receiver_id', $owner->id);
+        })->orWhere(function ($query) use ($user, $owner) {
+            $query->where('user_id', $owner->id)->where('receiver_id', $user->id);
+        })->first();
+
+        // Create a new chat if none exists
+        if (!$chat) {
+            $chat = Chat::create([
+                'user_id' => $user->id,
+                'receiver_id' => $owner->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return response()->json(['chat_id' => $chat->id], 200);
     }
 
     public function show($id)

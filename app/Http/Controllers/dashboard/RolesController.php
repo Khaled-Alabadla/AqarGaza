@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\RoleRequest;
 use App\Models\Role;
 use App\Models\RoleAbility;
 use Exception;
@@ -41,21 +42,8 @@ class RolesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RoleRequest $request)
     {
-        Gate::authorize('roles.create');
-
-        $request->validate([
-            'name' => 'required|max:255|unique:roles,name',
-            'abilities' => 'required|array',
-        ], [
-            'name.required' => 'اسم الصلاحية مطلوب',
-            'name.max' => 'يجب ألا يزيد الاسم عن 255 حرف',
-            'name.unique' => 'اسم الصلاحية موجود مسبقا',
-            'abilities.required' => 'يجب إدخال ما يمكن القيام به',
-        ]);
-
-
         DB::beginTransaction();
 
         try {
@@ -101,21 +89,10 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(RoleRequest $request, $id)
     {
-        Gate::authorize('roles.update');
 
         $role = Role::findOrFail($id);
-
-        $request->validate([
-            'name' => "required|max:255|unique:roles,name,{$id}",
-            'abilities' => 'required|array',
-        ], [
-            'name.required' => 'اسم الصلاحية مطلوب',
-            'name.max' => 'يجب ألا يزيد الاسم عن 255 حرف',
-            'name.unique' => 'اسم الصلاحية موجود مسبقا',
-            'abilities.required' => 'يجب إدخال ما يمكن القيام به',
-        ]);
 
         // Update the role name
         $role->update([

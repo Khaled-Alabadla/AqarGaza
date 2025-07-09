@@ -4,7 +4,7 @@
             <i class="fa-solid fa-bars"></i>
         </a>
         <a href="{{ route('home') }}" class="logo">
-            <img src="{{ asset('assets/img/ho.png') }}" alt="شعار الموقع">
+            <img src="{{ cache('settings')['site_logo'] ?? asset('assets/img/ho.png') }}" alt="شعار الموقع">
         </a>
         <nav class="main-nav">
             <ul>

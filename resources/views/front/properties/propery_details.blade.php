@@ -9,10 +9,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
 @endpush
 
-
 @section('content')
     @include('front.components.favorites')
-
     @include('front.components.chat')
 
     <div class="page-header">
@@ -38,11 +36,9 @@
                             <span class="currency">شيكل</span>
                         @elseif ($property->currency == 'JOD')
                             <span class="currency">دينار</span>
-                        @else
                         @endif
                     </p>
                 </div>
-
             </section>
 
             <section class="other-details card">
@@ -52,14 +48,6 @@
                         <div><i class="fas fa-bed"></i> {{ $property->rooms }} غرف</div>
                         <div><i class="fas fa-bath"></i> {{ $property->bathrooms }} حمامات</div>
                     @endif
-                    {{-- <div><i class="fas fa-couch"></i> {{ $property->salons ?? 'غير محدد' }} صالون</div> --}}
-                    {{-- <div><i class="fas fa-building"></i> الطابق {{ $property->floor ?? 'غير محدد' }}</div> --}}
-                    {{-- <div><i class="fa-solid fa-house-chimney"></i> {{ $property->has_balcony ? 'بلكونة' : 'لا بلكونة' }}
-                    </div> --}}
-                    {{-- <div><i class="fas fa-elevator"></i> {{ $property->has_elevator ? 'مصعد' : 'لا مصعد' }}</div> --}}
-                    {{-- <div><i class="fas fa-parking"></i> {{ $property->has_parking ? 'موقف سيارات' : 'لا موقف سيارات' }}
-                    </div> --}}
-                    {{-- <div><i class="fas fa-utensils"></i> {{ $property->has_kitchen ? 'مطبخ' : 'لا مطبخ' }}</div> --}}
                 </div>
             </section>
 
@@ -71,7 +59,7 @@
             <section class="main-hero-property-image card">
                 <h2>الصورة الرئيسية</h2>
                 <div class="main-hero-image-container">
-                    <img src="{{ asset('uploads/' . $property->main_image) }}" alt="صورة العقار الرئيسية">
+                    <img src="{{ asset($property->main_image) }}" alt="صورة العقار الرئيسية">
                 </div>
             </section>
 
@@ -79,31 +67,16 @@
                 <h2>صور إضافية</h2>
                 <div class="main-image-container">
                     <img id="main-property-img"
-                        src="{{ $property->images->first() ? asset('uploads/' . $property->images->first()->image_path) : '' }}"
+                        src="{{ $property->images->first() ? asset($property->images->first()->image_path) : '' }}"
                         alt="Property Main Image">
                 </div>
                 <div class="thumbnails-container">
                     @foreach ($property->images as $image)
-                        <img class="thumbnail {{ $loop->first ? 'active' : '' }}"
-                            src="{{ asset('uploads/' . $image->image_path) }}" alt="Thumbnail {{ $loop->iteration }}"
-                            data-full-src="{{ asset('uploads/' . $image->image_path) }}">
+                        <img class="thumbnail {{ $loop->first ? 'active' : '' }}" src="{{ asset($image->image_path) }}"
+                            alt="Thumbnail {{ $loop->iteration }}" data-full-src="{{ asset($image->image_path) }}">
                     @endforeach
                 </div>
             </section>
-
-            {{-- <section class="comment-section card">
-                <h2>اترك تعليقاً أو استفساراً</ “[Your comment or inquiry]”>
-                    <form action="{{ route('front.comments.store', $property->id) }}" method="POST">
-                        @csrf
-                        <textarea name="comment" placeholder="اكتب تعليقاً أو استفساراً هنا" required></textarea>
-                        @error('comment')
-                            <span class="error">{{ $message }}</span>
-                        @enderror
-                        <button type="submit" class="btn btn-send-comment">إرسال
-                            <i class="fas fa-paper-plane send"></i>
-                        </button>
-                    </form>
-            </section> --}}
         </div>
 
         <div class="side-info-column">
@@ -112,7 +85,7 @@
                 <div class="owner-details">
                     <div class="owner-avatar">
                         @if ($property->user->image)
-                            <img src="{{ asset('uploads/' . $property->user->image) }}" alt="">
+                            <img src="{{ asset($property->user->image) }}" alt="">
                         @else
                             <i class="fas fa-user"></i>
                         @endif
@@ -125,48 +98,103 @@
                         <p class="owner-phone"><i class="fas fa-phone-alt"></i>{{ $property->user->phone }}</p>
                     @endif
                 </div>
-                <button class="btn btn-contact-owner">تواصل مع المالك</button>
-            </section>
+                @if (auth()->user() != $property->user)
+                    <button class="btn btn-contact-owner" data-property-id="{{ $property->id }}"
+                        onclick="initiateChat({{ $property->id }})">تواصل مع المالك</button>
+                @endif
 
-            {{-- <section class="similar-properties">
-                <h2>عقارات أخرى مشابهة</h2>
-                <div class="similar-grid">
-                    @foreach ($similarProperties as $similarProperty)
-                        <div class="property-card">
-                            <div class="property-image">
-                                <img src="{{ $similarProperty->main_image ? asset('storage/' . $similarProperty->main_image) : asset('assets/img/default_property.png') }}"
-                                    alt="Similar Property Image">
-                                <button class="favorite-btn" data-property-id="{{ $similarProperty->id }}"><i
-                                        class="far fa-heart"></i></button>
-                            </div>
-                            <div class="property-info">
-                                <span class="property-price">{{ number_format($similarProperty->price, 2) }}
-                                    {{ $similarProperty->currency }}</span>
-                                <p class="property-location">{{ $similarProperty->city->name }}،
-                                    {{ $similarProperty->zone->name }}</p>
-                                <div class="property-features">
-                                    <div><i class="fas fa-bed"></i> <span>{{ $similarProperty->rooms ?? 'غير محدد' }}
-                                            غرف</span></div>
-                                    <div><i class="fas fa-bath"></i> <span>{{ $similarProperty->bathrooms ?? 'غير محدد' }}
-                                            حمام</span></div>
-                                    <div><i class="fas fa-ruler-combined"></i> <span>{{ $similarProperty->area }} م²</span>
+
+                @if ($similarProperties->count())
+                    <section class="similar-properties">
+                        <h2>عقارات أخرى مشابهة</h2>
+                        <div class="similar-grid">
+                            @foreach ($similarProperties as $similarProperty)
+                                <div class="property-card">
+                                    <div class="property-image">
+                                        <img src="{{ asset($similarProperty->main_image) }}" alt="Similar Property Image">
+                                        <button class="favorite-btn" data-property-id="{{ $similarProperty->id }}"><i
+                                                class="far fa-heart"></i></button>
+                                    </div>
+                                    <div class="property-info">
+                                        <span class="property-price">{{ number_format($similarProperty->price, 2) }}
+                                            {{ $similarProperty->currency }}</span>
+                                        <p class="property-location">{{ $similarProperty->city->name }}،
+                                            {{ $similarProperty->zone->name }}</p>
+                                        <div class="property-features">
+                                            <div><i class="fas fa-bed"></i>
+                                                <span>{{ $similarProperty->rooms ?? 'غير محدد' }}
+                                                    غرف</span>
+                                            </div>
+                                            <div><i class="fas fa-bath"></i>
+                                                <span>{{ $similarProperty->bathrooms ?? 'غير محدد' }}
+                                                    حمام</span>
+                                            </div>
+                                            <div><i class="fas fa-ruler-combined"></i> <span>{{ $similarProperty->area }}
+                                                    م²</span>
+                                            </div>
+                                        </div>
+                                        <p class="property-status">{{ $similarProperty->title }}</p>
                                     </div>
                                 </div>
-                                <p class="property-status">{{ $similarProperty->title }}</p>
-                            </div>
+                            @endforeach
                         </div>
-                    @endforeach
-                </div>
-            </section> --}}
+                    </section>
+                @endif
         </div>
     </div>
 @endsection
 
+@push('styles')
+    <style>
+        .btn-contact-owner:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script src="{{ asset('assets/js/property_details.js') }}"></script>
     <script>
+        function initiateChat(propertyId) {
+            const button = document.querySelector(`.btn-contact-owner[data-property-id="${propertyId}"]`);
+            button.disabled = true;
+            button.textContent = 'جاري التحميل...';
+
+            if (!{{ auth()->check() ? 'true' : 'false' }}) {
+                alert('يرجى تسجيل الدخول للتواصل مع المالك');
+                window.location.href = '{{ route('login') }}';
+                button.disabled = false;
+                button.textContent = 'تواصل مع المالك';
+                return;
+            }
+
+            fetch('{{ url('/chats/initiate') }}/' + propertyId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('خطأ');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const propertyTitle = encodeURIComponent('{{ $property->title }}');
+                    window.location.href = '{{ route('chat.index') }}?chat_id=' + data.chat_id
+                })
+                .catch(error => {
+                    console.error('Error initiating chat:', error);
+                    button.disabled = false;
+                    button.textContent = 'تواصل مع المالك';
+                });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Thumbnail click handler for image gallery
             const thumbnails = document.querySelectorAll('.thumbnail');
             const mainImage = document.getElementById('main-property-img');
             thumbnails.forEach(thumbnail => {
@@ -177,9 +205,6 @@
                 });
             });
 
-
-
-            // Chat sidebar toggle
             const chatFab = document.querySelector('.chat-fab-simple');
             const chatSidebar = document.querySelector('.chat-sidebar-simple');
             const closeBtn = document.querySelector('.chat-close-btn-simple');

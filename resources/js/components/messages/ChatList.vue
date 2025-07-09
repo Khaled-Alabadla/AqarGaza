@@ -16,9 +16,8 @@
             <div v-else v-for="chat in filteredChats" :key="chat.id" class="contact"
                 :class="{ active: chat.id == selectedChat?.id }" :data-name="getOtherUser(chat)?.name || 'Unknown'"
                 :data-img="getOtherUser(chat)?.image" @click="selectChat(chat)">
-                <img :src="getOtherUser(chat)?.image
-                    ? `/Uploads/${getOtherUser(chat).image}`
-                    : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
+                <img :src="getOtherUser(chat).image ??
+                    `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(
                         getOtherUser(chat)?.name || 'Unknown'
                     )}`" alt="Avatar" />
                 <div class="info">

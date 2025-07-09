@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zone extends Model
 {
-    protected $fillable = ['city_id', 'name'];
+    protected $guarded = [];
 
     public function properties()
     {

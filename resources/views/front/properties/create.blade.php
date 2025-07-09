@@ -242,17 +242,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="property-location">موقع العقار</label>
-                        <input type="text" id="property-location" name="property-location"
-                            value="{{ old('property-location') }}" placeholder="ادخل موقع العقار بالكامل">
-                        @error('property-location')
-                            <span class="error">{{ $message }}</span>
-                        @else
-                            <span class="error" id="property-location-error" style="display: none;"></span>
-                        @enderror
-                    </div>
-
                     <div class="form-group radio-group">
                         <label>نوع العملية</label>
                         <div class="radio-options">

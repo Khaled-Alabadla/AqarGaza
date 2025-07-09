@@ -129,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const index = favoritePropertiesData.findIndex((p) => p.id === propertyId);
                     if (index !== -1) {
                         favoritePropertiesData.splice(index, 1);
-                        console.log(`Removed ${propertyId} from favorites.`);
                         // أعد عرض العقارات لتحديث القائمة
                         renderProperties(currentPage, favoritePropertiesData);
                         setupPagination(favoritePropertiesData);
@@ -144,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // هنا يمكن إضافة العقار إذا كان زر الإعجاب قد تم النقر عليه وأصبح active
                     // في هذه الصفحة، نفترض أن العقارات في favoritePropertiesData هي بالفعل مفضلة
                     // وبالتالي هذا الجزء قد لا يكون ضرورياً إلا إذا كنت تضيف عقارات جديدة هنا
-                    console.log(`Property ${propertyId} re-added to favorites (already in data).`);
                 }
             });
         });

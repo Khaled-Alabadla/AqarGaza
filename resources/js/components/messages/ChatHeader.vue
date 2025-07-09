@@ -22,17 +22,18 @@ export default {
     },
     methods: {
         getChatName(chat) {
-            if (!chat || !chat.messages || !chat.messages.length) return 'اختر محادثة';
+            console.log(chat);
+            if (!chat) return 'اختر محادثة';
             const user = chat.user_id == this.$root.userId ? chat.receiver : chat.creator;
             return user?.name || 'Unknown';
         },
         getChatImage(chat) {
-            if (!chat || !chat.messages || !chat.messages.length) {
+            if (!chat) {
                 return 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=Unknown';
             }
             const user = chat.user_id == this.$root.userId ? chat.receiver : chat.creator;
             const name = user?.name || user?.username || 'Unknown';
-            return user?.image ? `/uploads/${user.image}` : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(name)}`;
+            return user?.image ?? `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(name)}`;
         },
 
     },

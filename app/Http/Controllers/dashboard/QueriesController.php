@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-
-use App\Models\Assistance;
-use App\Models\Distribution;
-use App\Models\Donor;
+use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class QueriesController extends Controller

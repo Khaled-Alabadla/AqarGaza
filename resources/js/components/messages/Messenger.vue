@@ -68,7 +68,7 @@ export default defineComponent({
             const user = this.getOtherUser(chat);
             const name = user?.name || 'Unknown';
             const image = user?.image;
-            return image ? `/Uploads/${image}` :
+            return image ??
                 `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(name)}`;
         },
         getChatName(chat) {
@@ -100,7 +100,6 @@ export default defineComponent({
             this.editingMessage = null;
         },
         fetchMessages(chatId) {
-
             fetch(`/chats/${chatId}/messages`, {
                 headers: {
                     'Accept': 'application/json',
@@ -118,11 +117,35 @@ export default defineComponent({
                     console.error('Error fetching messages:', error);
                 });
         },
-        handleEditMessage(message) {
-            this.editingMessage = message;
-        },
-        clearEditing() {
-            this.editingMessage = null;
+        sendInitialMessage(chatId, messageText) {
+            const receiverId = this.chats.find(chat => chat.id === chatId)?.receiver_id;
+            if (!receiverId) return;
+
+            const formData = new FormData();
+            formData.append('chat_id', chatId.toString());
+            formData.append('sender_id', this.$root.userId.toString());
+            formData.append('receiver_id', receiverId.toString());
+            formData.append('message', messageText);
+            formData.append('_token', this.$root.csrf_token);
+
+            fetch('/messages', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`Failed to send message: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    this.$root.messages.push(data.message);
+                    this.handleMessageUpdated({ message: data.message, chatId });
+                })
+                .catch(error => {
+                    console.error('Error sending initial message:', error);
+                });
         },
     },
     mounted() {
@@ -131,6 +154,44 @@ export default defineComponent({
         } else {
             console.warn('No chats found in $root.chats on mount');
         }
+
+        // Check for chat_id in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('chat_id');
+        if (chatId) {
+            const checkChats = () => {
+                if (this.chats.length > 0) {
+                    const chat = this.chats.find(c => c.id == chatId);
+                    if (chat) {
+                        this.selectChat(chat);
+                        const propertyTitle = decodeURIComponent(urlParams.get('property_title') || 'العقار');
+                        this.sendInitialMessage(chatId, `مرحباً، أنا مهتم بالعقار: ${propertyTitle}`);
+                    } else {
+                        fetch(`/chats/${chatId}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': this.$root.csrf_token,
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                this.chats.push({ ...data, display: 'flex' });
+                                this.$root.chats = [...this.chats];
+                                this.selectChat(data);
+                                const propertyTitle = decodeURIComponent(urlParams.get('property_title') || 'العقار');
+                                this.sendInitialMessage(chatId, `مرحباً، أنا مهتم بالعقار: ${propertyTitle}`);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching chat:', error);
+                            });
+                    }
+                } else {
+                    setTimeout(checkChats, 100);
+                }
+            };
+            checkChats();
+        }
+
         this.$watch(
             () => this.$root.chats,
             newChats => {

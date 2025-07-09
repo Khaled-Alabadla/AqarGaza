@@ -31,7 +31,7 @@
                 <!-- Attachment message -->
                 <div v-else-if="message.type === 'attachment'">
                     <div v-if="getFileData(message.message)?.mimetype?.startsWith('image/')" class="image-attachment">
-                        <img :src="`/uploads/messages/${getFileData(message.message)?.file_path}`"
+                        <img :src="`/messages/${getFileData(message.message)?.file_path}`"
                             style="object-fit:cover; max-width: 100%;" />
                     </div>
                     <div v-else class="file-attachment">
@@ -208,9 +208,8 @@ export default defineComponent({
 
         getChatImage(message: Message) {
             const user = message.sender;
-            return user.image
-                ? `/uploads/${user.image}`
-                : `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(user.name)}`;
+            return user.image ??
+                `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${encodeURIComponent(user.name)}`;
         },
 
         handleImageError(event: Event, message: Message) {
