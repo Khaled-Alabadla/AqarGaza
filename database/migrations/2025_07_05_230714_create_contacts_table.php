@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone');
             $table->string('message');
-            $table->boolean('is_open')->nullable();
+            $table->boolean('is_open')->nullable()->default(0);
             $table->timestamps();
         });
     }

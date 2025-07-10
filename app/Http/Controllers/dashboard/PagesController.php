@@ -28,6 +28,11 @@ class PagesController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required'
+        ], [
+            'name.required' => 'الاسم مطلوب'
+        ]);
 
         Page::create($request->except('_token'));
 

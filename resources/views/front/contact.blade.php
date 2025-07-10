@@ -22,41 +22,31 @@
                 </div>
                 <p class="section-description">نعمل بجد لخدمتك</p>
 
-                <form id="contactForm">
+                <form id="contactForm" action="{{ route('front.contact') }}" method="POST">
+                    @csrf
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="first-name">الاسم الأول</label>
-                            <input type="text" id="first-name" placeholder="الاسم الأول">
+                            <label for="name">الاسم</label>
+                            <input type="text" id="name" placeholder="الاسم" name="name">
                         </div>
-                        <div class="form-group">
-                            <label for="last-name">الاسم الثاني</label>
-                            <input type="text" id="last-name" placeholder="الاسم الثاني">
-                        </div>
-                    </div>
-
-                    <div class="form-grid">
                         <div class="form-group">
                             <label for="email">البريد الإلكتروني</label>
-                            <input type="email" id="email" placeholder="البريد الإلكتروني">
+                            <input type="email" id="email" placeholder="البريد الإلكتروني" name="email">
                         </div>
                         <div class="form-group">
-                            <label for="phone">الهاتف</label>
-                            <input type="text" id="phone" placeholder="الهاتف">
+                            <label for="phone">رقم الجوال</label>
+                            <input type="text" id="phone" placeholder="رقم الجوال" name="phone">
                         </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="address">العنوان بالتفصيل</label>
-                        <input type="text" id="address"
-                            placeholder="الفلسطيني - غزة - الشيخ رضوان - شارع الشافعي - فيلا بجانب سوق سيارات القدس">
-                    </div>
 
                     <div class="section-header message-header">
                         <span class="section-number">2</span>
                         <h2>الرسالة</h2>
                     </div>
                     <div class="form-group">
-                        <textarea id="message" rows="8" placeholder="الرسالة"></textarea>
+                        <textarea id="message" name="message" rows="8" placeholder="الرسالة"></textarea>
                     </div>
 
                     <button type="submit" class="submit-btn">إرسال</button>

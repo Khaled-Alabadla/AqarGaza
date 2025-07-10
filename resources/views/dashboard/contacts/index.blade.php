@@ -27,17 +27,17 @@
         }
 
         /* .dataTables_wrapper .dataTables_filter {
-                                                                                                    float: right !important;
-                                                                                                    margin-bottom: 10px
-                                                                                                }
+                                                                                                                            float: right !important;
+                                                                                                                            margin-bottom: 10px
+                                                                                                                        }
 
-                                                                                                #pageLength {
-                                                                                                    display: none
-                                                                                                }
+                                                                                                                        #pageLength {
+                                                                                                                            display: none
+                                                                                                                        }
 
-                                                                                                #example_info, #example_paginate {
-                                                                                                    display: none !important
-                                                                                                } */
+                                                                                                                        #example_info, #example_paginate {
+                                                                                                                            display: none !important
+                                                                                                                        } */
     </style>
 @endsection
 @section('page-header')
@@ -85,7 +85,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($messages as $message)
-                                    <tr>
+                                    <tr style="{{ !$message->is_open ? 'background: rgb(235, 230, 230)' : '' }}">
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td>{{ $message->name }}</td>
                                         <td>{{ $message->email }}</td>

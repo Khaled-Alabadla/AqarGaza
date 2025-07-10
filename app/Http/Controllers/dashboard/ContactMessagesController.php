@@ -15,7 +15,7 @@ class ContactMessagesController extends Controller
     {
         Gate::authorize('contacts.index');
 
-        $messages = Contact::where('is_open', 0)->get();
+        $messages = Contact::all();
 
         return view('dashboard.contacts.index', compact('messages'));
     }
@@ -43,7 +43,7 @@ class ContactMessagesController extends Controller
             'is_open' => 1
         ]);
 
-        return redirect()->back();
+        return redirect()->route('dashboard.contact_messages.index')->with('success', 'تم إرسال الرسالة');
     }
 
     public function destroy($id)

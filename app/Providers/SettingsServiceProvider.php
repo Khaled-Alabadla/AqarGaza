@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Contact;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
@@ -22,9 +23,13 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
         Cache::remember('settings', 3600, function () {
             return Setting::pluck('value', 'key')->toArray();
+        });
+
+        View::composer('dashboard.layouts.main-sidebar', function ($view) {
+            $messages_count = Contact::where('is_open', 0)->count();
+            $view->with('contact_messages', $messages_count);
         });
     }
 }

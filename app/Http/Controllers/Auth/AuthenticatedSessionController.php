@@ -38,7 +38,7 @@ class AuthenticatedSessionController extends Controller
         $user = $request->user();
 
         if (in_array($user->role, ['admin', 'super_admin'])) {
-            return Inertia::location('dashboard/home');
+            return redirect()->route('dashboard.index');
         }
 
         return redirect()->intended('/'); // or just '/' if no named route

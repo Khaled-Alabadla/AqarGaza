@@ -149,7 +149,6 @@ class PropertiesController extends Controller
             'property-images.*' => 'image|mimes:jpeg,png,jpg|max:4096',
             'rooms' => 'nullable|numeric|min:0',
             'bathrooms' => 'nullable|numeric|min:0',
-
         ], $messages);
 
         // Log validation errors for debugging

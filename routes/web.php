@@ -55,6 +55,7 @@ Route::get('/profile', [ProfileController::class, 'index'])->name('front.profile
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('front.contact');
+Route::post('/contact', [ContactController::class, 'contact_save']);
 // End Contact
 
 // Favorites
@@ -64,4 +65,5 @@ Route::match(['post', 'delete'], '/favorites/{propertyId}', [PropertiesControlle
 
 // Edit Password
 Route::get('edit-password', [FrontAuthController::class, 'edit_password'])->name('front.auth.edit_password');
+Route::post('edit-password', [FrontAuthController::class, 'update_password']);
 // End Edit Password

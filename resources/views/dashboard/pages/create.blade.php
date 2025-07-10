@@ -91,7 +91,7 @@
                                     <label class="form-label">المحتوى</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <textarea name="content" class="page-content form-control" rows="3"> </textarea>
+                                    <textarea name="content" id="content" class="page-content form-control" rows="3"> </textarea>
                                 </div>
                             </div>
                         </div>
@@ -193,6 +193,16 @@
     <script src="{{ URL::asset('assets/plugins/pickerjs/picker.min.js') }}"></script>
     <!-- Internal form-elements js -->
     <script src="{{ URL::asset('assets/js/form-elements.js') }}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.9.1/tinymce.min.js"
+        integrity="sha512-09JpfVm/UE1F4k8kcVUooRJAxVMSfw/NIslGlWE/FGXb2uRO1Nt4BXAJ3LxPqNbO3Hccdu46qaBPp9wVpWAVhA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        tinymce.init({
+            selector: '#content', // Replace this CSS selector to match the placeholder element for TinyMCE
+            plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion markdown math importword exportword exportpdf',
+            toolbar: 'undo redo | accordion accordionremove | importword exportword exportpdf | math | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+            menubar: 'file edit view insert format tools table help'
+        });
+    </script>
 
 @endsection

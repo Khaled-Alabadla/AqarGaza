@@ -190,8 +190,13 @@
                 @endcan
 
                 @can('contacts.index')
-                    <li><a class="slide-item" href="{{ route('dashboard.contact_messages.index') }}">الرسائل
-                        </a></li>
+                    <li
+                        style="display: flex;justify-content: space-between;align-items: center; {{ $contact_messages ? 'font-weight:bold; background: #d0dbd8' : '' }}">
+                        <a class="slide-item" style="{{ $contact_messages ? 'font-weight:bold' : '' }}"
+                            href="{{ route('dashboard.contact_messages.index') }}">الرسائل
+                        </a>
+                        <span style="margin-left: 30px; opacity:0.6">{{ $contact_messages }}</span>
+                    </li>
                 @endcan
             </ul>
         </li>

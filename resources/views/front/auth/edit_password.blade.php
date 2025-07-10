@@ -40,16 +40,29 @@
                 <h1 class="main-heading">تغيير كلمة المرور</h1>
                 <p class="description">دعونا نجعلكم حديثاً ومساعدين حتى تتمكنوا من الوصول إلى حسابكم الشخصي</p>
 
-                <form id="changePasswordForm">
+                <form id="changePasswordForm" action="{{ route('front.auth.edit_password') }}" method="POST">
+                    @csrf
+                    <div class="form-group password-group">
+                        <label for="old-password">كلمة السر القديمة</label>
+                        <input type="password" name="password" id="old-password" placeholder="***********">
+                        <i class="far fa-eye toggle-password" data-target="old-password"></i>
+                        @error('password')
+                            <small style="color: red">{{ $message }}</small>
+                        @enderror
+                    </div>
                     <div class="form-group password-group">
                         <label for="new-password">كلمة السر الجديدة</label>
-                        <input type="password" id="new-password" placeholder="***********">
+                        <input type="password" id="new-password" placeholder="***********" name="new_password">
                         <i class="far fa-eye toggle-password" data-target="new-password"></i>
+                        @error('new_password')
+                            <small style="color: red">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="form-group password-group">
                         <label for="confirm-password">تأكيد كلمة السر</label>
-                        <input type="password" id="confirm-password" placeholder="***********">
+                        <input type="password" name="new_password_confirmation" id="confirm-password"
+                            placeholder="***********">
                         <i class="far fa-eye toggle-password" data-target="confirm-password"></i>
                     </div>
 
