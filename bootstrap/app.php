@@ -4,6 +4,7 @@ use App\Http\Middleware\EnsureEmailIsVerifiedApi;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use Flasher\Laravel\Middleware\SessionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -26,16 +27,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
         $middleware->web(append: [
             HandleAppearance::class,
+            SessionMiddleware::class,
             AddLinkHeadersForPreloadedAssets::class,
-            // EnsureUserIsAdmin::class,
         ]);
-        // $middleware->api(append: [
-        //     EnsureEmailIsVerifiedApi::class
-        // ]);
+
         $middleware->validateCsrfTokens(except: [
-            '/messages',
-            '/messages/*',
-            'messages/{message}'
+            // '/messages',
+            // '/messages/*',
+            // 'messages/{message}'
         ]);
         $middleware->alias([
             'verified.api' => EnsureEmailIsVerifiedApi::class,

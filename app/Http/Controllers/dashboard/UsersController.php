@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
@@ -98,7 +99,9 @@ class UsersController extends Controller
 
         User::destroy($id);
 
-        return redirect()->back()->with('success', 'تم حذف المستخدم بنجاح');
+        request()->session()->flash('success', 'تم حذف المستخدم بنجاح');
+
+        return redirect()->route('dashboard.users.index')->with('success', 'تم حذف المستخدم بنجاح');
     }
 
     public function trash()
@@ -152,7 +155,10 @@ class UsersController extends Controller
 
             // dd($user->image);
 
-            Storage::disk('public_uploads')->delete($user->image);
+            if ($user->image) {
+
+                Storage::disk('public_uploads')->delete($user->image);
+            }
         }
 
         $user->update([

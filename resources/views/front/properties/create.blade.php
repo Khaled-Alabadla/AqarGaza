@@ -134,8 +134,8 @@
     @include('front.components.chat')
 
     @include('layouts.hero', [
-        'title' => 'قم بإضافة عقار جديد',
-        'description' => 'يمكنك إضافة أي عقار مع كافة التفاصيل اللازمة',
+        'title' => $page->title,
+        'description' => $page->subtitle,
     ])
 
     <div class="add">

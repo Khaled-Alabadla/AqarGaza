@@ -12,8 +12,8 @@
 
     @include('front.components.chat')
     @include('layouts.hero', [
-        'title' => 'عقاراتي المفضلة',
-        'description' => 'استعرض العقارات التي قمت بحفظها للعثور على منزل أحلامك.',
+        'title' => $page->title,
+        'description' => $page->subtitle,
     ])
     <main class="main-content">
         <section class="property-listings section-padding">

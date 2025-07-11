@@ -13,6 +13,10 @@
     @include('front.components.favorites')
     @include('front.components.chat')
 
+    @include('layouts.hero', [
+        'title' => $page->title,
+        'description' => $page->subtitle,
+    ])
     <div class="page-header">
         <h1>{{ $property->title }}</h1>
     </div>

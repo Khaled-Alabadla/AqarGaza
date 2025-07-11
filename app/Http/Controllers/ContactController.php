@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Page;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
     public function index()
     {
-        return view('front.contact');
+        $page = Page::where('name', 'contact')->select('name', 'title', 'subtitle')->first();
+
+        return view('front.contact', compact('page'));
     }
 
     public function contact_save(Request $request)

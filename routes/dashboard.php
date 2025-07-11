@@ -4,6 +4,8 @@ use App\Http\Controllers\Dashboard\AdminController;
 use App\Http\Controllers\Dashboard\AdminsController;
 use App\Http\Controllers\Dashboard\ContactMessagesController;
 use App\Http\Controllers\Dashboard\PagesController;
+use App\Http\Controllers\Dashboard\PropertiesController;
+use App\Http\Controllers\Dashboard\QueriesController;
 use App\Http\Controllers\Dashboard\RolesController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\UsersController;
@@ -61,7 +63,6 @@ Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('das
         ->name('users.edit');
 
     // Properties
-    Route::get('properties/{user}/details', [PropertiesController::class, 'show_user_properties'])->name('properties.user');
 
     Route::get('/properties/trash', [PropertiesController::class, 'trash'])->name('properties.trash');
 
@@ -69,7 +70,7 @@ Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('das
 
     Route::get('/properties/{property}/restore', [PropertiesController::class, 'restore'])->name('properties.restore');
 
-    Route::resource('properties', PropertiesController::class);
+    Route::resource('properties', PropertiesController::class)->except(['edit', 'update']);
     // End Properties
 
     // Queries

@@ -9,8 +9,8 @@
 
 @section('content')
     @include('layouts.hero', [
-        'title' => 'تواصل معنا',
-        'description' => 'نحن دائماٌ جاهزون للرد على أي استفسارات أو أسئلة تقومون بطرحها',
+        'title' => $page->title,
+        'description' => $page->subtitle,
     ])
     <div class="add">
 

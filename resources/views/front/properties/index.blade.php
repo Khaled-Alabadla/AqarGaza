@@ -55,8 +55,8 @@
     @include('front.components.chat')
 
     @include('layouts.hero', [
-        'title' => 'جميع العقارات',
-        'description' => 'يمكنك تصفح جميع العقارات وفلترتها لإيجاد العقار المناسب لك',
+        'title' => $page->title,
+        'description' => $page->subtitle,
     ])
 
     <main class="main-content">

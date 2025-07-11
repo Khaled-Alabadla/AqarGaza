@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Page;
 use App\Models\Property;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ class PropertiesController extends Controller
     public function index(Request $request)
 
     {
+        $page = Page::where('name', 'properties.index')->select('name', 'title', 'subtitle')->first();
+
         $query = Property::with(['user', 'category', 'zone', 'city']);
 
         // Filter by type
@@ -87,12 +90,14 @@ class PropertiesController extends Controller
         $categories = Category::all();
         // $zones = Zone::all();
 
-        return view('front.properties.index', compact('properties', 'cities', 'categories'));
+        return view('front.properties.index', compact('properties', 'cities', 'categories', 'page'));
     }
 
     public function create()
     {
-        return view('front.properties.create');
+        $page = Page::where('name', 'properties.create')->select('name', 'title', 'subtitle')->first();
+
+        return view('front.properties.create', compact('page'));
     }
 
     public function store(Request $request)
@@ -203,6 +208,7 @@ class PropertiesController extends Controller
 
     public function show($id)
     {
+        $page = Page::where('name', 'properties.show')->select('name', 'title', 'subtitle')->first();
         // Fetch the current property with related data
         $property = Property::with('user', 'category', 'images', 'city', 'zone')->findOrFail($id);
 
@@ -215,7 +221,7 @@ class PropertiesController extends Controller
             ->take(4) // Limit to 4 similar properties
             ->get();
 
-        return view('front.properties.propery_details', compact('property', 'similarProperties'));
+        return view('front.properties.propery_details', compact('property', 'similarProperties', 'page'));
     }
 
     public function toggleFavorite(Request $request, $propertyId)
