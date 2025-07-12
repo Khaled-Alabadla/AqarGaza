@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
@@ -58,10 +57,6 @@ class UsersController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit()
@@ -99,11 +94,14 @@ class UsersController extends Controller
 
         User::destroy($id);
 
-        request()->session()->flash('success', 'تم حذف المستخدم بنجاح');
+        flash()->success('User created successfully!')->option('position', 'bottom-left');
 
         return redirect()->route('dashboard.users.index')->with('success', 'تم حذف المستخدم بنجاح');
     }
 
+    /**
+     * Display the trashed users
+     */
     public function trash()
     {
         Gate::authorize('users.trash');
@@ -113,6 +111,9 @@ class UsersController extends Controller
         return view('dashboard.users.trash', compact('users'));
     }
 
+    /**
+     * Restore the trashed user
+     */
     public function restore($id)
     {
         Gate::authorize('users.restore');
@@ -121,6 +122,10 @@ class UsersController extends Controller
 
         return redirect()->route('dashboard.users.index')->with('success', 'تمت الاستعادة بنجاح');
     }
+
+    /**
+     * Force delete the trashed user.
+     */
     public function force_delete($id)
     {
         Gate::authorize('users.force_delete');
@@ -146,14 +151,11 @@ class UsersController extends Controller
         if ($request->hasFile('image')) {
             // Define the directory path within the 'public_uploads' disk
             $directory = "users/profiles";
-
             // Get the original file name
             $file_name = rand() . time() . $request->file('image')->getClientOriginalName();
 
             // Store the file in the public_uploads disk
             $file_path = $request->file('image')->storeAs($directory, $file_name, 'public_uploads');
-
-            // dd($user->image);
 
             if ($user->image) {
 
@@ -164,7 +166,6 @@ class UsersController extends Controller
         $user->update([
             'image' => $file_path,
         ]);
-
 
         return redirect()->route('dashboard.index');
     }

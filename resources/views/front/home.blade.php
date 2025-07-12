@@ -1,140 +1,119 @@
 @extends('layouts.front')
 
+@section('title', 'عقار غزة - كل ما تحتاجه عن العقارات')
+<!-- .........   Sections  ............-->
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/home_styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/properties_styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
+@endpush
+
 @section('content')
-    <!-- قسم (Hero) -->
-    <section class="hero">
-        <img src="{{ asset('assets/img/h.jpg') }}" alt="خلفية العقارات" class="hero__img">
-        <div class="hero__overlay"></div>
-        <div class="hero__content container">
-            <div class="hero__text">
-                <h1>ابحث عن<br>منزل<br>أحلامك</h1>
-            </div>
-            <div class="hero__search">
-                <div class="tabs">
-                    <a type="button" class="tab active" data-tab="sell">للبيع</a>
-                    <a type="button" class="tab" data-tab="rent">للإيجار</a>
+    @include('front.components.favorites')
+    @include('front.components.chat')
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+
+        <div class="container hero-content">
+            <h1 class="hero-title"> {{ $page->title }} </h1>
+            <p class="hero-subtitle"> {{ $page->subtitle }} </p>
+
+            <section class="filter-section">
+                <div class="filter-container">
+                    <!-- City Filter -->
+                    <div class="filter-group">
+                        <div class="select-box" data-filter-name="city" data-selected-value="{{ request('city', 'all') }}"
+                            role="combobox" aria-expanded="false" tabindex="0">
+                            <div class="selected-option" aria-label="اختر المحافظة">
+                                @if (request('city') && $cities->find(request('city')))
+                                    {{ $cities->find(request('city'))->name }}
+                                @else
+                                    المحافظة
+                                @endif
+                            </div>
+                            <div class="options-container" role="listbox">
+                                <div class="option {{ request('city') == 'all' ? 'selected' : '' }}" data-value="all"
+                                    role="option" tabindex="-1">الكل</div>
+                                @foreach ($cities as $city)
+                                    <div class="option {{ request('city') == $city->id ? 'selected' : '' }}"
+                                        data-value="{{ $city->id }}" role="option" tabindex="-1">{{ $city->name }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <div class="select-box" data-filter-name="propertyType"
+                            data-selected-value="{{ request('propertyType', 'all') }}" role="combobox"
+                            aria-expanded="false" tabindex="0">
+                            <div class="selected-option" aria-label="اختر نوع العقار">
+                                @if (request('propertyType') && $categories->find(request('propertyType')))
+                                    {{ $categories->find(request('propertyType'))->name }}
+                                @else
+                                    النوع
+                                @endif
+                            </div>
+                            <div class="options-container" role="listbox">
+                                <div class="option {{ request('propertyType') == 'all' ? 'selected' : '' }}"
+                                    data-value="all" role="option" tabindex="-1">الكل</div>
+                                @foreach ($categories as $category)
+                                    <div class="option {{ request('propertyType') == $category->id ? 'selected' : '' }}"
+                                        data-value="{{ $category->id }}" role="option" tabindex="-1">
+                                        {{ $category->name }}</div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Button -->
+                    <div class="filter-group">
+                        <button class="btn btn-search" id="search-btn">
+                            <i class="fas fa-search"></i>
+                            <span>بحث</span>
+                        </button>
+                    </div>
                 </div>
-                <form class="search-form">
-                    <input type="text" name="location" placeholder="فلسطين، قطاع غزة، خان يونس">
-                    <select name="property-type">
-                        <option disabled selected>حدد نوع العقار</option>
-                    </select>
-                    <select name="rooms">
-                        <option disabled selected>اختر الغرف</option>
-                    </select>
-                    <button type="submit" class="btn btn-search">
-                        ابحث <span class="icon-search"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    </button>
-                </form>
-            </div>
-        </div>
-        <!-- إحصائيات عائمة في أسفل الهيرو -->
-        <div class="hero__stats container">
-            <div class="stat stat--customers">
-                <span class="stat__text">+72 ألف مستخدم سعيد !!</span>
-            </div>
-            <div class="stat stat--listings">
-                <div class="icon-listings"></div>
-                <span class="stat__text">+200 منزل جديد كل يوم !!</span>
-            </div>
+            </section>
         </div>
     </section>
 
-    <!-- قسم العقارات المميزة -->
-    <section class="featured-properties">
+    <section class="featured-properties section-padding">
         <div class="featured__overlay"></div>
         <div class="container featured-properties__inner">
-            <h2>اعثر على عقارك المثالي</h2>
+            <h2 class="section-title">اعثر على عقارك المثالي</h2>
             <div class="properties-grid">
-                <!-- بطاقة عقار 1 -->
-                <div class="property-card">
-                    <div class="property-card__image">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار 1">
-                        <button class="favorite-btn" aria-label="إضافة للمفضلة"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="property-card__tags">
-                        <span class="tag">مسكن عائلي</span>
-                        <span class="tag">مسبح</span>
-                    </div>
-                    <div class="property-card__details">
-                        <div class="price">$ 96.000</div>
-                        <div class="rating">
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- بطاقة عقار 2 -->
-                <div class="property-card">
-                    <div class="property-card__image">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار 2">
-                        <button class="favorite-btn" aria-label="إضافة للمفضلة"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="property-card__tags">
-                        <span class="tag">فندق</span>
-                        <span class="tag">شاطئ</span>
-                    </div>
-                    <div class="property-card__details">
-                        <div class="price">$ 205.000</div>
-                        <div class="rating">
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- بطاقة عقار 3 -->
-                <div class="property-card">
-                    <div class="property-card__image">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار 3">
-                        <button class="favorite-btn" aria-label="إضافة للمفضلة"><i class="fa-solid fa-heart"></i></button>
-                    </div>
-                    <div class="property-card__tags">
-                        <span class="tag">منزل فردي</span>
-                        <span class="tag">مسبح</span>
-                    </div>
-                    <div class="property-card__details">
-                        <div class="price">$ 45.000</div>
-                        <div class="rating">
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                        </div>
-                    </div>
-                </div>
+                @foreach ($randomProperties as $property)
+                    @include('front.components.card')
+                @endforeach
             </div>
         </div>
     </section>
 
-    <!-- قسم الخدمات العقارية -->
-    <section class="services">
+    <section class="services section-padding bg-light-gray">
         <div class="container services__inner">
-            <h2>خدمات عقارية حديثة، لا مثيل لها</h2>
-            <div class="services-grid">
-                <div class="service-item">
+            <h2 class="section-title">خدمات عقارية حديثة، لا مثيل لها</h2>
+            <div class="services-grid grid-gap">
+                <div class="service-item main-card interactive-card">
                     <div class="service-icon">
-                        <img src="{{ asset('assets/img/aqar.png') }}" alt="إدارة الممتلكات">
+                        <img src="../images/mobile_13489708.png" alt="إدارة الممتلكات">
                     </div>
                     <h3>إدارة الممتلكات</h3>
                     <p>نعتني بإدارة وصيانة العقارات لتحقيق أعلى قيمة استثمارية</p>
                 </div>
-                <div class="service-item">
+                <div class="service-item main-card interactive-card">
                     <div class="service-icon">
-                        <img src="{{ asset('assets/img/aqar.png') }}" alt="التأجير العقاري">
+                        <img src="../images/mobile_13489708.png" alt="التأجير العقاري">
                     </div>
                     <h3>التأجير العقاري</h3>
                     <p>نوفر خدمة سهلة وموثوقة لتأجير الشقق والفيلات والمكاتب التجارية</p>
                 </div>
-                <div class="service-item">
+                <div class="service-item main-card interactive-card">
                     <div class="service-icon">
-                        <img src="{{ asset('assets/img/aqar.png') }}" alt="البيع والشراء">
+                        <img src="../images/mobile_13489708.png" alt="البيع والشراء">
                     </div>
                     <h3>البيع والشراء</h3>
                     <p>نقدم خدمة شاملة لبيع وشراء العقارات بأسعار تنافسية</p>
@@ -144,124 +123,220 @@
     </section>
 
 
-    <!-- ===== قسم العقارات الأحدث ===== -->
-    <section class="latest-listings">
+    <section class="latest-listings section-padding">
         <div class="container">
             <div class="latest-listings__header">
-                <h2>نقدم العقارات الأحدث لك</h2>
-                <div class="latest-listings__filter">
-                    <button class="filter-btn">الكل</button>
-                    <button class="filter-btn active">بيع</button>
-                    <button class="filter-btn">تأجير</button>
-                </div>
-                <p>عقاري يوفر لك معلومات حديثة وموثوقة تجعل العثور على العقار الذي تحلم به بسهولة وسرعة</p>
+                <h2 class="section-title">نقدم العقارات الأحدث لك</h2>
+                <p class="section-description">عقاري يوفر لك معلومات حديثة وموثوقة تجعل العثور على العقار الذي تحلم به
+                    بسهولة وسرعة</p>
             </div>
 
-            <div class="latest-listings__grid">
-                <!-- بطاقة 1 -->
-                <div class="listing-card">
-                    <div class="listing-card__media">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار جديد">
-                        <button class="listing-card__fav"><i class="fa-solid fa-heart"></i></button>
-                        <span class="listing-card__badge listing-card__badge--time">قبل 8 ساعات</span>
-                        <span class="listing-card__badge listing-card__badge--type">شراء</span>
-                    </div>
-                    <div class="listing-card__details">
-                        <div class="listing-card__price">1,250.00 ريال</div>
-                        <div class="listing-card__meta">4 غرف 🏠 3 حمامات 🛁 500 م²📏</div>
-                        <div class="listing-card__address">شارع العليا، الملك فهد، الرياض 12271</div>
-                    </div>
-                </div>
-                <!-- بطاقة 2 -->
-                <div class="listing-card">
-                    <div class="listing-card__media">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار جديد">
-                        <button class="listing-card__fav"><i class="fa-solid fa-heart"></i></button>
-                        <span class="listing-card__badge listing-card__badge--time">قبل 10 ساعات</span>
-                        <span class="listing-card__badge listing-card__badge--type">بيع</span>
-                    </div>
-                    <div class="listing-card__details">
-                        <div class="listing-card__price">980.00 ريال</div>
-                        <div class="listing-card__meta">4 غرف 🏠 3 حمامات 🛁 500 م²📏</div>
-                        <div class="listing-card__address">حي المروج، جدة 23456</div>
-                    </div>
-                </div>
-                <!-- بطاقة 3 -->
-                <div class="listing-card">
-                    <div class="listing-card__media">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار جديد">
-                        <button class="listing-card__fav"><i class="fa-solid fa-heart"></i></button>
-                        <span class="listing-card__badge listing-card__badge--time">قبل 6 ساعات</span>
-                        <span class="listing-card__badge listing-card__badge--type">إيجار</span>
-                    </div>
-                    <div class="listing-card__details">
-                        <div class="listing-card__price">2,200.00 ريال</div>
-                        <div class="listing-card__meta">4 غرف 🏠 3 حمامات 🛁 500 م²📏</div>
-                        <div class="listing-card__address">حي الورود، الرياض 11511</div>
-                    </div>
-                </div>
-                <!-- بطاقة 4 -->
-                <div class="listing-card">
-                    <div class="listing-card__media">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="عقار جديد">
-                        <button class="listing-card__fav"><i class="fa-solid fa-heart"></i></button>
-                        <span class="listing-card__badge listing-card__badge--time">قبل 2 ساعات</span>
-                        <span class="listing-card__badge listing-card__badge--type">شراء</span>
-                    </div>
-                    <div class="listing-card__details">
-                        <div class="listing-card__price">1,100.00 ريال</div>
-                        <div class="listing-card__meta">4 غرف 🏠 3 حمامات 🛁 500 م²📏</div>
-                        <div class="listing-card__address">حي العليا، الرياض 12222</div>
-                    </div>
-                </div>
+            <div class="latest-listings__grid grid-gap">
+                @forelse ($latestProperties as $property)
+                    @include('front.components.card')
+                @empty
+                    <p>لا توجد عقارات متاحة.</p>
+                @endforelse
             </div>
         </div>
     </section>
+    ```
 
-    <!-- ===== قسم المدونة  ===== -->
-    <section class="blog-section">
+    <section class="blog-section section-padding bg-light-gray">
         <div class="container">
-
             <div class="blog-header">
-                <h2>المدونة</h2>
-                <a href="#" class="blog-back"> تفقد صفحة المدونة ←</a>
-                <p>اطلع على أحدث المواضيع و المقالات في المجال العقاري</p>
-            </div>
-            <div class="blog-content">
-                <div class="blog-col blog-col--large">
-                    <div class="blog-tags">
-                        <span class="tag">منزل فردي</span>
-                        <span class="tag">إيجار العقارات</span>
-                        <span class="tag">استثمار</span>
-                        <span class="tag">البيع والشراء</span>
-                        <span class="tag">مسبح</span>
+                <h2 class="section-title_blog">المدونة</h2>
+                <div class="more_tag">
+                    <p class="section-description">اطلع على أحدث المواضيع والمقالات في المجال العقاري</p>
+                    <div class="blog-controls">
+                        <a href="#" class="blog-back btn-link">
+                            <i class="fas fa-arrow-left"></i>
+                            تفقد صفحة المدونة
+                        </a>
                     </div>
-                    <div class="blog-item blog-item--large">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="مقال مميز">
-                    </div>
-                    <p class="blog-featured-text">
-                        اكتشف الفرص الاستثمارية الواعدة في سوق العقارات للعام المقبل.
-                    </p>
+                </div>
 
+            </div>
+
+            <div class="blog-content grid-gap">
+                <div class="blog-col blog-col--large main-card interactive-card">
+                    <div class="blog-item blog-item--large">
+                        <img src="../images/landing.jpg" alt="مقال مميز">
+                        <div class="blog-item__overlay">
+                            <div class="blog-item__content">
+                                <h3 class="blog-featured-title">اكتشف الفرص الاستثمارية الواعدة في سوق العقارات للعام
+                                    المقبل.</h3>
+                                <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="blog-col blog-col--small">
-                    <div class="blog-item">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="مقال صغير">
-                        <p>تعرف على كيفية العثور على منزل يناسب ميزانيتك واحتياجاتك.</p>
+                    <div class="blog-item main-card interactive-card"> <img src="../images/landing.jpg" alt="مقال صغير">
+                        <div class="blog-item__content">
+                            <h3 class="blog-item__title">تعرف على كيفية العثور على منزل يناسب ميزانيتك واحتياجاتك.</h3>
+                            <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                        </div>
                     </div>
-                    <div class="blog-item">
-                        <img src="{{ asset('assets/img/h.jpg') }}" alt="مقال صغير">
-                        <p>احصل على نصائح حول تأجير العقارات بشكل مريح وإدارتها بكفاءة.</p>
+                    <div class="blog-item main-card interactive-card"> <img src="../images/landing.jpg" alt="مقال صغير">
+                        <div class="blog-item__content">
+                            <h3 class="blog-item__title">احصل على نصائح حول تأجير العقارات بشكل مريح وإدارتها بكفاءة.</h3>
+                            <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
+
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('assets/css/home_styles.css') }}">
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectBoxes = document.querySelectorAll('.select-box');
+            const searchButton = document.querySelector('#search-btn');
+
+            // Log if select boxes are found
+            if (!selectBoxes.length) {
+                return;
+            }
+
+            // Read initial query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialFilters = {
+                city: urlParams.get('city') || 'all',
+                propertyType: urlParams.get('propertyType') || 'all',
+            };
+
+            // Initialize dropdowns with query parameters
+            selectBoxes.forEach((selectBox) => {
+                const filterName = selectBox.dataset.filterName;
+                const selectedValue = initialFilters[filterName];
+                selectBox.dataset.selectedValue = selectedValue;
+                const selectedOption = selectBox.querySelector('.selected-option');
+                const optionsContainer = selectBox.querySelector('.options-container');
+                const options = optionsContainer.querySelectorAll('.option');
+
+                if (!selectedOption || !optionsContainer) {
+
+                    return;
+                }
+
+                options.forEach((option) => {
+                    if (option.dataset.value === selectedValue) {
+                        selectedOption.textContent = option.textContent;
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+            });
+
+            // Handle dropdown selections
+            selectBoxes.forEach((selectBox, selectIndex) => {
+                const selectedOption = selectBox.querySelector('.selected-option');
+                const optionsContainer = selectBox.querySelector('.options-container');
+                const options = optionsContainer.querySelectorAll('.option');
+
+                if (!selectedOption || !optionsContainer) {
+
+                    return;
+                }
+
+                // Click handler for selected-option
+                selectedOption.addEventListener('click', () => {
+                    selectBoxes.forEach((otherSelectBox) => {
+                        if (otherSelectBox !== selectBox) {
+                            otherSelectBox.querySelector('.options-container').style
+                                .display = 'none';
+                            otherSelectBox.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    const isOpen = optionsContainer.style.display === 'block';
+                    optionsContainer.style.display = isOpen ? 'none' : 'block';
+                    selectBox.setAttribute('aria-expanded', !isOpen);
+                });
+
+                // Keyboard handler for select-box
+                selectBox.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        const isOpen = optionsContainer.style.display === 'block';
+                        optionsContainer.style.display = isOpen ? 'none' : 'block';
+                        selectBox.setAttribute('aria-expanded', !isOpen);
+                        if (!isOpen && options.length) {
+                            options[0].focus();
+                        }
+
+                    }
+                });
+
+                // Option click handler
+                options.forEach((option, index) => {
+                    option.addEventListener('click', () => {
+                        selectedOption.textContent = option.textContent;
+                        selectBox.dataset.selectedValue = option.dataset.value;
+                        options.forEach((opt) => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        optionsContainer.style.display = 'none';
+                        selectBox.setAttribute('aria-expanded', 'false');
+                        selectBox.focus();
+                    });
+
+                    // Keyboard handler for options
+                    option.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            selectedOption.textContent = option.textContent;
+                            selectBox.dataset.selectedValue = option.dataset.value;
+                            options.forEach((opt) => opt.classList.remove('selected'));
+                            option.classList.add('selected');
+                            optionsContainer.style.display = 'none';
+                            selectBox.setAttribute('aria-expanded', 'false');
+                            selectBox.focus();
+                        } else if (event.key === 'ArrowDown') {
+                            event.preventDefault();
+                            const nextOption = options[index + 1] || options[0];
+                            nextOption.focus();
+                        } else if (event.key === 'ArrowUp') {
+                            event.preventDefault();
+                            const prevOption = options[index - 1] || options[options
+                                .length - 1];
+                            prevOption.focus();
+                        } else if (event.key === 'Escape') {
+                            optionsContainer.style.display = 'none';
+                            selectBox.setAttribute('aria-expanded', 'false');
+                            selectBox.focus();
+                        }
+                    });
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (event) => {
+                    if (!selectBox.contains(event.target)) {
+                        optionsContainer.style.display = 'none';
+                        selectBox.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+
+            // Handle search button click with debouncing
+            if (searchButton) {
+                let debounceTimeout;
+                searchButton.addEventListener('click', () => {
+                    clearTimeout(debounceTimeout);
+                    debounceTimeout = setTimeout(() => {
+                        const filters = {};
+                        selectBoxes.forEach((selectBox) => {
+                            filters[selectBox.dataset.filterName] = selectBox.dataset
+                                .selectedValue || 'all';
+                        });
+                        const queryString = new URLSearchParams(filters).toString();
+                        window.location.href = `/properties?${queryString}`;
+                    }, 300);
+                });
+            } else {}
+        });
+    </script>
 @endpush
-
-

@@ -25,15 +25,6 @@
 </aside>
 
 @section('content')
-    <section class="hero-section">
-        <div class="hero-bg"></div>
-        <div class="hero-overlay"></div>
-
-        <div class="container hero-content">
-            <h1 class="hero-title">ابحث عن منزل أحلامك</h1>
-            <p class="hero-subtitle">آلاف العقارات تنتظرك، ابدأ البحث اليوم!</p>
-        </div>
-    </section>
     <div class="add">
         <div class="password-form-column">
             <section class="password-form-section">
@@ -77,10 +68,6 @@
                     </ul>
                 </div>
             </section>
-        </div>
-
-        <div class="illustration-column">
-            <img src="../images/undraw_access-account_aydp.png" alt="Hand holding phone with login screen">
         </div>
 
     </div>

@@ -6,79 +6,66 @@
     <link rel="stylesheet" href="{{ asset('assets/css/profile_styles.css') }}">
 @endpush
 
-<button class="chat-fab-simple" aria-label="الدردشات">
-    <i class="fas fa-comment-dots"></i>
-</button>
-
-<aside class="chat-sidebar-simple" aria-hidden="true">
-    <div class="chat-sidebar-header-simple">
-        <h3>الدردشات</h3>
-        <button class="chat-close-btn-simple" aria-label="إغلاق الدردشات">
-            <i class="fas fa-xmark"></i>
-        </button>
-    </div>
-    <ul class="chat-list-simple">
-    </ul>
-    <div class="chat-sidebar-footer-simple">
-        <a href="chats.html" class="all-chats-btn-simple">كل الدردشات</a>
-    </div>
-</aside>
-
 @section('content')
     <div class="add">
 
         <div class="form-container">
             <section class="account-section">
                 <div class="section-header">
-                    <h2>البيانات الشخصية</h2>
-                    <p class="section-description-inline"> يمكنك تعديل بياناتك الشخصية </p>
+                    <h2>تعديل الملف الشخصي</h2>
                 </div>
 
-                <div class="profile-pic-section">
-                    <div class="profile-pic-wrapper">
-                        <img id="profile-image-display" src="{{ asset('assets/img/ho.png') }}" alt="صورة المستخدم">
-                        <label for="profile-image-upload" class="upload-icon-wrapper">
-                            <i class="fas fa-camera"></i>
-                            <input type="file" id="profile-image-upload" accept="image/*" style="display: none;">
-                        </label>
+                <form action="{{ route('front.profile') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="profile-pic-section">
+                        <div class="profile-pic-wrapper">
+                            <img id="profile-image-display" src="{{ asset($user->image) ?? asset('assets/img/ho.png') }}"
+                                alt="صورة المستخدم">
+                            <label for="profile-image-upload" class="upload-icon-wrapper">
+                                <i class="fas fa-camera"></i>
+                                <input type="file" name="image" id="profile-image-upload" accept="image/*"
+                                    style="display: none;">
+                            </label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-grid">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="full-name">الاسم رباعي</label>
+                            <input type="text" name="name" id="full-name" value="{{ old('name', $user->name) }}">
+                            @error('name')
+                                <small style="color: red">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                    </div>
+
                     <div class="form-group">
-                        <label for="full-name">الاسم رباعي</label>
-                        <input type="text" id="full-name" value="Khaled Esam">
+                        <label for="phone-number">رقم الهاتف</label>
+                        <input type="text" name="phone" id="phone-number" value="{{ old('phone', $user->phone) }}">
+                        @error('phone')
+                            <small style="color: red">{{ $message }}</small>
+                        @enderror
                     </div>
-
-                </div>
-
-                <div class="form-grid">
+                    @dump($errors->all())
                     <div class="form-group">
-                        <label for="gender">الجنس</label>
-                        <select id="gender">
-                            <option value="male">ذكر</option>
-                            <option value="female">أنثى</option>
-                            <option value="other">أخرى</option>
-                        </select>
+                        <label for="email-address">الإيميل</label>
+                        <input type="email" name="email" id="email-address" value="{{ old('email', $user->email) }}">
+                        @error('email')
+                            <small style="color: red">{{ $message }}</small>
+                        @enderror
                     </div>
+
                     <div class="form-group">
-                        <label for="date-of-birth">تاريخ الميلاد</label>
-                        <input type="date" id="date-of-birth">
-                        <!-- <i class="far fa-calendar-alt date-icon"></i> -->
+                        <label for="address">العنوان</label>
+                        <input type="text" name="address" id="address" value="{{ old('address', $user->address) }}">
+                        @error('address')
+                            <small style="color: red">{{ $message }}</small>
+                        @enderror
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="phone-number">رقم الهاتف</label>
-                    <input type="text" id="phone-number" value="+972596589274">
-                </div>
-
-                <div class="form-group">
-                    <label for="email-address">الإيميل</label>
-                    <input type="email" id="email-address" value="john.doe@gmail.com">
-                </div>
-
-                <button type="submit" class="edit-btn">تعديل</button>
+                    <button type="submit" class="edit-btn">تعديل</button>
+                </form>
             </section>
         </div>
         <div class="side-info">

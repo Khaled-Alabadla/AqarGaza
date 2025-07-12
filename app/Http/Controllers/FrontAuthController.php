@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class FrontAuthController extends Controller
 {
@@ -28,14 +29,14 @@ class FrontAuthController extends Controller
         /** @var App/Models/User $user */
         $user = Auth::user();
 
-        if ($user->password != $request->password) {
+        if (!Hash::check($request->password, $user->password)) {
             return redirect()->back()->withErrors([
                 'password' => 'كلمة المرور القديمة خاطئة'
             ]);
         }
 
         $user->update([
-            'password' => $request->new_password
+            'password' => Hash::make($request->new_password)
         ]);
 
 

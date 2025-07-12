@@ -51,6 +51,7 @@ Route::get('/properties/{property}', [FrontPropertiesController::class, 'show'])
 
 // Profile
 Route::get('/profile', [ProfileController::class, 'index'])->name('front.profile');
+Route::post('/profile', [ProfileController::class, 'store']);
 // End Profile
 
 // Contact

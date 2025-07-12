@@ -7,6 +7,12 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/property_details_styles.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/favorite_styles.css') }}">
+
+    <style>
+        .hero-bg {
+            background-image: url({{ asset($property->main_image) }})
+        }
+    </style>
 @endpush
 
 @section('content')
