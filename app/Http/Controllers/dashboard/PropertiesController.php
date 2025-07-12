@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PropertiesController extends Controller
 {
@@ -66,7 +67,15 @@ class PropertiesController extends Controller
     {
         Gate::authorize('properties.force_delete');
 
+        $property = Property::onlyTrashed()->findOrFail($id);
+
         Property::onlyTrashed()->find($id)->forceDelete();
+
+        foreach ($property->images as $image) {
+            Storage::disk('public_uploads')->delete($image);
+        }
+
+        Storage::disk('public_uploads')->delete($property->main_image);
 
         return redirect()->route('dashboard.properties.index')->with('success', 'تم الحذف بنجاح');
     }

@@ -144,6 +144,24 @@
                 </ul>
             </li>
         @endcan
+        @can('blogs.display')
+            <li class="side-item side-item-category">المدونة</li>
+            <li class="slide">
+                <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . ($page = '#')) }}">
+                    <i class="fas fa-hands-helping"></i>
+                    <span class="side-menu__label">المدونة</span><i class="angle fe fe-chevron-down"></i></a>
+                <ul class="slide-menu">
+
+                    @can('blogs.index')
+                        <li><a class="slide-item" href="{{ route('dashboard.blogs.index') }}">عرض جميع المنشورات</a>
+                        </li>
+                    @endcan
+                    @can('blogs.create')
+                        <li><a class="slide-item" href="{{ route('dashboard.blogs.create') }}">إضافة منشور</a></li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
 
         @can('queries.display')
             <li class="side-item side-item-category">الاستعلامات والتقارير</li>

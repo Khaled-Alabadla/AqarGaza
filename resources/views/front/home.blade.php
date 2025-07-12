@@ -161,30 +161,27 @@
             <div class="blog-content grid-gap">
                 <div class="blog-col blog-col--large main-card interactive-card">
                     <div class="blog-item blog-item--large">
-                        <img src="../images/landing.jpg" alt="مقال مميز">
+                        <img src="{{ asset($mainBlog->image) }}" alt="مقال مميز">
                         <div class="blog-item__overlay">
                             <div class="blog-item__content">
-                                <h3 class="blog-featured-title">اكتشف الفرص الاستثمارية الواعدة في سوق العقارات للعام
-                                    المقبل.</h3>
+                                <h3 class="blog-featured-title"> {{ $mainBlog->title }} </h3>
                                 <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="blog-col blog-col--small">
-                    <div class="blog-item main-card interactive-card"> <img src="../images/landing.jpg" alt="مقال صغير">
-                        <div class="blog-item__content">
-                            <h3 class="blog-item__title">تعرف على كيفية العثور على منزل يناسب ميزانيتك واحتياجاتك.</h3>
-                            <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                @foreach ($blogs as $blog)
+                    <div class="blog-col blog-col--small">
+                        <div class="blog-item main-card interactive-card"> <img src="{{ asset($blog->image) }}"
+                                alt="مقال صغير">
+                            <div class="blog-item__content">
+                                <h3 class="blog-item__title"> {{ $blog->title }} </h3>
+                                <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                            </div>
                         </div>
+
                     </div>
-                    <div class="blog-item main-card interactive-card"> <img src="../images/landing.jpg" alt="مقال صغير">
-                        <div class="blog-item__content">
-                            <h3 class="blog-item__title">احصل على نصائح حول تأجير العقارات بشكل مريح وإدارتها بكفاءة.</h3>
-                            <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>

@@ -67,7 +67,7 @@ class PropertiesController extends Controller
             }
         });
 
-        $properties = $query->paginate(12);
+        $properties = $query->with('user', 'zone', 'city')->paginate(12);
 
         /** @var App/Model/User */
         $user = Auth::user();

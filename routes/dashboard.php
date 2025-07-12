@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dashboard\AdminController;
 use App\Http\Controllers\Dashboard\AdminsController;
+use App\Http\Controllers\Dashboard\BlogsController;
 use App\Http\Controllers\Dashboard\ContactMessagesController;
 use App\Http\Controllers\Dashboard\PagesController;
 use App\Http\Controllers\Dashboard\PropertiesController;
@@ -84,8 +85,11 @@ Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('das
     Route::get('users/reset-password', [SettingsController::class, 'reset_password'])->name('users.reset_password');
 
     Route::post('users/reset-password', [SettingsController::class, 'reset_password_check'])->name('users.reset_password_check');
-
     // End Settings
+
+    // Blogs
+    Route::resource('blogs', BlogsController::class);
+    // End Blogs
 
     // Layout
     Route::get('{page?}', [AdminController::class, 'redirect'])->name('dashboard');

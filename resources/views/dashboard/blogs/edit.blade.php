@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.master')
-@section('title', 'إضافة صفحة جديدة')
+@section('title', 'تعديل منشور')
 
 @section('css')
     <!-- Internal Select2 css -->
@@ -28,8 +28,8 @@
     <div class="breadcrumb-header justify-content-between align-items-center">
         <div class="my-auto">
             <div class="d-flex">
-                <h4 class="content-title mb-0 my-auto">الصفحات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ إضاقة
-                    صقحة</span>
+                <h4 class="content-title mb-0 my-auto">العقارات</h4><span class="text-muted mt-1 tx-13 mr-2 mb-0">/ تعديل
+                    عقار</span>
             </div>
         </div>
     </div>
@@ -50,37 +50,30 @@
                             </ul>
                         </div>
                     @endif
-                    <form class="form-horizontal" action="{{ route('dashboard.pages.store') }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('dashboard.blogs.update', $blog->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group ">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label class="form-label">اسم الصفحة</label>
-                                </div>
-                                <div class="col-md-9">
-                                    <input type="text" value="{{ old('name', '') }}" class="form-control" name="name">
-                                </div>
-                            </div>
-                        </div>
+                        @method('PUT')
                         <div class="form-group ">
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="form-label">العنوان</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" value="{{ old('title', '') }}" class="form-control"
+                                    <input type="text" value="{{ old('title', $blog->title) }}" class="form-control"
                                         name="title">
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group ">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="form-label">العنوان الفرعي</label>
+                                    <label class="form-label">الصورة</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" value="{{ old('subtitle', '') }}" class="form-control"
-                                        name="subtitle">
+                                    <input type="file" class="form-control" name="image">
+                                    <img width="120" src="{{ asset($blog->image) }}" alt="">
                                 </div>
                             </div>
                         </div>
@@ -91,7 +84,7 @@
                                     <label class="form-label">المحتوى</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <textarea name="content" id="content" class="page-content form-control" rows="3"> </textarea>
+                                    <textarea id="content" name="content" class="form-control" placeholder="قم بكتابة المحتوى" rows="5">{{ $blog->content }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -106,17 +99,6 @@
     </div>
 @endsection
 @section('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.9.1/tinymce.min.js"
-        integrity="sha512-09JpfVm/UE1F4k8kcVUooRJAxVMSfw/NIslGlWE/FGXb2uRO1Nt4BXAJ3LxPqNbO3Hccdu46qaBPp9wVpWAVhA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        tinymce.init({
-            selector: '#content', // Replace this CSS selector to match the placeholder element for TinyMCE
-            plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion markdown math importword exportword exportpdf',
-            toolbar: 'undo redo | accordion accordionremove | importword exportword exportpdf | math | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
-            menubar: 'file edit view insert format tools table help'
-        });
-    </script>
     <script>
         // Handle Select All functionality
         const selectAllCheckbox = document.getElementById('select-all');
@@ -168,7 +150,7 @@
                         console.log(employeeName);
 
                     } else {
-                        item.style.setProperty('display', 'none',
+                        item.style.setblog('display', 'none',
                             'important'); // Hide the item with !important
                     }
                 });
@@ -195,6 +177,7 @@
     <script src="{{ URL::asset('assets/plugins/pickerjs/picker.min.js') }}"></script>
     <!-- Internal form-elements js -->
     <script src="{{ URL::asset('assets/js/form-elements.js') }}"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.9.1/tinymce.min.js"
         integrity="sha512-09JpfVm/UE1F4k8kcVUooRJAxVMSfw/NIslGlWE/FGXb2uRO1Nt4BXAJ3LxPqNbO3Hccdu46qaBPp9wVpWAVhA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -206,5 +189,6 @@
             menubar: 'file edit view insert format tools table help'
         });
     </script>
+
 
 @endsection

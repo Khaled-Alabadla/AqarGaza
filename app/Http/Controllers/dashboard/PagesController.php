@@ -26,16 +26,9 @@ class PagesController extends Controller
         return view('dashboard.pages.create');
     }
 
-    public function store(Request $request)
+    public function store(PageRequest $request)
     {
-        $request->validate([
-            'name' => 'required'
-        ], [
-            'name.required' => 'الاسم مطلوب'
-        ]);
-
         Page::create($request->except('_token'));
-
 
         return redirect()->route('dashboard.pages.index')->with('success', 'تمت الإضافة بنجاح');
     }

@@ -219,7 +219,7 @@
                             @enderror
                         </div>
                         <div class="form-group" id="bedrooms-group"
-                            style="display: {{ old('category_id') &&in_array(old('category_id'),\App\Models\Category::whereIn('name', ['منزل', 'شقة', 'شاليه'])->pluck('id')->toArray())? 'block': 'none' }};">
+                            style="display: {{ old('category_id') &&in_array(old('category_id'),\App\Models\Category::whereIn('name', ['منزل', 'شقة', 'شاليه', 'فيلا'])->pluck('id')->toArray())? 'block': 'none' }};">
                             <label for="rooms">عدد الغرف</label>
                             <input type="number" id="rooms" name="rooms" value="{{ old('rooms') }}"
                                 placeholder="أدخل عدد الغرف" min="0">
