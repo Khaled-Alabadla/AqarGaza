@@ -19,10 +19,6 @@
     @include('front.components.favorites')
     @include('front.components.chat')
 
-    @include('layouts.hero', [
-        'title' => $page->title,
-        'description' => $page->subtitle,
-    ])
     <div class="page-header">
         <h1>{{ $property->title }}</h1>
     </div>
@@ -73,20 +69,26 @@
                 </div>
             </section>
 
-            <section class="property-images card">
-                <h2>صور إضافية</h2>
-                <div class="main-image-container">
-                    <img id="main-property-img"
-                        src="{{ $property->images->first() ? asset($property->images->first()->image_path) : '' }}"
-                        alt="Property Main Image">
-                </div>
-                <div class="thumbnails-container">
-                    @foreach ($property->images as $image)
-                        <img class="thumbnail {{ $loop->first ? 'active' : '' }}" src="{{ asset($image->image_path) }}"
-                            alt="Thumbnail {{ $loop->iteration }}" data-full-src="{{ asset($image->image_path) }}">
-                    @endforeach
-                </div>
-            </section>
+            @if ($property->images->count() > 0)
+                <section class="property-images card">
+                    <h2>صور إضافية</h2>
+                    <div class="main-image-container">
+                        <img id="main-property-img"
+                            src="{{ $property->images->first() ? asset($property->images->first()->image_path) : '' }}"
+                            alt="Property Main Image">
+                    </div>
+                    <div class="thumbnails-container">
+
+                        @foreach ($property->images as $image)
+                            <img class="thumbnail {{ $loop->first ? 'active' : '' }}"
+                                src="{{ asset($image->image_path) }}" alt="Thumbnail {{ $loop->iteration }}"
+                                data-full-src="{{ asset($image->image_path) }}">
+                        @endforeach
+
+                    </div>
+                </section>
+            @endif
+
         </div>
 
         <div class="side-info-column">

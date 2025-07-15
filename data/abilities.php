@@ -32,10 +32,6 @@ return [
     'properties.restore' => 'استعادة العقارات المحذوفة',
     'properties.force_delete' => 'حذف نهائي للعقارات المحذوفة',
 
-    'queries.display' => 'عرض قسم الاستعلامات والتقارير',
-    'queries.users' => 'عرض قسم الاستعلامات والتقارير الخاص بالمستخدمين',
-    'queries.properties' => 'عرض قسم الاستعلامات والتقارير الخاص بالعقارات',
-
     'website_settings.display' => 'عرض قسم إعدادات الموقع',
     'website_settings.index' => 'عرض قائمة إعدادات الموقع',
     'website_settings.update' => 'تعديل قائمة إعدادات الموقع',
@@ -46,6 +42,11 @@ return [
     'contacts.index' => 'عرض قائمة الرسائل',
     'contacts.show' => 'فتح الرسائل',
     'contacts.reply' => 'الرد على الرسائل',
-    'contacts.delete' => 'خذف الرسائل'
+    'contacts.delete' => 'خذف الرسائل',
 
+    'blogs.display' => 'عرض قسم المدونة',
+    'blogs.index' => 'عرض جميع المنشورات',
+    'blogs.show' => 'عرض تفاصيل منشور معين',
+    'blogs.update' => 'نعديل المنشورات',
+    'blogs.delete' => 'حذف المنشورات',
 ];

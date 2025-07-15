@@ -94,12 +94,12 @@
                                 </div>
                             </div>
                         </div>
-                        <a class="dropdown-item" href="{{ route('dashboard.users.edit', Auth::user()->id) }}">
+                        <a class="dropdown-item" href="{{ route('front.profile') }}">
                             <i class="bx bxs-inbox"></i>
 
                             تعديل الملف الشخصي
                         </a>
-                        <a class="dropdown-item" href="{{ route('dashboard.users.reset_password', Auth::id()) }}">
+                        <a class="dropdown-item" href="{{ route('front.auth.edit_password') }}">
                             <i class="bx bx-cog"></i>
 
                             تعديل كلمة المرور

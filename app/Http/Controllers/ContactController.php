@@ -37,7 +37,7 @@ class ContactController extends Controller
             'phone' => $request->phone
         ]);
 
-        flash('تم إرسال الرسالة');
+        flash()->success('تم إرسال الرسالة');
 
         return redirect()->back();
     }

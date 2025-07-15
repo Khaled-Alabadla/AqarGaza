@@ -63,12 +63,8 @@
             <div class="info-card email-card">
                 <i class="far fa-envelope"></i>
                 <h3>معلومات التواصل عبر البريد الإلكتروني</h3>
-                <p class="email-address">bilalradwan@gmail.com</p>
+                <p class="email-address">aqar-gaza@gmail.com</p>
             </div>
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script src=".{{ asset('assets/js/contact.js') }}"></script>
-@endpush

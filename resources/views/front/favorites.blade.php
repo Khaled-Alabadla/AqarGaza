@@ -1,15 +1,13 @@
 @extends('layouts.front')
 
-@section('title', 'العقارات المفضلة لديك')
+@section('title', $page->title)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/favorites_styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/properties_styles.css') }}">
 @endpush
 
-
-
 @section('content')
-
     @include('front.components.chat')
     @include('layouts.hero', [
         'title' => $page->title,
@@ -23,12 +21,13 @@
                     <p>هنا تجد جميع العقارات التي أعجبتك وقمت بحفظها للمراجعة لاحقاً.</p>
                 </div>
                 <div class="property-grid">
+                    <!-- Populated by JavaScript -->
                 </div>
-                <div class="pagination">
-                </div>
-                <p id="no-favorites-message" class="no-favorites-message" style="display: none;">
-                    لا توجد عقارات في المفضلة بعد. ابدأ بإضافة بعض العقارات!
+                <p id="no-favorites-message" style="display: none;">لا توجد عقارات في المفضلة بعد. ابدأ بإضافة بعض العقارات!
                 </p>
+                <div class="pagination">
+                    <!-- Populated by JavaScript -->
+                </div>
             </div>
         </section>
     </main>

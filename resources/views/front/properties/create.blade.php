@@ -1,6 +1,6 @@
 @extends('layouts.front')
 
-@section('title', 'إضافة عقار جديد')
+@section('title', $page->title)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/create_property_styles.css') }}">
@@ -147,7 +147,7 @@
                     <div class="error general-error">
                         <ul>
                             @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                                <p>{{ $error }}</p>
                             @endforeach
                         </ul>
                     </div>
@@ -163,11 +163,7 @@
                         <label for="property-title">وصف العقار</label>
                         <input type="text" id="property-title" name="property-title" value="{{ old('property-title') }}"
                             placeholder="ادخل وصف مختصر للعقار">
-                        @error('property-title')
-                            <span class="error">{{ $message }}</span>
-                        @else
-                            <span class="error" id="property-title-error" style="display: none;"></span>
-                        @enderror
+
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
@@ -179,11 +175,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('city_id')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="city_id-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                         <div class="form-group">
                             <label for="zone_id">المنطقة</label>
@@ -197,11 +189,7 @@
                                     @endforeach
                                 @endif
                             </select>
-                            @error('zone_id')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="zone_id-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                         <div class="form-group">
                             <label for="category_id">نوع العقار</label>
@@ -212,33 +200,21 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('category_id')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="category_id-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                         <div class="form-group" id="bedrooms-group"
                             style="display: {{ old('category_id') &&in_array(old('category_id'),\App\Models\Category::whereIn('name', ['منزل', 'شقة', 'شاليه', 'فيلا'])->pluck('id')->toArray())? 'block': 'none' }};">
                             <label for="rooms">عدد الغرف</label>
                             <input type="number" id="rooms" name="rooms" value="{{ old('rooms') }}"
                                 placeholder="أدخل عدد الغرف" min="0">
-                            @error('rooms')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="rooms-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                         <div class="form-group" id="bathrooms-group"
                             style="display: {{ old('category_id') &&in_array(old('category_id'),\App\Models\Category::whereIn('name', ['منزل', 'شقة', 'شاليه'])->pluck('id')->toArray())? 'block': 'none' }};">
                             <label for="bathrooms">عدد الحمامات</label>
                             <input type="number" id="bathrooms" name="bathrooms" value="{{ old('bathrooms') }}"
                                 placeholder="أدخل عدد الحمامات" min="0">
-                            @error('bathrooms')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="bathrooms-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                     </div>
 
@@ -252,11 +228,7 @@
                                 @checked(old('property-type') == 'sale')>
                             <label for="sale">بيع</label>
                         </div>
-                        @error('property-type')
-                            <span class="error">{{ $message }}</span>
-                        @else
-                            <span class="error" id="property-type-error" style="display: none;"></span>
-                        @enderror
+
                     </div>
 
                     <div class="form-grid">
@@ -264,21 +236,13 @@
                             <label for="property-area">مساحة العقار</label>
                             <input type="number" id="property-area" name="property-area"
                                 value="{{ old('property-area') }}" placeholder="أدخل بالمتر المربع">
-                            @error('property-area')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="property-area-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                         <div class="form-group">
                             <label for="property-price">سعر العقار</label>
                             <input type="number" id="property-price" name="property-price"
                                 value="{{ old('property-price') }}" placeholder="أدخل السعر">
-                            @error('property-price')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="property-price-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                         <div class="form-group">
                             <label for="property-currency">العملة</label>
@@ -287,11 +251,7 @@
                                 <option value="ILS" @selected(old('property-currency', 'ILS') == 'ILS')>شيكل</option>
                                 <option value="JOD" @selected(old('property-currency') == 'JOD')>دينار</option>
                             </select>
-                            @error('property-currency')
-                                <span class="error">{{ $message }}</span>
-                            @else
-                                <span class="error" id="property-currency-error" style="display: none;"></span>
-                            @enderror
+
                         </div>
                     </div>
                 </section>
@@ -308,32 +268,20 @@
                         <label for="detailed-location">العنوان بالتفصيل</label>
                         <input type="text" id="detailed-location" name="detailed-location"
                             value="{{ old('detailed-location') }}" placeholder="ادخل العنوان التفصيلي">
-                        @error('detailed-location')
-                            <span class="error">{{ $message }}</span>
-                        @else
-                            <span class="error" id="detailed-location-error" style="display: none;"></span>
-                        @enderror
+
                     </div>
 
                     <div class="form-group">
                         <label for="property-description">وصف تفاصيل العقار</label>
                         <textarea id="property-description" name="property-description" rows="5" placeholder="ادخل وصف تفصيلي للعقار">{{ old('property-description') }}</textarea>
-                        @error('property-description')
-                            <span class="error">{{ $message }}</span>
-                        @else
-                            <span class="error" id="property-description-error" style="display: none;"></span>
-                        @enderror
+
                     </div>
 
                     <div class="form-group">
                         <label for="owner-phone">هاتف صاحب العقار</label>
                         <input type="text" id="owner-phone" name="owner-phone"
                             value="{{ old('owner-phone', auth()->user()->phone ?? '') }}">
-                        @error('owner-phone')
-                            <span class="error">{{ $message }}</span>
-                        @else
-                            <span class="error" id="owner-phone-error" style="display: none;"></span>
-                        @enderror
+
                     </div>
                 </section>
                 <section class="form-section">
@@ -409,7 +357,6 @@
         @endsection
 
         @push('scripts')
-            <script src="{{ asset('assets/js/create_property.js') }}"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const form = document.getElementById('property-form');
@@ -561,9 +508,9 @@
                     // Load zones based on selected city
                     citySelect.addEventListener('change', function() {
                         const cityId = this.value;
+                        console.log(cityId);
                         zoneSelect.innerHTML = '<option value="">اختر المنطقة</option>';
                         zoneSelect.disabled = !cityId;
-                        document.getElementById('zone_id-error').style.display = 'none';
 
                         if (cityId) {
                             fetch(`/api/zones/${cityId}`, {

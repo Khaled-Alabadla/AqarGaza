@@ -82,7 +82,7 @@
                                     <label class="form-label">اسم الموقع</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" value="{{ old('site_name', $settings['site_name']) }}"
+                                    <input type="text" value="{{ old('site_name', $settings['site_name'] ?? '') }}"
                                         class="form-control" name="site_name">
                                 </div>
 
@@ -97,7 +97,8 @@
                                     <input type="file" class="form-control" name="site_logo">
                                     @if ($settings['site_logo'] ?? '')
                                         <div id="site-logo">
-                                            <img width="90" src="{{ asset($settings['site_logo']) }}" alt="">
+                                            <img width="90" src="{{ asset($settings['site_logo'] ?? '') }}"
+                                                alt="">
                                             <span id="delete-logo">X</span>
                                         </div>
                                     @endif
@@ -110,7 +111,7 @@
                                     <label class="form-label">فيسبوك</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" value="{{ old('facebook', $settings['facebook']) }}"
+                                    <input type="text" value="{{ old('facebook', $settings['facebook'] ?? '') }}"
                                         class="form-control" name="facebook">
                                 </div>
                             </div>
@@ -121,7 +122,7 @@
                                     <label class="form-label">تويتر</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" value="{{ old('twitter', $settings['twitter']) }}"
+                                    <input type="text" value="{{ old('twitter', $settings['twitter'] ?? '') }}"
                                         class="form-control" name="twitter">
                                 </div>
                             </div>
@@ -132,7 +133,7 @@
                                     <label class="form-label">حقوق النشر</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <input type="text" value="{{ old('copyright', $settings['copyright']) }}"
+                                    <input type="text" value="{{ old('copyright', $settings['copyright'] ?? '') }}"
                                         class="form-control" name="copyright">
                                 </div>
                             </div>

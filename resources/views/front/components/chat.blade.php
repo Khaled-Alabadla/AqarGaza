@@ -10,8 +10,9 @@
         </button>
     </div>
     <ul class="chat-list-simple">
+        <!-- Populated by JavaScript -->
     </ul>
     <div class="chat-sidebar-footer-simple">
-        <a href="chats.html" class="all-chats-btn-simple">كل الدردشات</a>
+        <a href="{{ route('chat.index') }}" class="all-chats-btn-simple">كل الدردشات</a>
     </div>
 </aside>

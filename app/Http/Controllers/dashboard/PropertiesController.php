@@ -25,7 +25,7 @@ class PropertiesController extends Controller
     {
         Gate::authorize('properties.show');
 
-        $property = Property::with('user')->latest()->findOrFail($id);
+        $property = Property::with('user', 'images')->latest()->findOrFail($id);
 
         $price = $property->price . ' ' .  ($property->currency == 'ILS' ? 'شيكل' : 'دولار');
 

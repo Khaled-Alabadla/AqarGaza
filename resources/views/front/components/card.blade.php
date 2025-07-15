@@ -2,11 +2,13 @@
     <div class="property-card">
         <div class="property-image">
             <img src="{{ asset($property->main_image) }}" alt="Property Image">
-            <button class="favorite-btn"><i class="far fa-heart"></i></button>
+            <button class="favorite-btn" data-id="{{ $property->id }}">
+                <i class="{{ $property->is_favorited ? 'fas' : 'far' }} fa-heart"></i>
+            </button>
         </div>
         <div class="property-info">
             <h2 class="property-name">{{ $property->title }}</h2>
-            <span class="property-price">{{ $property->price }}
+            <span class="property-price">{{ number_format($property->price, 2) }}
                 @if ($property->currency == 'USD')
                     دولار
                 @elseif ($property->currency == 'JOD')
@@ -23,7 +25,6 @@
                 @endif
             </p>
             <p class="property-location">{{ $property->city->name }}، {{ $property->zone->name }}</p>
-
             <div class="property-features">
                 @if ($property->rooms)
                     <div><i class="fas fa-bed"></i> <span>{{ $property->rooms }} غرف</span></div>

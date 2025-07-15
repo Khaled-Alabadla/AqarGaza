@@ -1694,3 +1694,27 @@ body {
         gap: 10px;
     }
 }
+#no-favorites-message {
+    text-align: center;
+    color: #555;
+}
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: #fff;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.toast-notification.show {
+    opacity: 1;
+}
+.toast-success {
+    background-color: #28a745;
+}
+.toast-error {
+    background-color: #dc3545;
+}

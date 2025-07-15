@@ -1,66 +1,53 @@
-<!DOCTYPE html>
-<html lang="ar">
+@extends('layouts.front')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أهلا بكم في عقاري</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+@section('title', 'تسجيل الدخول')
+
+@push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/login_styles.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    {{-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> --}}
+@endpush
 
-</head>
-
-<body>
-    <div class="container">
+@section('content')
+    <div class="login_box">
         <div class="form-section">
             <h1 class="welcome-text">أهلا بكم في عقاري</h1>
 
             <div class="social-login">
-                <a href="{{ route('auth.redirect', 'google') }}" class="social-login-button google-button"
-                    style="text-decoration: none">
-                    <div class="icon-wrapper google">
+                <button class="social-login-button google-button">
+                    <a href="{{ route('auth.redirect', 'google') }}" class="icon-wrapper google">
                         <img style="max-width: 120%;" src="{{ asset('assets/img/google.png') }}" alt="google"
                             class="social-image" />
-                    </div>
+                    </a>
                     <span class="google"> تسجيل الدخول عن طريق جوجل
                     </span>
-                </a>
-                {{-- <a href="{{ route('auth.redirect', 'facebook') }}" class="social-login-button facebook-button">
-                    <div class="icon-wrapper">
-                        <img src="{{ asset('assets/img/facebook.png') }}" alt="facebook" class="social-image" />
-                    </div>
-                    تسجيل الدخول عن طريق فيسبوك
-                </a> --}}
+                </button>
+
             </div>
 
             <div class="or-divider">أو</div>
 
-            <form class="login-form" method="POST" action="{{ route('login') }}">
+            <form class="login-form" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="form-group">
                     <label for="email">البريد الإلكتروني</label>
-                    <div class="field-container">
+                    <div class="field-login_box">
                         <input class="@error('email') is-invalid @enderror" type="email" id="email" name="email"
                             placeholder="example@gmail.com" required />
                     </div>
                     @error('email')
-                        <small class="text-danger">{{ $message }}</small>
+                        <small style="color: red; margin-top:5px">{{ $message }}</small>
                     @enderror
                 </div>
 
                 <div class="form-group">
                     <label for="password">كلمة المرور</label>
-                    <div class="field-container">
-                        <input type="password" class="@error('email') is-invalid @enderror" id="password"
+                    <div class="field-login_box">
+                        <input class="@error('password') is-invalid @enderror" type="password" id="password"
                             name="password" placeholder="••••••••" required />
                     </div>
                     @error('password')
-                        <small class="text-danger">{{ $message }}</small>
+                        <small style="color: red; margin-top:5px">{{ $message }}</small>
                     @enderror
-
                 </div>
 
                 <div class="extra-options">
@@ -81,10 +68,7 @@
         </div>
 
         <div class="illustration-section">
-            <img src="{{ asset('assets/img/login.png') }}" alt="صورة توضيحية" class="illustration-image" />
+            <img src="{{ asset('assets/img/landing.jpg') }}" alt="صورة توضيحية" class="illustration-image" />
         </div>
     </div>
-    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-</body>
-
-</html>
+@endsection

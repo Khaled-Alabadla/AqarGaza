@@ -1,6 +1,6 @@
 @extends('layouts.front')
 
-@section('title', 'البيانات الشخصية')
+@section('title', $page->title)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/profile_styles.css') }}">
@@ -47,7 +47,6 @@
                             <small style="color: red">{{ $message }}</small>
                         @enderror
                     </div>
-                    @dump($errors->all())
                     <div class="form-group">
                         <label for="email-address">الإيميل</label>
                         <input type="email" name="email" id="email-address" value="{{ old('email', $user->email) }}">

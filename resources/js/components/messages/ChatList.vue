@@ -80,12 +80,12 @@ export default defineComponent({
         },
     },
     setup() {
-        const localChats = ref<Chat[]>([]);
-        const filteredChats = ref<Chat[]>([]);
-        const loading = ref<boolean>(true);
-        const error = ref<string | null>(null);
-        const isSidebarOpen = ref<boolean>(false);
-        const searchTerm = ref<string>('');
+        const localChats = ref < Chat[] > ([]);
+        const filteredChats = ref < Chat[] > ([]);
+        const loading = ref < boolean > (true);
+        const error = ref < string | null > (null);
+        const isSidebarOpen = ref < boolean > (false);
+        const searchTerm = ref < string > ('');
 
         return {
             localChats,

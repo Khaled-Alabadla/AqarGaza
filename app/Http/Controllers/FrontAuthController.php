@@ -40,7 +40,7 @@ class FrontAuthController extends Controller
         ]);
 
 
-        flash('تم تعديل كلمة المرور بنجاح');
+        flash()->success('تم تعديل كلمة المرور بنجاح');
 
         return redirect()->back();
     }

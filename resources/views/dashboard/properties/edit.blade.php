@@ -48,7 +48,8 @@
                         </div>
                     @endif
                     {{-- <div class="mb-4 main-content-label">Personal Information</div> --}}
-                    <form class="form-horizontal" action="{{ route('dashboard.properties.update', $property->id) }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('dashboard.properties.update', $property->id) }}"
+                        method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group ">
@@ -136,8 +137,7 @@
                                             class="form-check d-flex align-items-center justify-content-between gap-3 mb-3 border-bottom pb-2">
                                             <!-- Checkbox Input -->
                                             <input class="form-check-input user-checkbox" type="checkbox"
-                                                id="user-{{ $user->id }}"
-                                                name="users[{{ $user->id }}][selected]"
+                                                id="user-{{ $user->id }}" name="users[{{ $user->id }}][selected]"
                                                 value="{{ $user->id }}" placeholder="الكمية"
                                                 data-quantity-id="quantity-{{ $user->id }}"
                                                 @checked($property->distributes->contains('user_id', $user->id))>
@@ -173,24 +173,10 @@
     </div>
 @endsection
 @section('js')
-      <!--Internal  Datepicker js -->
-      <script src="{{ URL::asset('assets/plugins/jquery-ui/ui/widgets/datepicker.js') }}"></script>
-      <!--Internal  jquery.maskedinput js -->
-      <script src="{{ URL::asset('assets/plugins/jquery.maskedinput/jquery.maskedinput.js') }}"></script>
-      <!--Internal  spectrum-colorpicker js -->
-      <script src="{{ URL::asset('assets/plugins/spectrum-colorpicker/spectrum.js') }}"></script>
-      <!-- Internal Select2.min js -->
-      <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-      <!--Internal Ion.rangeSlider.min js -->
-      <script src="{{ URL::asset('assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js') }}"></script>
-      <!--Internal  jquery-simple-datetimepicker js -->
-      <script src="{{ URL::asset('assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js') }}"></script>
-      <!-- Ionicons js -->
-      <script src="{{ URL::asset('assets/plugins/jquery-simple-datetimepicker/jquery.simple-dtpicker.js') }}"></script>
-      <!--Internal  pickerjs js -->
-      <script src="{{ URL::asset('assets/plugins/pickerjs/picker.min.js') }}"></script>
-      <!-- Internal form-elements js -->
-      <script src="{{ URL::asset('assets/js/form-elements.js') }}"></script>
+
+    <!-- Internal Select2.min js -->
+    <script src="{{ URL::asset('assets/plugins/select2/js/select2.min.js') }}"></script>
+
     <script>
         let checkboxes = document.querySelectorAll('.user-checkbox');
         checkboxes.forEach((checkbox) => {
@@ -209,7 +195,7 @@
         let quantityInputs = document.querySelectorAll('.user-quantity');
         quantityInputs.forEach((input) => {
 
-            if(input.value != '0') {
+            if (input.value != '0') {
                 input.removeAttribute('readonly')
             }
         })

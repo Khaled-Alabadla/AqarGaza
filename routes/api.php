@@ -7,6 +7,7 @@ use App\Http\Controllers\api\NewPasswordController;
 use App\Http\Controllers\api\PasswordResetController;
 use App\Http\Controllers\api\VerifyEmailController;
 use App\Http\Controllers\api\ZoneController;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,8 +35,6 @@ Route::get('/zones/{cityId}', [ZoneController::class, 'getZonesByCity']);
 Route::middleware(['auth:sanctum',])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
-
 
     Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, 'verify'])
         ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])

@@ -54,20 +54,11 @@
                                         <div class=" col-xl-5 col-lg-12 col-md-12">
                                             <div class="preview-pic tab-content">
                                                 <div class="tab-pane active" id="pic-1"><img
-                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-5.png"
-                                                        alt="image"></div>
-                                                <div class="tab-pane" id="pic-2"><img
-                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-2.png"
-                                                        alt="image"></div>
-                                                <div class="tab-pane" id="pic-3"><img
-                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-3.png"
-                                                        alt="image"></div>
-                                                <div class="tab-pane" id="pic-4"><img
-                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-4.png"
-                                                        alt="image"></div>
-                                                <div class="tab-pane" id="pic-5"><img
-                                                        src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-1.png"
-                                                        alt="image"></div>
+                                                        src="{{ asset($property->main_image) }}" alt="image"></div>
+                                                @foreach ($property->images as $image)
+                                                    <div class="tab-pane" id="pic-2"><img
+                                                            src="{{ asset($image->image_path) }}" alt="image"></div>
+                                                @endforeach
                                             </div>
                                             <ul class="preview-thumbnail nav nav-tabs">
                                                 <li class="active"><a data-target="#pic-1" data-toggle="tab"><img
@@ -88,23 +79,14 @@
                                             </ul>
                                         </div>
                                         <div class="details col-xl-7 col-lg-12 col-md-12 mt-4 mt-xl-0">
-                                            <h4 class="product-title mb-1">{{ $property->category->name }}</h4>
-                                            <p class="text-muted tx-13 mb-1">{{ $property->title }}</p>
-                                            <div class="rating mb-1">
-                                                <div class="stars">
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star checked"></span>
-                                                    <span class="fa fa-star text-muted"></span>
-                                                    <span class="fa fa-star text-muted"></span>
-                                                </div>
-                                                <span class="review-no">41 reviews</span>
-                                            </div>
-                                            <div class="price h5 ml-2">السعر:<span
+                                            <h4 class="product-title">{{ $property->category->name }}</h4>
+                                            <p class="text-muted tx-13 mt-2">{{ $property->title }}</p>
+
+                                            <div class="price h5 ml-2 mt-3">السعر:<span
                                                     class="h5 mr-2">{{ $price }}</span>
                                             </div>
 
-                                            <div class="sizes d-flex align-items-center">النوع:
+                                            <div class="sizes d-flex align-items-center mt-3">النوع:
                                                 <span class="size d-flex" data-toggle="tooltip" title=""
                                                     data-original-title="small"><label class="rdiobox mb-0"><input
                                                             checked="" name="type" type="radio"
@@ -118,24 +100,27 @@
 
                                             </div>
                                             @if ($property->area)
-                                                <div class="colors d-flex mr-3 mt-2">
-                                                    <span class="mt-2 h5">المساحة:</span>
-                                                    <span class="h5">{{ $property->area }}</span>
+                                                <div class="colors d-flex align-items-center mt-3">
+                                                    <span class="ml-2 h5">المساحة:</span>
+                                                    <span class="h5">{{ $property->area }} م<sup>2</sup></span>
                                                 </div>
                                             @endif
-                                            @if ($property->bedrooms)
-                                                <div class="colors d-flex align-items-center">
+                                            @if ($property->rooms)
+                                                <div class="colors d-flex align-items-center mt-3">
                                                     <p class="h5">عدد الغرف:</p>
-                                                    <span class="h5 mr-1">{{ $property->bedrooms }}</span>
+                                                    <span class="h5 mr-1">{{ $property->rooms }}</span>
                                                 </div>
                                             @endif
                                             @if ($property->bathrooms)
-                                                <div class="colors d-flex mr-3 mt-2">
-                                                    <span class="mt-2 h5">عدد الحمامات:</span>
+                                                <div class="colors d-flex align-items-center mt-3">
+                                                    <span class="h5">عدد الحمامات:</span>
                                                     <span class="h5 mr-1">{{ $property->bathrooms }}</span>
                                                 </div>
                                             @endif
-                                            <p class="product-description">{{ $property->description }}</p>
+                                            <div class="mt-3">
+                                                <p>تفاصيل العقار: </p>
+                                                <p class="product-description mt-1">{{ $property->description }}</p>
+                                            </div>
 
 
                                         </div>

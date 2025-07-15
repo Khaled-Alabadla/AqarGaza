@@ -1,6 +1,6 @@
 @extends('layouts.front')
 
-@section('title', 'عقار غزة - كل ما تحتاجه عن العقارات')
+@section('title', $page->title)
 <!-- .........   Sections  ............-->
 
 @push('styles')
@@ -99,21 +99,21 @@
             <div class="services-grid grid-gap">
                 <div class="service-item main-card interactive-card">
                     <div class="service-icon">
-                        <img src="../images/mobile_13489708.png" alt="إدارة الممتلكات">
+                        <img src="{{ asset('assets/img/mobile_aqar.png') }}" alt="إدارة الممتلكات">
                     </div>
                     <h3>إدارة الممتلكات</h3>
                     <p>نعتني بإدارة وصيانة العقارات لتحقيق أعلى قيمة استثمارية</p>
                 </div>
                 <div class="service-item main-card interactive-card">
                     <div class="service-icon">
-                        <img src="../images/mobile_13489708.png" alt="التأجير العقاري">
+                        <img src="{{ asset('assets/img/mobile_aqar.png') }}" alt="التأجير العقاري">
                     </div>
                     <h3>التأجير العقاري</h3>
                     <p>نوفر خدمة سهلة وموثوقة لتأجير الشقق والفيلات والمكاتب التجارية</p>
                 </div>
                 <div class="service-item main-card interactive-card">
                     <div class="service-icon">
-                        <img src="../images/mobile_13489708.png" alt="البيع والشراء">
+                        <img src="{{ asset('assets/img/mobile_aqar.png') }}" alt="البيع والشراء">
                     </div>
                     <h3>البيع والشراء</h3>
                     <p>نقدم خدمة شاملة لبيع وشراء العقارات بأسعار تنافسية</p>
@@ -135,12 +135,11 @@
                 @forelse ($latestProperties as $property)
                     @include('front.components.card')
                 @empty
-                    <p>لا توجد عقارات متاحة.</p>
+                    <p style="text-align: center; font-family:'Tajawal'">لا توجد عقارات متاحة.</p>
                 @endforelse
             </div>
         </div>
     </section>
-    ```
 
     <section class="blog-section section-padding bg-light-gray">
         <div class="container">
@@ -159,29 +158,33 @@
             </div>
 
             <div class="blog-content grid-gap">
-                <div class="blog-col blog-col--large main-card interactive-card">
-                    <div class="blog-item blog-item--large">
-                        <img src="{{ asset($mainBlog->image) }}" alt="مقال مميز">
-                        <div class="blog-item__overlay">
-                            <div class="blog-item__content">
-                                <h3 class="blog-featured-title"> {{ $mainBlog->title }} </h3>
-                                <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                @if ($mainBlog)
+                    <div class="blog-col blog-col--large main-card interactive-card">
+                        <div class="blog-item blog-item--large">
+                            <img src="{{ asset($mainBlog->image) }}" alt="مقال مميز">
+                            <div class="blog-item__overlay">
+                                <div class="blog-item__content">
+                                    <h3 class="blog-featured-title"> {{ $mainBlog->title }} </h3>
+                                    <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                @foreach ($blogs as $blog)
-                    <div class="blog-col blog-col--small">
-                        <div class="blog-item main-card interactive-card"> <img src="{{ asset($blog->image) }}"
-                                alt="مقال صغير">
-                            <div class="blog-item__content">
-                                <h3 class="blog-item__title"> {{ $blog->title }} </h3>
-                                <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                @endif
+                @if ($blogs)
+                    @foreach ($blogs as $blog)
+                        <div class="blog-col blog-col--small">
+                            <div class="blog-item main-card interactive-card"> <img src="{{ asset($blog->image) }}"
+                                    alt="مقال صغير">
+                                <div class="blog-item__content">
+                                    <h3 class="blog-item__title"> {{ $blog->title }} </h3>
+                                    <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                                </div>
                             </div>
-                        </div>
 
-                    </div>
-                @endforeach
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </section>

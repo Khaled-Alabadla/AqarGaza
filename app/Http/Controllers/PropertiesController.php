@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Page;
 use App\Models\Property;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -128,11 +129,9 @@ class PropertiesController extends Controller
             'owner-phone.required' => 'هاتف صاحب العقار مطلوب.',
             'owner-phone.regex' => 'رقم الهاتف يجب أن يكون بين 7 و15 رقمًا، ويمكن أن يبدأ بـ +.',
             'main-property-image.required' => 'الصورة الرئيسية مطلوبة.',
-            'main-property-image.max' => 'الحد الأقصى للصورة الرئيسية يجب ألا يزيد عن 4 ميجا.',
             'main-property-image.mimes' => 'الصورة الرئيسية يجب أن تكون من نوع jpeg، png، أو jpg.',
             'property-images.max' => 'يمكنك تحميل 5 صور إضافية كحد أقصى.',
             'property-images.*.image' => 'إحدى الصور الإضافية ليست صورة.',
-            'property-images.*.max' => 'إحدى الصور الإضافية تتجاوز 4 ميجا.',
             'property-images.*.mimes' => 'الصور الإضافية يجب أن تكون من نوع jpeg، png، أو jpg.',
         ];
 
@@ -149,9 +148,9 @@ class PropertiesController extends Controller
             'property-currency' => 'required|in:USD,ILS,JOD',
             'property-description' => 'required|string',
             'owner-phone' => ['required', 'string', 'max:20', 'regex:/^\+?\d{7,15}$/'],
-            'main-property-image' => 'required|image|mimes:jpeg,png,jpg|max:4096',
+            'main-property-image' => 'required|image|mimes:jpeg,png,jpg',
             'property-images' => 'nullable|array|max:5',
-            'property-images.*' => 'image|mimes:jpeg,png,jpg|max:4096',
+            'property-images.*' => 'image|mimes:jpeg,png,jpg',
             'rooms' => 'nullable|numeric|min:0',
             'bathrooms' => 'nullable|numeric|min:0',
         ], $messages);
@@ -203,7 +202,9 @@ class PropertiesController extends Controller
             }
         }
 
-        return redirect()->route('front.properties.index')->with('success', 'تم إضافة العقار بنجاح!');
+        flash()->success('تم إضافة العقار بنجاح');
+
+        return redirect()->route('front.properties.index');
     }
 
     public function show($id)
@@ -242,5 +243,12 @@ class PropertiesController extends Controller
             $user->favorites()->attach($propertyId);
             return response()->json(['success' => true, 'message' => 'تم إضافة العقار إلى المفضلة.']);
         }
+    }
+
+    public function user($id)
+    {
+        $properties = Auth::user()->properties;
+
+        return view('front.properties.user', compact('properties'));
     }
 }

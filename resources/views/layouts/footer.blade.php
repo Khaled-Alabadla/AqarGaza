@@ -2,8 +2,8 @@
     <div class="footer-top">
         <div class="container footer-top__inner">
             <div class="footer-newsletter">
-                <img src="{{ cache('settings')['site_logo'] ?? asset('assets/img/ho.png') }}" alt="شعار الموقع في الفوتر"
-                    class="footer-logo-img">
+                <img src="{{ cache('settings')['site_logo'] ? asset(cache('settings')['site_logo']) : asset('assets/img/ho.png') }}"
+                    alt="شعار الموقع في الفوتر" class="footer-logo-img">
                 <p class="footer-newsletter__follow">ابق على اطلاع ومتابعة</p>
                 <div class="social-links">
                     @if (cache('settings')['linkedin'] ?? '')

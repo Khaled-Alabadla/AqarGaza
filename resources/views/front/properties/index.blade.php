@@ -1,6 +1,6 @@
 @extends('layouts.front')
 
-@section('title', 'ابحث عن منزل أحلامك')
+@section('title', $page->title)
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/properties_styles.css') }}">
@@ -69,6 +69,9 @@
                         </div>
                         <div class="options-container">
                             <div class="option {{ request('type') == 'all' ? 'selected' : '' }}" data-value="all">الكل</div>
+                            <div style="display: none" class="option {{ request('type') == 'all' ? 'selected' : '' }}"
+                                data-value="all">إيجار / بيع
+                            </div>
                             <div class="option {{ request('type') == 'rent' ? 'selected' : '' }}" data-value="rent">إيجار
                             </div>
                             <div class="option {{ request('type') == 'sale' ? 'selected' : '' }}" data-value="sale">بيع
@@ -90,6 +93,10 @@
                         <div class="options-container">
                             <div class="option {{ request('propertyType') == 'all' ? 'selected' : '' }}" data-value="all">
                                 الكل</div>
+                            <div style="display: none"
+                                class="option {{ request('propertyType') == 'all' ? 'selected' : '' }}" data-value="all">
+                                النوع
+                            </div>
                             @foreach ($categories as $category)
                                 <div class="option {{ request('propertyType') == $category->id ? 'selected' : '' }}"
                                     data-value="{{ $category->id }}">{{ $category->name }}</div>
@@ -109,6 +116,10 @@
                         </div>
                         <div class="options-container">
                             <div class="option {{ request('city') == 'all' ? 'selected' : '' }}" data-value="all">الكل
+                            </div>
+                            <div style="display: none" class="option {{ request('city') == 'all' ? 'selected' : '' }}"
+                                data-value="all">
+                                المحافظة
                             </div>
                             @foreach ($cities as $city)
                                 <div class="option {{ request('city') == $city->id ? 'selected' : '' }}"
@@ -135,6 +146,10 @@
                         <div class="options-container">
                             <div class="option {{ request('area') == 'all' ? 'selected' : '' }}" data-value="all">الكل
                             </div>
+                            <div style="display: none" class="option {{ request('area') == 'all' ? 'selected' : '' }}"
+                                data-value="all">
+                                المساحة
+                            </div>
                             <div class="option {{ request('area') == '50-100' ? 'selected' : '' }}" data-value="50-100">
                                 50-100 م²</div>
                             <div class="option {{ request('area') == '101-150' ? 'selected' : '' }}" data-value="101-150">
@@ -158,6 +173,10 @@
                         <div class="options-container">
                             <div class="option {{ request('currency') == 'all' ? 'selected' : '' }}" data-value="all">الكل
                             </div>
+                            <div style="display: none" class="option {{ request('currency') == 'all' ? 'selected' : '' }}"
+                                data-value="all">
+                                العملة
+                            </div>
                             <div class="option {{ request('currency') == 'USD' ? 'selected' : '' }}" data-value="USD">دولار
                                 ($)</div>
                             <div class="option {{ request('currency') == 'ILS' ? 'selected' : '' }}" data-value="ILS">شيكل
@@ -174,7 +193,11 @@
                             {{ request('price') ? str_replace('-', ' - ', request('price')) . (request('price') == '2001+' ? '+' : '') : 'السعر' }}
                         </div>
                         <div class="options-container">
+
                             <div class="option {{ request('price') == 'all' ? 'selected' : '' }}" data-value="all">الكل
+                            </div>
+                            <div style="display: none" class="option {{ request('price') == 'all' ? 'selected' : '' }}"
+                                data-value="all">السعر
                             </div>
                             <div class="option {{ request('price') == '0-500' ? 'selected' : '' }}" data-value="0-500">
                                 0-500</div>

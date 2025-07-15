@@ -1,7 +1,7 @@
 <template>
     <div class="footer">
         <form @submit.prevent="sendMessage" style="width: 100%; display: flex;">
-            <input type="hidden" name="_token" :value="csrfToken" />
+            <input type="hidden" name="_token" :value="$root.csrfToken" />
             <div class="input-group">
                 <i class="far fa-smile smile"></i>
                 <input type="text" placeholder="اكتب رسالة..." id="message-input" v-model.trim="messageText"
@@ -151,7 +151,7 @@ export default defineComponent({
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': this.csrfToken,
+                            'X-CSRF-TOKEN': this.$root.csrfToken,
                         },
                         body: JSON.stringify({
                             message: this.messageText,
@@ -229,7 +229,7 @@ export default defineComponent({
                     formData.append('chat_id', this.chatId.toString());
                     formData.append('sender_id', this.userId.toString());
                     formData.append('receiver_id', receiverId.toString());
-                    formData.append('_token', this.csrfToken);
+                    formData.append('_token', this.$root.csrfToken);
 
                     if (fileToSend) {
                         formData.append('attachment', fileToSend);
@@ -243,7 +243,7 @@ export default defineComponent({
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': this.csrfToken,
+                            'X-CSRF-TOKEN': this.$root.csrfToken,
                         },
                         body: formData,
                     });

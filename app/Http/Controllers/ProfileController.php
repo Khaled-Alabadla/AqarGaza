@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -10,9 +11,11 @@ class ProfileController extends Controller
 {
     public function index()
     {
+        $page = Page::where('name', 'contact')->select('name', 'title', 'subtitle')->first();
+
         $user = Auth::user();
 
-        return view('front.profile', compact('user'));
+        return view('front.profile', compact('user', 'page'));
     }
 
     public function store(Request $request)
@@ -20,14 +23,12 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|min:10',
             'email' => 'required|email',
-            'phone' => 'required',
             'image' => 'nullable|image|mimes:png,jpg,svg,jpeg'
         ], [
             'name.required' => 'الاسم مطلوب',
             'name.min' => 'يجب ألا يقل الاسم عن 10 أحرف',
             'email.required' => 'البريد الإلكتروني مطلوب',
             'email.email' => 'البريد الإلكتروني غير صالح',
-            'phone.required' => 'رقم الجوال مطلوب',
             'image.image' => 'قم بإدخال صورة صالحة',
             'image.mimes' => 'امتداد الصورة غير مسموح، الامتدادات المسموحة: jpg, png, svg, jpeg'
         ]);
@@ -58,6 +59,8 @@ class ProfileController extends Controller
             'image' => $file_path,
             'address' => $request->address
         ]);
+
+        flash()->success('تم تعديل الملف الشخصي بنجاح');
 
         return redirect()->back();
     }

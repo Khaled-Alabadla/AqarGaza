@@ -13,9 +13,11 @@
                 <li><a href="{{ route('front.properties.index') }}"
                         class="nav-link {{ request()->routeIs('front.properties.index') ? 'active' : '' }}">العقارات</a>
                 </li>
-                <li><a href="{{ route('front.favorites.index') }}"
-                        class="nav-link {{ request()->routeIs('front.favorites.index') ? 'active' : '' }}">المشاريع</a>
-                </li>
+                @auth
+                    <li><a href="{{ route('front.properties.user', ['user' => Auth::id()]) }}"
+                            class="nav-link {{ request()->routeIs('front.properties.user') ? 'active' : '' }}">عقاراتي</a>
+                    </li>
+                @endauth
                 <li><a href="{{ route('front.properties.create') }}"
                         class="nav-link {{ request()->routeIs('front.properties.create') ? 'active' : '' }}">إضافة
                         عقار</a></li>
@@ -31,7 +33,8 @@
             @auth
                 <div class="profile-icon-container">
                     <div class="profile-icon">
-                        <img src="{{ asset(Auth::user()->image) }}" alt="الملف الشخصي">
+                        <img src="{{ Auth::user()->image ? asset(Auth::user()->image) : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZOE1Otd-Jf_QaQTl7CTI3VX2qpKjEbz24gA&s' }}"
+                            alt="الملف الشخصي">
                     </div>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('front.profile') }}"><i class="fas fa-user"></i> الملف الشخصي</a></li>
@@ -59,35 +62,40 @@
 <aside class="sidebar-header" aria-hidden="true">
     <ul class="sidebar-menu">
         <li><a href="{{ route('home') }}"
-                class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">الرئيسية</a></li>
+                class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}  ">الرئيسية</a></li>
         <li><a href="{{ route('front.properties.index') }}"
                 class="sidebar-link {{ request()->routeIs('front.properties.index') ? 'active' : '' }}">العقارات</a>
         </li>
-        <li><a href="{{ route('front.favorites.index') }}"
-                class="sidebar-link {{ request()->routeIs('front.favorites.index') ? 'active' : '' }}">المفضلة</a>
-        </li>
+        @auth
+            <li><a href="{{ route('front.properties.user', Auth::id()) }}"
+                    class="sidebar-link {{ request()->routeIs('front.properties.user') ? 'active' : '' }}">عقاراتي</a></li>
+        @endauth
         <li><a href="{{ route('front.properties.create') }}"
-                class="sidebar-link {{ request()->routeIs('front.properties.create') ? 'active' : '' }}">إضافة عقار</a>
+                class="sidebar-link {{ request()->routeIs('front.favorites.create') ? 'active' : '' }}">إضافة عقار</a>
         </li>
         <li><a href="{{ route('front.contact') }}"
-                class="sidebar-link {{ request()->routeIs('front.contact') ? 'active' : '' }}">تواصل معنا</a></li>
-        @guest
-            <li class="sidebar-actions-mobile">
-                <a class="btn btn-login-mobile" style="text-decoration:none" href="{{ route('login') }}">تسجيل الدخول</a>
-                <a class="btn btn-lang-mobile" style="text-decoration:none" href="{{ route('register') }}">تسجيل</a>
-            </li>
-        @endguest
-        @auth
-            <li class="sidebar-actions-mobile">
-                <p class="btn btn-login-mobile" style="text-decoration:none; cursor: default;" href="{{ route('login') }}"
-                    style="">
-                    مرحبا
-                    {{ explode(' ', auth()->user()->name)[0] }}</p>
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button class="btn btn-lang-mobile logout-btn">تسجيل الخروج</button>
-                </form>
-            </li>
-        @endauth
+                class="sidebar-link {{ request()->routeIs('contact') ? 'active' : '' }}">تواصل معنا</a></li>
+        <li class="sidebar-actions-mobile">
+            @guest
+                <a style="text-decoration:none" class="btn btn-login-mobile" href="{{ route('login') }}">تسجيل الدخول</a>
+            @endguest
+
+            @auth
+                <div class="sidebar-profile-dropdown-wrapper">
+                    <a href="#" class="sidebar-profile-toggle">
+                        <span> المزيد</span> <i class="fas fa-chevron-down profile-arrow-icon"></i>
+                    </a>
+                    <ul class="sidebar-profile-submenu">
+                        <li><a href="{{ route('front.profile') }}" class="sidebar-sub-link"><i class="fas fa-user"></i>
+                                تعديل الملف الشخصي</a>
+                        </li>
+                        <li><a href="{{ route('front.auth.edit_password') }}" class="sidebar-sub-link"><i
+                                    class="fas fa-lock"></i> تغيير كلمة المرور</a>
+                        </li>
+                    </ul>
+                </div>
+            @endauth
+
+        </li>
     </ul>
 </aside>

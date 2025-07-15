@@ -1,193 +1,281 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    const favoritesSidebar = document.querySelector('.favorites-sidebar');
+    const favoritesList = document.querySelector('.favorites-list');
+    const fabFavorites = document.querySelector('.fab-favorites');
+    const favoritesCloseBtn = document.querySelector('.favorites-close-btn');
     const propertyGrid = document.querySelector('.property-grid');
-    const paginationContainer = document.querySelector('.pagination');
-    const noFavoritesMessage = document.getElementById('no-favorites-message');
+    const noFavoritesMessage = document.querySelector('#no-favorites-message');
+    const pagination = document.querySelector('.pagination');
 
-    // ** بيانات المفضلة الوهمية **
-    // هذه البيانات تمثل العقارات المفضلة.
-    // يمكنك استبدالها ببيانات من localStorage أو API لاحقاً.
-    const favoritePropertiesData = [
-        {
-            id: 'fav-property-1',
-            image: '../assets/img/landing.jpg',
-            price: '1,250.00$',
-            location: 'القدس، فلسطين',
-            features: [
-                { icon: 'fas fa-bed', text: '3 غرف' },
-                { icon: 'fas fa-bath', text: '2 حمام' },
-                { icon: 'fas fa-ruler-combined', text: '150 م²' },
-            ],
-            status: 'مستقل بموقع بناء خاص بي',
-        },
-        {
-            id: 'fav-property-2',
-            image: '../assets/img/landing.jpg',
-            price: '980.00$',
-            location: 'غزة، فلسطين',
-            features: [
-                { icon: 'fas fa-bed', text: '2 غرف' },
-                { icon: 'fas fa-bath', text: '1 حمام' },
-                { icon: 'fas fa-ruler-combined', text: '120 م²' },
-            ],
-            status: 'شقة سكنية عصرية',
-        },
-        {
-            id: 'fav-property-3',
-            image: '../assets/img/landing.jpg',
-            price: '1,500.00$',
-            location: 'رام الله، فلسطين',
-            features: [
-                { icon: 'fas fa-bed', text: '4 غرف' },
-                { icon: 'fas fa-bath', text: '3 حمام' },
-                { icon: 'fas fa-ruler-combined', text: '200 م²' },
-            ],
-            status: 'فيلا فاخرة بحمام سباحة',
-        },
-        {
-            id: 'fav-property-4',
-            image: '../assets/img/landing.jpg',
-            price: '750.00$',
-            location: 'نابلس، فلسطين',
-            features: [
-                { icon: 'fas fa-bed', text: '2 غرف' },
-                { icon: 'fas fa-bath', text: '1 حمام' },
-                { icon: 'fas fa-ruler-combined', text: '90 م²' },
-            ],
-            status: 'شقة للإيجار الشهري',
-        },
-        {
-            id: 'fav-property-5',
-            image: '../img/landing.jpg',
-            price: '1,100.00$',
-            location: 'الخليل، فلسطين',
-            features: [
-                { icong: 'fas fa-bed', text: '3 غرف' },
-                { icon: 'fas fa-bath', text: '2 حمام' },
-                { icon: 'fas fa-ruler-combined', text: '160 م²' },
-            ],
-            status: 'منزل عائلي كبير',
-        },
-        // أضف المزيد من العقارات المفضلة الوهمية هنا
-    ];
+    if (!csrfToken) {
+        console.error('CSRF token not found');
+        return;
+    }
 
-    const propertiesPerPage = 9; // عدد العقارات في كل صفحة
-    let currentPage = 1;
+    const currencyMap = {
+        USD: 'دولار',
+        JOD: 'دينار',
+        ILS: 'شيكل',
+    };
 
-    // ** وظيفة عرض العقارات في الشبكة **
-    function renderProperties(page, propertiesToDisplay) {
-        propertyGrid.innerHTML = ''; // مسح البطاقات الحالية
+    // Function to show toast notification
+    function showNotification(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast-notification toast-${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
 
-        // إذا لا توجد عقارات، أظهر رسالة "لا توجد مفضلة"
-        if (propertiesToDisplay.length === 0) {
-            noFavoritesMessage.style.display = 'block';
-            paginationContainer.innerHTML = ''; // إخفاء ترقيم الصفحات
-            return;
-        } else {
-            noFavoritesMessage.style.display = 'none';
-        }
+        // Show toast
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
 
-        const start = (page - 1) * propertiesPerPage;
-        const end = start + propertiesPerPage;
-        const currentProperties = propertiesToDisplay.slice(start, end);
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
 
-        currentProperties.forEach((property) => {
-            const card = document.createElement('div');
-            card.classList.add('property-card');
-            card.id = property.id; // تعيين ID للبطاقة
-            card.innerHTML = `
-                <div class="property-image">
-                    <img src="${property.image}" alt="Property Image">
-                    <button class="favorite-btn active" data-property-id="${property.id}"><i class="fas fa-heart"></i></button>
-                </div>
-                <div class="property-info">
-                    <span class="property-price">${property.price}</span>
-                    <p class="property-location">${property.location}</p>
-                    <div class="property-features">
-                        ${property.features.map((feature) => `<div><i class="${feature.icon}"></i> <span>${feature.text}</span></div>`).join('')}
-                    </div>
-                    <p class="property-status">${property.status}</p>
-                </div>
-            `;
-            propertyGrid.appendChild(card);
-        });
+    // Shared function to toggle favorite status
+    function toggleFavorite(propertyId, button) {
+        const icon = button.querySelector('i');
+        const isFavorited = icon.classList.contains('fas');
 
-        // ** تفعيل وظيفة زر الإعجاب (القلب) على البطاقات المعروضة **
-        document.querySelectorAll('.favorite-btn').forEach((button) => {
-            button.addEventListener('click', (event) => {
-                event.stopPropagation(); // منع النقر على البطاقة بالكامل
-                const icon = event.currentTarget.querySelector('i');
-                const propertyId = event.currentTarget.dataset.propertyId;
-
-                // تبديل الكلاسات والأيقونة
-                icon.classList.toggle('far');
-                icon.classList.toggle('fas');
-                event.currentTarget.classList.toggle('active');
-
-                // ** منطق إضافة/إزالة العقار من المفضلة الوهمية **
-                if (!event.currentTarget.classList.contains('active')) {
-                    // إذا لم يعد نشطاً، قم بإزالته من البيانات
-                    const index = favoritePropertiesData.findIndex((p) => p.id === propertyId);
-                    if (index !== -1) {
-                        favoritePropertiesData.splice(index, 1);
-                        // أعد عرض العقارات لتحديث القائمة
-                        renderProperties(currentPage, favoritePropertiesData);
-                        setupPagination(favoritePropertiesData);
-                        // إذا كانت الصفحة الحالية فارغة بعد الإزالة، اذهب للصفحة السابقة
-                        if (currentProperties.length === 1 && currentPage > 1 && favoritePropertiesData.length % propertiesPerPage === 0) {
-                            currentPage--;
-                            renderProperties(currentPage, favoritePropertiesData);
-                            setupPagination(favoritePropertiesData);
-                        }
+        fetch('/favorites', {
+            method: isFavorited ? 'DELETE' : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                Accept: 'application/json',
+            },
+            body: JSON.stringify({ property_id: propertyId }),
+        })
+            .then((response) => {
+                if (response.status === 401) {
+                    showNotification('يرجى تسجيل الدخول لتعديل المفضلة', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                    return;
+                }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Toggle favorite response:', data);
+                if (data.success) {
+                    // Show success notification
+                    showNotification(data.message, 'success');
+                    // Update all heart icons for this property
+                    document.querySelectorAll(`.favorite-btn[data-id="${propertyId}"]`).forEach((btn) => {
+                        const btnIcon = btn.querySelector('i');
+                        btnIcon.classList.toggle('far', isFavorited);
+                        btnIcon.classList.toggle('fas', !isFavorited);
+                    });
+                    // Update favorites modal if open
+                    if (favoritesSidebar && favoritesSidebar.getAttribute('aria-hidden') === 'false') {
+                        updateFavoritesModal();
+                    }
+                    // Update favorites page if on /favorites
+                    if (window.location.pathname.includes('/favorites')) {
+                        updateFavoritesPage();
                     }
                 } else {
-                    // هنا يمكن إضافة العقار إذا كان زر الإعجاب قد تم النقر عليه وأصبح active
-                    // في هذه الصفحة، نفترض أن العقارات في favoritePropertiesData هي بالفعل مفضلة
-                    // وبالتالي هذا الجزء قد لا يكون ضرورياً إلا إذا كنت تضيف عقارات جديدة هنا
+                    showNotification(data.message || 'حدث خطأ. يرجى المحاولة مرة أخرى.', 'error');
                 }
+            })
+            .catch((error) => {
+                console.error('Error toggling favorite:', error);
+                showNotification('حدث خطأ أثناء تحديث المفضلة.', 'error');
             });
+    }
+
+    // Attach favorite button handlers
+    function attachFavoriteButtonHandlers() {
+        document.querySelectorAll('.favorite-btn').forEach((button) => {
+            button.removeEventListener('click', handleFavoriteClick); // Prevent duplicate listeners
+            button.addEventListener('click', handleFavoriteClick);
         });
     }
 
-    // ** وظيفة إعداد ترقيم الصفحات **
-    function setupPagination(propertiesToDisplay) {
-        const totalPages = Math.ceil(propertiesToDisplay.length / propertiesPerPage);
-        paginationContainer.innerHTML = ''; // مسح نقاط الترقيم الحالية
+    function handleFavoriteClick() {
+        const propertyId = this.dataset.id;
+        toggleFavorite(propertyId, this);
+    }
 
-        if (totalPages <= 1) {
-            // لا حاجة لترقيم الصفحات إذا كانت صفحة واحدة أو لا يوجد عقارات
-            paginationContainer.style.display = 'none';
+    // Update favorites modal
+    function updateFavoritesModal() {
+        if (!favoritesList) return;
+        favoritesList.innerHTML = '<p>جارٍ تحميل المفضلة...</p>';
+
+        fetch('/api/favorites', {
+            headers: {
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Favorites modal response:', data);
+                favoritesList.innerHTML = '';
+                if (data.favorites.length === 0) {
+                    favoritesList.innerHTML = '<p>لا توجد عقارات في المفضلة.</p>';
+                } else {
+                    const fragment = document.createDocumentFragment();
+                    data.favorites.forEach((property) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <div class="favorite-item">
+                                <img src="${property.main_image}" alt="${property.title}">
+                                <div class="favorite-info">
+                                    <h4>${property.title}</h4>
+                                    <p>${Number(property.price).toLocaleString()} ${currencyMap[property.currency]}</p>
+                                    <button class="favorite-btn" data-id="${property.id}">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        fragment.appendChild(li);
+                    });
+                    favoritesList.appendChild(fragment);
+                    attachFavoriteButtonHandlers();
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching favorites:', error);
+                favoritesList.innerHTML = '<p>حدث خطأ أثناء تحميل المفضلة.</p>';
+            });
+    }
+
+    // Update favorites page
+    function updateFavoritesPage(page = 1) {
+        if (!propertyGrid || !noFavoritesMessage || !pagination) {
+            console.error('Missing DOM elements:', { propertyGrid, noFavoritesMessage, pagination });
             return;
-        } else {
-            paginationContainer.style.display = 'flex';
         }
+        propertyGrid.innerHTML = '<p class="empty">جارٍ تحميل العقارات...</p>';
 
-        for (let i = 1; i <= totalPages; i++) {
-            const dot = document.createElement('span');
-            dot.classList.add('pagination-dot');
-            if (i === currentPage) {
-                dot.classList.add('active');
-            }
-            dot.dataset.page = i;
-            dot.addEventListener('click', (event) => {
-                currentPage = parseInt(event.target.dataset.page);
-                renderProperties(currentPage, propertiesToDisplay);
-                updatePaginationDots();
+        fetch(`/api/favorites?page=${page}`, {
+            headers: {
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Favorites page response:', data);
+                propertyGrid.innerHTML = '';
+                if (data.favorites.data.length === 0) {
+                    noFavoritesMessage.style.display = 'block';
+                    pagination.innerHTML = '';
+                } else {
+                    noFavoritesMessage.style.display = 'none';
+                    const fragment = document.createDocumentFragment();
+                    data.favorites.data.forEach((property) => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <div class="property-card">
+                                <div class="property-image">
+                                    <img src="${property.main_image}" alt="Property Image">
+                                    <button class="favorite-btn" data-id="${property.id}">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                                <div class="property-info">
+                                    <h2 class="property-name">${property.title}</h2>
+                                    <span class="property-price">${Number(property.price).toLocaleString()} ${currencyMap[property.currency]}</span>
+                                    <p class="property-type">${property.type === 'rent' ? 'تأجير' : 'بيع'}</p>
+                                    <p class="property-location">${property.city.name}، ${property.zone.name}</p>
+                                    <div class="property-features">
+                                        ${property.rooms ? `<div><i class="fas fa-bed"></i> <span>${property.rooms} غرف</span></div>` : ''}
+                                        ${property.bathrooms ? `<div><i class="fas fa-bath"></i> <span>${property.bathrooms} ${property.bathrooms === 1 ? 'حمام' : 'حمامات'}</span></div>` : ''}
+                                        ${property.area ? `<div><i class="fas fa-ruler-combined"></i> <span>${property.area} م²</span></div>` : ''}
+                                    </div>
+                                    <a class="btn_card" href="/properties/${property.id}">المزيد من التفاصيل</a>
+                                </div>
+                            </div>
+                        `;
+                        fragment.appendChild(card);
+                    });
+                    propertyGrid.appendChild(fragment);
+                    attachFavoriteButtonHandlers();
+
+                    // Render pagination
+                    pagination.innerHTML = '';
+                    const totalPages = data.favorites.last_page;
+                    const currentPage = data.favorites.current_page;
+                    if (totalPages > 1) {
+                        const nav = document.createElement('nav');
+                        nav.setAttribute('aria-label', 'Pagination');
+                        const ul = document.createElement('ul');
+                        ul.className = 'pagination-list';
+                        for (let i = 1; i <= totalPages; i++) {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                            ul.appendChild(li);
+                        }
+                        nav.appendChild(ul);
+                        pagination.appendChild(nav);
+
+                        document.querySelectorAll('.page-btn').forEach((btn) => {
+                            btn.addEventListener('click', () => {
+                                updateFavoritesPage(btn.dataset.page);
+                            });
+                        });
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching favorites:', error);
+                propertyGrid.innerHTML = '<p>حدث خطأ أثناء تحميل العقارات.</p>';
+                noFavoritesMessage.style.display = 'none';
             });
-            paginationContainer.appendChild(dot);
-        }
     }
 
-    // ** وظيفة تحديث حالة نقاط الترقيم **
-    function updatePaginationDots() {
-        document.querySelectorAll('.pagination-dot').forEach((dot) => {
-            dot.classList.remove('active');
-            if (parseInt(dot.dataset.page) === currentPage) {
-                dot.classList.add('active');
+    // Toggle favorites sidebar
+    if (fabFavorites && favoritesSidebar && favoritesCloseBtn) {
+        fabFavorites.addEventListener('click', () => {
+            favoritesSidebar.setAttribute('aria-hidden', 'false');
+            updateFavoritesModal();
+        });
+
+        favoritesCloseBtn.addEventListener('click', () => {
+            favoritesSidebar.setAttribute('aria-hidden', 'true');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!favoritesSidebar.contains(event.target) && !fabFavorites.contains(event.target)) {
+                favoritesSidebar.setAttribute('aria-hidden', 'true');
             }
         });
     }
 
-    // ** الاستدعاء الأولي لوظائف عرض المفضلة عند تحميل الصفحة **
-    renderProperties(currentPage, favoritePropertiesData);
-    setupPagination(favoritePropertiesData);
+    // Initialize favorites page if present
+    if (window.location.pathname.includes('/favorites')) {
+        updateFavoritesPage();
+    }
+
+    // Expose toggleFavorite for other scripts
+    window.toggleFavorite = toggleFavorite;
+
+    // Initialize favorite buttons
+    attachFavoriteButtonHandlers();
 });

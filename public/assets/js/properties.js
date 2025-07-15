@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then((data) => {
                 propertyGrid.innerHTML = '';
                 if (data.properties.data.length === 0) {
-                    propertyGrid.innerHTML = '<p>لا توجد عقارات مطابقة للفلاتر المحددة.</p>';
+                    propertyGrid.innerHTML = '<p class="empty">لا توجد عقارات مطابقة للفلاتر المحددة.</p>';
                 } else {
                     data.properties.data.forEach((property) => {
                         const card = document.createElement('div');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <div class="property-features">
                                         ${property.rooms ? `<div><i class="fas fa-bed"></i> <span>${property.rooms} غرف</span></div>` : ''}
                                         ${property.bathrooms ? `<div><i class="fas fa-bath"></i> <span>${property.bathrooms} حمامات</span></div>` : ''}
-                                        <div><i class="fas fa-ruler-combined"></i> <span>${property.area} م²</span></div>
+                                        ${property.area ? `<div><i class="fas fa-ruler-combined"></i> <span>${property.area} م²</span></div>` : ''}
                                     </div>
                                     <a class="btn_card" href="/properties/${property.id}">المزيد من التفاصيل</a>
                                 </div>
@@ -113,47 +113,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 paginationContainer.innerHTML = data.properties.links;
 
-                // Re-attach favorite button listeners
+                // Attach favorite button handlers using shared toggleFavorite
                 document.querySelectorAll('.favorite-btn').forEach((button) => {
-                    button.addEventListener('click', function () {
-                        const propertyId = this.dataset.id;
-                        const icon = this.querySelector('i');
-                        const isFavorited = icon.classList.contains('fas');
-
-                        fetch('/favorites', {
-                            method: isFavorited ? 'DELETE' : 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                Accept: 'application/json',
-                            },
-                            body: JSON.stringify({ property_id: propertyId }),
-                        })
-                            .then((response) => response.json())
-                            .then((data) => {
-                                if (data.success) {
-                                    icon.classList.toggle('far', isFavorited);
-                                    icon.classList.toggle('fas', !isFavorited);
-                                } else {
-                                    alert('حدث خطأ. يرجى تسجيل الدخول أو المحاولة مرة أخرى.');
-                                }
-                            })
-                            .catch((error) => {
-                                console.error('Error toggling favorite:', error);
-                                alert('حدث خطأ أثناء تحديث المفضلة.');
-                            });
+                    button.addEventListener('click', () => {
+                        window.toggleFavorite(button.dataset.id, button);
                     });
                 });
             })
             .catch((error) => {
-                console.error('Error fetching properties:', error);
                 propertyGrid.innerHTML = '<p>حدث خطأ أثناء تحميل العقارات. يرجى المحاولة لاحقًا.</p>';
             });
     }
 
     // Fetch zones based on city selection
     function fetchZones(cityId) {
-        zoneOptionsContainer.innerHTML = '<div class="option" data-value="all">الكل</div>';
+        // zoneOptionsContainer.innerHTML = '<div class="option" data-value="all">الكل</div>';
         zoneSelectBox.querySelector('.selected-option').textContent = 'المنطقة';
         zoneSelectBox.dataset.selectedValue = 'all';
 
@@ -175,11 +149,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then((data) => {
+                const option_all = document.createElement('div');
+                option_all.className = 'option';
+                option_all.dataset.value = 'all';
+                option_all.textContent = 'الكل';
+                zoneOptionsContainer.appendChild(option_all);
+
                 data.forEach((zone) => {
                     const option = document.createElement('div');
                     option.className = 'option';
                     option.dataset.value = zone.id;
                     option.textContent = zone.name;
+
                     zoneOptionsContainer.appendChild(option);
                     option.addEventListener('click', () => {
                         zoneSelectBox.querySelector('.selected-option').textContent = option.textContent;
@@ -189,6 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         zoneSelectBox.classList.remove('active');
                         fetchProperties();
                     });
+                });
+                option_all.addEventListener('click', () => {
+                    zoneSelectBox.querySelector('.selected-option').textContent = 'الكل';
+                    zoneSelectBox.dataset.selectedValue = 'all';
+                    zoneSelectBox.querySelectorAll('.option').forEach((opt) => opt.classList.remove('selected'));
+                    option_all.classList.add('selected');
+                    zoneSelectBox.classList.remove('active');
+                    fetchProperties();
                 });
                 fetchProperties();
             })

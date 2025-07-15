@@ -6,7 +6,6 @@ use App\Http\Controllers\Dashboard\BlogsController;
 use App\Http\Controllers\Dashboard\ContactMessagesController;
 use App\Http\Controllers\Dashboard\PagesController;
 use App\Http\Controllers\Dashboard\PropertiesController;
-use App\Http\Controllers\Dashboard\QueriesController;
 use App\Http\Controllers\Dashboard\RolesController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\UsersController;
@@ -73,19 +72,6 @@ Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('das
 
     Route::resource('properties', PropertiesController::class)->except(['edit', 'update']);
     // End Properties
-
-    // Queries
-    Route::get('/queries/users', [QueriesController::class, 'users'])->name('queries.users');
-    Route::get('/queries/properties', [QueriesController::class, 'properties'])->name('queries.properties');
-    // End Queries
-
-    // Settings
-    Route::put('users/{user}/edit-profile', [SettingsController::class, 'edit_profile_check'])->name('users.editProfileCheck');
-
-    Route::get('users/reset-password', [SettingsController::class, 'reset_password'])->name('users.reset_password');
-
-    Route::post('users/reset-password', [SettingsController::class, 'reset_password_check'])->name('users.reset_password_check');
-    // End Settings
 
     // Blogs
     Route::resource('blogs', BlogsController::class);

@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $page = Page::where('name', 'favorites')->select('name', 'title', 'subtitle')->first();
+        $page = Page::where('name', 'home')->select('name', 'title', 'subtitle')->first();
 
         $cities = City::all();
 

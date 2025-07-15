@@ -47,6 +47,9 @@ Route::get('/properties/create', [FrontPropertiesController::class, 'create'])->
 Route::post('/properties', [FrontPropertiesController::class, 'store'])->name('front.properties.store');
 
 Route::get('/properties/{property}', [FrontPropertiesController::class, 'show'])->name('front.properties.show');
+
+Route::get('/{user}/properties', [FrontPropertiesController::class, 'user'])->name('front.properties.user');
+
 // End Properties
 
 // Profile
@@ -61,7 +64,10 @@ Route::post('/contact', [ContactController::class, 'contact_save']);
 
 // Favorites
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('front.favorites.index');
-Route::match(['post', 'delete'], '/favorites/{propertyId}', [PropertiesController::class, 'toggleFavorite'])->name('front.favorites.toggle')->middleware('auth');
+Route::get('/api/favorites', [FavoriteController::class, 'apiIndex']);
+
+Route::post('/favorites', [FavoriteController::class, 'store']);
+Route::delete('/favorites', [FavoriteController::class, 'destroy']);
 // End Favorites
 
 // Edit Password

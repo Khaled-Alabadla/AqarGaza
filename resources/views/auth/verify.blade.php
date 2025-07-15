@@ -21,11 +21,12 @@
                 <p class="description">من فضلك تأكد من بريدك الإلكتروني من خلال الضغط على الرابط الذي تم إرساله</p>
                 <form action="email/verification-notification" method="POST">
                     @csrf
-                    <button class="resend-btn">إرسال مرة أخرى</button>
+                    <button style="font-family: 'Tajawal'" class="resend-btn">إرسال مرة أخرى</button>
                 </form>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button style="border: none;cursor: pointer;" class="logout-link">تسجيل الخروج</button>
+                    <button style="border: none;cursor: pointer; font-family: 'Tajawal'" class="logout-link">تسجيل
+                        الخروج</button>
                 </form>
             </div>
         </div>
