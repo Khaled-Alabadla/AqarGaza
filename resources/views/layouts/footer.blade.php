@@ -2,23 +2,23 @@
     <div class="footer-top">
         <div class="container footer-top__inner">
             <div class="footer-newsletter">
-                <img src="{{ cache('settings')['site_logo'] ? asset(cache('settings')['site_logo']) : asset('assets/img/ho.png') }}"
+                <img src="{{ app('settings')['site_logo'] ? asset(app('settings')['site_logo']) : asset('assets/img/ho.png') }}"
                     alt="شعار الموقع في الفوتر" class="footer-logo-img">
                 <p class="footer-newsletter__follow">ابق على اطلاع ومتابعة</p>
                 <div class="social-links">
-                    @if (cache('settings')['linkedin'] ?? '')
-                        <a href="{{ cache('settings')['linkedin'] ?? '' }}" aria-label="LinkedIn"><i
+                    @if (app('settings')['linkedin'] ?? '')
+                        <a href="{{ app('settings')['linkedin'] ?? '' }}" aria-label="LinkedIn"><i
                                 class="fa-brands fa-linkedin-in"></i>
                         </a>
                     @endif
 
-                    @if (cache('settings')['facebook'])
-                        <a href="{{ cache('settings')['facebook'] }}" aria-label="Facebook"><i
+                    @if (app('settings')['facebook'])
+                        <a href="{{ app('settings')['facebook'] }}" aria-label="Facebook"><i
                                 class="fa-brands fa-facebook-f"></i></a>
                     @endif
 
-                    @if (cache('settings')['twitter'])
-                        <a href="{{ cache('settings')['twitter'] }}" aria-label="Twitter"><i
+                    @if (app('settings')['twitter'])
+                        <a href="{{ app('settings')['twitter'] }}" aria-label="Twitter"><i
                                 class="fa-brands fa-twitter"></i></a>
                     @endif
                 </div>
@@ -38,11 +38,10 @@
                 <div class="footer-column">
                     <h4>روابط سريعة</h4>
                     <ul>
-                        <li><a href="#">الصفحة الرئيسية</a></li>
-                        <li><a href="#">عنّا</a></li>
-                        <li><a href="#">قائمة العقارات</a></li>
-                        <li><a href="#">خدماتنا</a></li>
-                        <li><a href="#">مدونتنا</a></li>
+                        <li><a href="{{ route('home') }}">الصفحة الرئيسية</a></li>
+                        <li><a href="{{ route('front.about') }}">عنّا</a></li>
+                        <li><a href="{{ route('front.properties.index') }}">قائمة العقارات</a></li>
+                        <li><a href="{{ route('front.blog.index') }}">مدونتنا</a></li>
                     </ul>
                 </div>
             </div>
@@ -53,8 +52,8 @@
                     <p><i class="fa-solid fa-location-dot"></i> <strong>الموقع:</strong> غزة - خانيونس<br> الشجاعية
                         - البريج</p>
                 </address>
-                <p><i class="fa-solid fa-phone-volume"></i> <strong>الهاتف:</strong> +1 206-214-2298</p>
-                <p><i class="fa-solid fa-envelope"></i> <strong>البريد الإلكتروني:</strong> support@bilal.com</p>
+                <p><i class="fa-solid fa-phone-volume"></i> <strong>الهاتف:</strong>+970-592-431798</p>
+                <p><i class="fa-solid fa-envelope"></i> <strong>البريد الإلكتروني:</strong>aqar-gaza@gmail.com</p>
             </div>
         </div>
     </div>
@@ -62,13 +61,13 @@
     <div class="footer-bottom">
         <div class="container footer-bottom__inner">
             <div class="footer-bottom__links">
-                <a href="#">إخلاء المسؤولية</a>
-                <a href="#">سياسة الخصوصية</a>
-                <a href="#">الشروط والأحكام</a>
+                <a href="{{ route('front.responsibility') }}">إخلاء المسؤولية</a>
+                <a href="{{ route('front.privacy') }}">سياسة الخصوصية</a>
+                <a href="{{ route('front.conditinos') }}">الشروط والأحكام</a>
             </div>
-            @if (cache('settings')['copyright'])
+            @if (app('settings')['copyright'])
                 <div class="footer-bottom__copy">
-                    {{ cache('settings')['copyright'] }}
+                    {{ app('settings')['copyright'] }}
                 </div>
             @endif
         </div>

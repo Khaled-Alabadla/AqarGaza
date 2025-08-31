@@ -23,7 +23,10 @@ class EditProfileRequest extends FormRequest
     {
         return [
             'email' => 'nullable|email|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
-            'phone' => 'required|max:20',
+            'phone' => 'required',
+            'string',
+            'max:20',
+            'regex:/^\+?\d{7,15}$/',
         ];
     }
 
@@ -34,6 +37,7 @@ class EditProfileRequest extends FormRequest
             'email.regex' => 'البريد الإلكتروني غير صالح',
             'phone.required' => 'رقم الجوال مطلوب',
             'phone.max' => 'رقم الجوال يتجاوز عدد الأرقام المسموح بها',
+            'phone.regex' => 'رقم الهاتف يجب أن يكون بين 7 و15 رقمًا، ويمكن أن يبدأ بـ +.',
         ];
     }
 }

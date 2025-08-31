@@ -25,7 +25,7 @@
                         <!-- الحاوية التي ترسم الإطار وتحتوي على الحقل -->
                         <div class="field-signup_box">
                             <input type="text" id="fullname" name="name" placeholder="مثال: محمد عبدالله أحمد حمدان"
-                                required />
+                                value="{{ old('name') }}" required />
                         </div>
                         @error('name')
                             <small style="color: red; margin-top:5px">{{ $message }}</small>
@@ -37,7 +37,8 @@
                     <div class="form-group full">
                         <label for="email">البريد الإلكتروني</label>
                         <div class="field-signup_box">
-                            <input type="email" id="email" name="email" placeholder="mohammed@gmail.com" required />
+                            <input type="email" id="email" name="email" value="{{ old('email') }}"
+                                placeholder="mohammed@gmail.com" required />
                         </div>
                         @error('email')
                             <small style="color: red; margin-top:5px">{{ $message }}</small>

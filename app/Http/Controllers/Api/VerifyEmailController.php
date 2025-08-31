@@ -12,6 +12,7 @@ class VerifyEmailController extends Controller
     public function verify(EmailVerificationRequest $request)
     {
         try {
+            /** @var App/Models/User */
             $user = $request->user();
 
             if ($user->hasVerifiedEmail()) {

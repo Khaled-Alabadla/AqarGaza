@@ -82,7 +82,7 @@
                 </div>
                 <div class="dropdown main-profile-menu nav nav-item nav-link">
                     <a class="profile-user d-flex" href=""><img alt=""
-                            src="{{ Auth::user()->image == null ? 'https://cdn-icons-png.freepik.com/512/2552/2552801.png?ga=GA1.1.1883128924.1735321250' : asset('uploads/' . Auth::user()->image) }}">
+                            src="{{ Auth::user()->image == null ? 'https://cdn-icons-png.freepik.com/512/2552/2552801.png?ga=GA1.1.1883128924.1735321250' : asset(Auth::user()->image) }}">
                     </a>
                     <div class="dropdown-menu">
                         <div class="main-header-profile bg-primary p-3">
@@ -94,19 +94,19 @@
                                 </div>
                             </div>
                         </div>
+                        <a class="dropdown-item" href="/">
+                            الانتقال إلى الموقع
+                        </a>
                         <a class="dropdown-item" href="{{ route('front.profile') }}">
-                            <i class="bx bxs-inbox"></i>
-
                             تعديل الملف الشخصي
                         </a>
                         <a class="dropdown-item" href="{{ route('front.auth.edit_password') }}">
-                            <i class="bx bx-cog"></i>
 
                             تعديل كلمة المرور
                         </a>
                         <a class="dropdown-item" href="{{ url('/' . ($page = 'page-signin')) }}"
-                            onclick="event.preventDefault(); document.querySelector('#logout-form').submit()"><i
-                                class="bx bx-log-out"></i> تسجيل الخروج</a>
+                            onclick="event.preventDefault(); document.querySelector('#logout-form').submit()"> تسجيل
+                            الخروج</a>
                         <form action="{{ route('logout') }}" id="logout-form" method="post" style="display: none">
                             @csrf
                         </form>

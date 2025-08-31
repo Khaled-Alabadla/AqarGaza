@@ -148,7 +148,7 @@
                 <div class="more_tag">
                     <p class="section-description">اطلع على أحدث المواضيع والمقالات في المجال العقاري</p>
                     <div class="blog-controls">
-                        <a href="#" class="blog-back btn-link">
+                        <a href="{{ route('front.blog.index') }}" class="blog-back btn-link">
                             <i class="fas fa-arrow-left"></i>
                             تفقد صفحة المدونة
                         </a>
@@ -165,7 +165,9 @@
                             <div class="blog-item__overlay">
                                 <div class="blog-item__content">
                                     <h3 class="blog-featured-title"> {{ $mainBlog->title }} </h3>
-                                    <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                                    <p class="post-excerpt" style="font-size: 13px"> {{ $mainBlog->excerpt }} </p>
+                                    <a href="{{ route('front.blog.show', $mainBlog->id) }}"
+                                        class="btn-read-more interactive-button">اقرأ المزيد</a>
                                 </div>
                             </div>
                         </div>
@@ -178,7 +180,9 @@
                                     alt="مقال صغير">
                                 <div class="blog-item__content">
                                     <h3 class="blog-item__title"> {{ $blog->title }} </h3>
-                                    <a href="#" class="btn-read-more interactive-button">اقرأ المزيد</a>
+                                    <p class="post-excerpt" style="font-size: 13px"> {{ $blog->excerpt }} </p>
+                                    <a href="{{ route('front.blog.show', $blog->id) }}"
+                                        class="btn-read-more interactive-button">اقرأ المزيد</a>
                                 </div>
                             </div>
 

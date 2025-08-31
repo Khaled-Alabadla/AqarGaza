@@ -35,6 +35,7 @@ class SocialLoginController extends Controller
                     'provider' => $provider,
                     'provider_id' => $provider_user->id,
                     'provider_token' => $provider_user->token,
+                    'email_verified_at' => now()
                 ]);
             }
 

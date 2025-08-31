@@ -46,14 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const icon = button.querySelector('i');
         const isFavorited = icon.classList.contains('fas');
 
-        fetch('/favorites', {
-            method: isFavorited ? 'DELETE' : 'POST',
+        fetch(isFavorited ? 'favorites/delete' : 'favorites', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
                 Accept: 'application/json',
             },
-            body: JSON.stringify({ property_id: propertyId }),
+            body: JSON.stringify({ property_id: propertyId }, (_method = isFavorited ? 'DELETE' : 'POST')),
         })
             .then((response) => {
                 if (response.status === 401) {
@@ -142,11 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.favorites.data.forEach((property) => {
                         const li = document.createElement('a');
                         li.className = 'favorites-item';
-                        li.setAttribute('href', `properties/${property.id}`);
+                        li.setAttribute('href', `/properties/${property.id}`);
                         li.dataset.propertyId = property.id;
                         li.innerHTML = `
                             <div class="favorite-item" >
-                                <img src="http://localhost:8000/${property.main_image}" alt="${property.title}" class="favorites-item-image">
+                                <img src="${property.main_image}" alt="${property.title}" class="favorites-item-image">
                                 <div class="favorite-info">
                                     <h4>${property.title}</h4>
                                     <p>${Number(property.price).toLocaleString()} ${currencyMap[property.currency]}</p>

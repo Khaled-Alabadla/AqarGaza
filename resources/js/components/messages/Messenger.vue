@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue';
 import ChatHeader from './ChatHeader.vue';
 import ChatContent from './ChatContent.vue';
@@ -100,7 +100,7 @@ export default defineComponent({
             this.editingMessage = null;
         },
         fetchMessages(chatId) {
-            fetch(`/chats/${chatId}/messages`, {
+            fetch(`/convers/${chatId}/messages`, {
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': this.$root.csrf_token,
@@ -114,7 +114,6 @@ export default defineComponent({
                     this.$root.messages = data.messages || [];
                 })
                 .catch(error => {
-                    console.error('Error fetching messages:', error);
                 });
         },
         sendInitialMessage(chatId, messageText) {
@@ -144,18 +143,20 @@ export default defineComponent({
                     this.handleMessageUpdated({ message: data.message, chatId });
                 })
                 .catch(error => {
-                    console.error('Error sending initial message:', error);
                 });
+        },
+        handleEditMessage(message) {
+            this.editingMessage = message; // Set the message to be edited
+        },
+        clearEditing() {
+            this.editingMessage = null; // Clear the editing state
         },
     },
     mounted() {
         if (this.$root.chats) {
             this.chats = this.$root.chats.map(chat => ({ ...chat, display: 'flex' }));
-        } else {
-            console.warn('No chats found in $root.chats on mount');
         }
 
-        // Check for chat_id in URL
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('chat_id');
         if (chatId) {
@@ -167,7 +168,7 @@ export default defineComponent({
                         const propertyTitle = decodeURIComponent(urlParams.get('property_title') || 'العقار');
                         this.sendInitialMessage(chatId, `مرحباً، أنا مهتم بالعقار: ${propertyTitle}`);
                     } else {
-                        fetch(`/chats/${chatId}`, {
+                        fetch(`/convers/${chatId}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-CSRF-TOKEN': this.$root.csrf_token,
@@ -182,7 +183,6 @@ export default defineComponent({
                                 this.sendInitialMessage(chatId, `مرحباً، أنا مهتم بالعقار: ${propertyTitle}`);
                             })
                             .catch(error => {
-                                console.error('Error fetching chat:', error);
                             });
                     }
                 } else {

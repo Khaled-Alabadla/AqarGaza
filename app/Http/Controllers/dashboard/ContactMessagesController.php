@@ -43,7 +43,10 @@ class ContactMessagesController extends Controller
             'is_open' => 1
         ]);
 
-        return redirect()->route('dashboard.contact_messages.index')->with('success', 'تم إرسال الرسالة');
+        flash()->success('تم إرسال الرسالة بنجاح');
+
+
+        return redirect()->route('dashboard.contact_messages.index');
     }
 
     public function destroy($id)
@@ -52,6 +55,8 @@ class ContactMessagesController extends Controller
 
         Contact::destroy($id);
 
-        return redirect()->route('dashboard.contact_messages.index')->with('success', 'تم الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.contact_messages.index');
     }
 }

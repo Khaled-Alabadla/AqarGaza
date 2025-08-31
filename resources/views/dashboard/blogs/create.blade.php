@@ -61,6 +61,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group ">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">المقتطف</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" value="{{ old('excerpt', '') }}" class="form-control"
+                                        name="excerpt">
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-group ">
                             <div class="row">

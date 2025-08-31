@@ -24,7 +24,7 @@ const chatApp = createApp({
         if (!this.userId) {
             return;
         }
-        fetch('/chats', {
+        fetch('/convers', {
             headers: {
                 Accept: 'application/json',
                 'X-CSRF-TOKEN': this.csrfToken,
@@ -34,9 +34,7 @@ const chatApp = createApp({
             .then((data) => {
                 this.chats = data || [];
             })
-            .catch((error) => {
-                console.error('Error fetching initial chats:', error);
-            });
+            .catch((error) => {});
         this.laravelEcho = new Echo({
             broadcaster: 'pusher',
             key: '3f245c318aec1d4ea6e1',
@@ -66,7 +64,7 @@ const chatApp = createApp({
                     }
                 }
                 if (!exists) {
-                    fetch(`/chats/${data.message.chat_id}`, {
+                    fetch(`/convers/${data.message.chat_id}`, {
                         headers: {
                             Accept: 'application/json',
                             'X-CSRF-TOKEN': this.csrfToken,
@@ -173,32 +171,35 @@ const chatApp = createApp({
         markAsRead(chat = null) {
             if (!chat) chat = this.chat;
             if (!chat) return;
-            fetch(`/chats/${chat.id}/read`, {
-                method: 'PUT',
+            fetch(`/convers/${chat.id}/read`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     'X-CSRF-TOKEN': this.csrfToken,
                 },
-                body: JSON.stringify({}),
+                body: JSON.stringify({
+                    _method: 'PUT',
+                }),
             })
                 .then((response) => response.json())
                 .then(() => {
                     chat.new_messages = 0;
                 })
-                .catch((error) => {
-                    console.error('Error marking chat as read:', error);
-                });
+                .catch((error) => {});
         },
         deleteMessage(message, target) {
             fetch(`/messages/${message.id}`, {
-                method: 'DELETE',
+                method: 'POST', // 👈 نخليها POST
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
                     'X-CSRF-TOKEN': this.csrfToken,
                 },
-                body: JSON.stringify({ target }),
+                body: JSON.stringify({
+                    _method: 'DELETE', // 👈 Laravel يفهم إنه DELETE
+                    target,
+                }),
             })
                 .then((response) => response.json())
                 .then((data) => {
@@ -226,9 +227,7 @@ const chatApp = createApp({
                     }
                     this.chats = [...this.chats]; // Trigger reactivity
                 })
-                .catch((error) => {
-                    console.error('Error deleting message:', error);
-                });
+                .catch((error) => {});
         },
         setChat(chat) {
             this.selectedChat = chat;

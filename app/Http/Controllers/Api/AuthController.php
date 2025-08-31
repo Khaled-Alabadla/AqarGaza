@@ -280,4 +280,37 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function update_password(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:8',
+            'new_password' => 'required|confirmed|min:8'
+        ], [
+            'password.required' => 'كلمة المرور مطلوبة',
+            'password.min' => 'كلمة المرور يجب ألا تقل عن 8 أحرف',
+            'new_password.required' => 'كلمة المرور الجديدة مطلوبة',
+            'new_password.confirmed' => 'تأكيد كلمة المرور خاطئ',
+            'new_password.min' => 'كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف'
+        ]);
+
+        /** @var App\Models\User $user */
+        $user = Auth::user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'errors' => [
+                    'password' => ['كلمة المرور القديمة خاطئة']
+                ]
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return response()->json([
+            'message' => 'تم تعديل كلمة المرور بنجاح'
+        ], 200);
+    }
 }

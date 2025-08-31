@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\CustomResetPassword;
 use App\Notifications\CustomVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -59,7 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function favorites()
     {
-        return $this->belongsToMany(Property::class, 'favorites', 'user_id', 'property_id')->withTimestamps();
+        return $this->belongsToMany(Property::class, 'favorites')->withTimestamps();
     }
 
     public function participatedChats()
@@ -119,5 +120,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeUsers(Builder $builder)
     {
         return $builder->where('role', '=', 'user');
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail());
     }
 }

@@ -2,9 +2,12 @@
     <div class="property-card">
         <div class="property-image">
             <img src="{{ asset($property->main_image) }}" alt="Property Image">
-            <button class="favorite-btn" data-id="{{ $property->id }}">
-                <i class="{{ $property->is_favorited ? 'fas' : 'far' }} fa-heart"></i>
-            </button>
+            @auth
+
+                <button class="favorite-btn" data-id="{{ $property->id }}">
+                    <i class="{{ $property->is_favorited ? 'fas' : 'far' }} fa-heart"></i>
+                </button>
+            @endauth
         </div>
         <div class="property-info">
             <h2 class="property-name">{{ $property->title }}</h2>

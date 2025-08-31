@@ -53,7 +53,9 @@ class UsersController extends Controller
 
         $user->roles()->attach($role);
 
-        return redirect()->route('dashboard.users.index')->with('success', 'تم إضافة المستخدم بنجاح');
+        flash()->success('تمت الإضافة بنجاح');
+
+        return redirect()->route('dashboard.users.index');
     }
 
     /**
@@ -82,7 +84,9 @@ class UsersController extends Controller
             'address' => $request->address,
         ]);
 
-        return redirect()->back()->with('success', 'تم تعديل الملف الشخصي بنجاح');
+        flash()->success('تم التعديل بنجاح');
+
+        return redirect()->back();
     }
 
     /**
@@ -94,9 +98,9 @@ class UsersController extends Controller
 
         User::destroy($id);
 
-        flash()->success('User created successfully!')->option('position', 'bottom-left');
+        flash()->success('تم الحذف بنجاح');
 
-        return redirect()->route('dashboard.users.index')->with('success', 'تم حذف المستخدم بنجاح');
+        return redirect()->route('dashboard.users.index');
     }
 
     /**
@@ -118,9 +122,11 @@ class UsersController extends Controller
     {
         Gate::authorize('users.restore');
 
-        $user = User::onlyTrashed()->find($id)->restore();
+        User::onlyTrashed()->find($id)->restore();
 
-        return redirect()->route('dashboard.users.index')->with('success', 'تمت الاستعادة بنجاح');
+        flash()->success('تمت الاستعادة بنجاح');
+
+        return redirect()->route('dashboard.users.index');
     }
 
     /**
@@ -130,9 +136,11 @@ class UsersController extends Controller
     {
         Gate::authorize('users.force_delete');
 
-        $user = User::onlyTrashed()->find($id)->forceDelete();
+        User::onlyTrashed()->find($id)->forceDelete();
 
-        return redirect()->route('dashboard.users.index')->with('success', 'تمت عملية الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.users.index');
     }
 
     public function edit_profile(Request $request, $id)
@@ -166,6 +174,8 @@ class UsersController extends Controller
         $user->update([
             'image' => $file_path,
         ]);
+
+        flash()->success('تم التعديل بنجاح');
 
         return redirect()->route('dashboard.index');
     }

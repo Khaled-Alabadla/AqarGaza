@@ -96,9 +96,6 @@
                                         </td>
                                         <td> {{ $property->status == 'available' ? 'متوفر' : ($property->status == 'rented' ? 'تم التأجير' : ($property->status == 'sold' ? 'تم البيع' : '')) }}
                                         </td>
-                                        <td>
-                                            {{ $property->status == 'available' ? 'متوفر' : ($property->status == 'rented' ? 'تم التأجير' : ($property->status == 'sold' ? 'تم البيع' : 'غير معروف')) }}
-                                        </td>
 
                                         <td>{{ date_format(date_create($property->created_at), 'd/m/Y') }}</td>
                                         @if (auth()->user()->can('properties.delete') || auth()->user()->can('properties.show'))

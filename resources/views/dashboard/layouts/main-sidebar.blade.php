@@ -4,7 +4,8 @@
     <div class="main-sidebar-header active">
         <a class="desktop-logo logo-light active" style="height: 94%"
             href="{{ route('dashboard.dashboard', 'home') }}"><img style="height: 100%"
-                src="{{ asset('assets/img/logo.jpg') }}" class="main-logo" alt="logo"></a>
+                src="{{ app('settings')['site_logo'] ? asset(app('settings')['site_logo']) : asset('assets/img/ho.png') }}"
+                class="main-logo" alt="logo"></a>
         <a class="desktop-logo logo-dark active"href="{{ route('dashboard.dashboard', 'home') }}"><img
                 src="{{ asset('assets/img/logo.jpg') }}" class="main-logo dark-theme" alt="logo"></a>
         <a class="logo-icon mobile-logo icon-light active" href="{{ route('dashboard.dashboard', 'home') }}"><img

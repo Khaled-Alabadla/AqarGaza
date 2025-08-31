@@ -19,7 +19,8 @@
                     @csrf
                     <div class="profile-pic-section">
                         <div class="profile-pic-wrapper">
-                            <img id="profile-image-display" src="{{ asset($user->image) ?? asset('assets/img/ho.png') }}"
+                            <img id="profile-image-display"
+                                src="{{ $user->image ? asset($user->image) : asset('assets/img/ho.png') }}"
                                 alt="صورة المستخدم">
                             <label for="profile-image-upload" class="upload-icon-wrapper">
                                 <i class="fas fa-camera"></i>
@@ -44,13 +45,6 @@
                         <label for="phone-number">رقم الهاتف</label>
                         <input type="text" name="phone" id="phone-number" value="{{ old('phone', $user->phone) }}">
                         @error('phone')
-                            <small style="color: red">{{ $message }}</small>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="email-address">الإيميل</label>
-                        <input type="email" name="email" id="email-address" value="{{ old('email', $user->email) }}">
-                        @error('email')
                             <small style="color: red">{{ $message }}</small>
                         @enderror
                     </div>

@@ -52,7 +52,8 @@
                 <div class="details-grid">
                     @if ($property->category->name == 'منزل' || $property->category->name == 'شقة' || $property->category->name == 'شاليه')
                         <div><i class="fas fa-bed"></i> {{ $property->rooms }} غرف</div>
-                        <div><i class="fas fa-bath"></i> {{ $property->bathrooms }} حمامات</div>
+                        <div><i class="fas fa-bath"></i> {{ $property->bathrooms }}
+                            {{ $property->bathrooms == 1 ? 'حمام' : 'حمامات' }}</div>
                     @endif
                 </div>
             </section>
@@ -181,7 +182,7 @@
                 return;
             }
 
-            fetch('{{ url('/chats/initiate') }}/' + propertyId, {
+            fetch('{{ url('/convers/initiate') }}/' + propertyId, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

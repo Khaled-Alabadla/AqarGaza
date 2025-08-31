@@ -9,6 +9,10 @@ class Property extends Model
 {
     use SoftDeletes;
 
+    protected $casts = [
+        'created_at' => 'date'
+    ];
+
     protected $guarded = [];
 
     public function user()
@@ -50,5 +54,10 @@ class Property extends Model
     public function zone()
     {
         return $this->belongsTo(Zone::class);
+    }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 'available');
     }
 }

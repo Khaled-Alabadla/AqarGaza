@@ -11,7 +11,7 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        $page = Page::where('name', 'contact')->select('name', 'title', 'subtitle')->first();
+        $page = Page::where('name', 'profile')->select('name', 'title', 'subtitle')->first();
 
         $user = Auth::user();
 
@@ -22,15 +22,17 @@ class ProfileController extends Controller
     {
         $request->validate([
             'name' => 'required|min:10',
-            'email' => 'required|email',
-            'image' => 'nullable|image|mimes:png,jpg,svg,jpeg'
+            'image' => 'nullable|image|mimes:png,jpg,svg,jpeg',
+            'nullable',
+            'string',
+            'max:20',
+            'regex:/^\+?\d{7,15}$/'
         ], [
             'name.required' => 'الاسم مطلوب',
             'name.min' => 'يجب ألا يقل الاسم عن 10 أحرف',
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صالح',
             'image.image' => 'قم بإدخال صورة صالحة',
-            'image.mimes' => 'امتداد الصورة غير مسموح، الامتدادات المسموحة: jpg, png, svg, jpeg'
+            'image.mimes' => 'امتداد الصورة غير مسموح، الامتدادات المسموحة: jpg, png, svg, jpeg',
+            'phone.regex' => 'رقم الهاتف يجب أن يكون بين 7 و15 رقمًا، ويمكن أن يبدأ بـ +.',
         ]);
 
         /** @var App/Models/User $user */
@@ -39,22 +41,33 @@ class ProfileController extends Controller
         $file_path = $user->image;
 
         if ($request->hasFile('image')) {
-            // Define the directory path within the 'public_uploads' disk
-            $directory = "uploads/users/profiles";
-            // Get the original file name
-            $file_name = rand() . time() . $request->file('image')->getClientOriginalName();
+            $file = $request->file('image');
 
-            // Store the file in the public_uploads disk
-            $file_path = $request->file('image')->storeAs($directory, $file_name, 'public_uploads');
+            // Define folder inside htdocs/uploads
+            $directory = base_path('../uploads/users/profiles');
 
-            if ($user->image) {
-                Storage::disk('public_uploads')->delete($user->image);
+            // Create the folder if it doesn’t exist
+            if (!file_exists($directory)) {
+                mkdir($directory, 0777, true);
+            }
+
+            // Unique file name
+            $file_name = rand() . time() . '.' . $file->getClientOriginalExtension();
+
+            // Move file to htdocs/uploads/users/profiles
+            $file->move($directory, $file_name);
+
+            // Save relative path (for DB)
+            $file_path = "uploads/users/profiles/" . $file_name;
+
+            // Delete old image if exists
+            if ($user->image && file_exists(public_path($user->image))) {
+                unlink(public_path($user->image));
             }
         }
 
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
             'phone' => $request->phone,
             'image' => $file_path,
             'address' => $request->address

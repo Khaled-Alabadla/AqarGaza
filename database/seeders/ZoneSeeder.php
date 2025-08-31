@@ -33,6 +33,7 @@ class ZoneSeeder extends Seeder
             Zone::firstOrCreate(['city_id' => $gaza->id, 'name' => 'التفاح']);
             Zone::firstOrCreate(['city_id' => $gaza->id, 'name' => 'الدرج']);
             Zone::firstOrCreate(['city_id' => $gaza->id, 'name' => 'البلدة القديمة']);
+            Zone::firstOrCreate(['city_id' => $gaza->id, 'name' => 'الشاطئ']);
             // You might add more specific neighborhoods within Gaza City if needed
         }
 

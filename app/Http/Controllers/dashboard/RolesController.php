@@ -8,11 +8,14 @@ use App\Models\Role;
 use App\Models\RoleAbility;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class RolesController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
@@ -63,7 +66,9 @@ class RolesController extends Controller
             throw $e;
         }
 
-        return redirect()->route('dashboard.roles.index')->with('success', 'تمت الإضافة بنجاح');
+        flash()->success('تمت الإضافة بنجاح');
+
+        return redirect()->route('dashboard.roles.index');
     }
 
     /**
@@ -121,7 +126,9 @@ class RolesController extends Controller
             ->whereIn('ability', $abilitiesToRemove)
             ->delete();
 
-        return redirect()->route('dashboard.roles.index')->with('success', 'تم التعديل بنجاح');
+        flash()->success('تم التعديل بنجاح');
+
+        return redirect()->route('dashboard.roles.index');
     }
 
     public function destroy(string $id)
@@ -130,6 +137,8 @@ class RolesController extends Controller
 
         Role::destroy($id);
 
-        return redirect()->route('dashboard.roles.index')->with('success', 'تم الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.roles.index');
     }
 }

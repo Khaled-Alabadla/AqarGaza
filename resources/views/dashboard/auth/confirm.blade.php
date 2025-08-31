@@ -30,7 +30,7 @@
             <div class="card mg-b-20">
                 <div class="card-header pb-0">
                     <div class="d-flex justify-content-between">
-                        <h4 class="card-title mg-b-0">الرسائل</h4>
+                        <h4 class="card-title mg-b-0">تأكيد كلمة المرور</h4>
                     </div>
 
                     {{-- <p class="tx-12 tx-gray-500 mb-2">Example of Valex Bordered Table.. <a href="">Learn more</a></p> --}}

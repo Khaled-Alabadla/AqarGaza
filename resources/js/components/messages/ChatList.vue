@@ -31,7 +31,8 @@
                                     : chat.last_message?.message || 'لا رسائل'
                             }}
                         </div>
-                        <div v-if="(chat.unread_count || chat.new_messages || 0) > 0" class="unread-count">
+                        <div style="font-weight:bold; font-size: 12px"
+                            v-if="(chat.unread_count || chat.new_messages || 0) > 0" class="unread-count">
                             {{ chat.unread_count || chat.new_messages || 0 }}
                         </div>
                     </div>
@@ -80,12 +81,12 @@ export default defineComponent({
         },
     },
     setup() {
-        const localChats = ref < Chat[] > ([]);
-        const filteredChats = ref < Chat[] > ([]);
-        const loading = ref < boolean > (true);
-        const error = ref < string | null > (null);
-        const isSidebarOpen = ref < boolean > (false);
-        const searchTerm = ref < string > ('');
+        const localChats = ref<Chat[]>([]);
+        const filteredChats = ref<Chat[]>([]);
+        const loading = ref<boolean>(true);
+        const error = ref<string | null>(null);
+        const isSidebarOpen = ref<boolean>(false);
+        const searchTerm = ref<string>('');
 
         return {
             localChats,
@@ -151,7 +152,7 @@ export default defineComponent({
             }
             this.loading = true;
             try {
-                const response = await fetch('/chats', {
+                const response = await fetch('/convers', {
                     headers: {
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': (this.$root as any).csrf_token,
@@ -217,7 +218,7 @@ export default defineComponent({
             if (this.pollingInterval) return;
             this.pollingInterval = window.setInterval(async () => {
                 try {
-                    const response = await fetch('/chats', {
+                    const response = await fetch('/convers', {
                         headers: {
                             'Accept': 'application/json',
                             'X-CSRF-TOKEN': (this.$root as any).csrf_token,
@@ -236,7 +237,6 @@ export default defineComponent({
                         (this.$root as any).chats = [...this.localChats];
                     }
                 } catch (error) {
-                    console.error('Polling error:', error);
                 }
             }, 10000);
         },

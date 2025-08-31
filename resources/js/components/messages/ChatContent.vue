@@ -1,3 +1,4 @@
+```vue
 <template>
     <div class="messages" id="messages" ref="messages">
         <div v-for="message in $root.messages" :key="message.id" class="message"
@@ -31,7 +32,7 @@
                 <!-- Attachment message -->
                 <div v-else-if="message.type === 'attachment'">
                     <div v-if="getFileData(message.message)?.mimetype?.startsWith('image/')" class="image-attachment">
-                        <img :src="`/messages/${getFileData(message.message)?.file_path}`"
+                        <img :src="`${getFileData(message.message)?.file_path}`"
                             style="object-fit:cover; max-width: 100%;" />
                     </div>
                     <div v-else class="file-attachment">
@@ -46,8 +47,10 @@
                         <div class="file-actions">
                             <button
                                 v-if="getFileData(message.message)?.file_path && getFileData(message.message)?.file_path !== 'uploading...'"
-                                @click="downloadFile(getFileData(message.message))" class="download-btn">
+                                @click="downloadFile(getFileData(message.message), message.id)" class="download-btn"
+                                :disabled="isDownloading[message.id]">
                                 <i class="fas fa-download"></i>
+                                <span v-if="isDownloading[message.id]" class="loading-text">جاري التنزيل...</span>
                             </button>
                             <span v-else class="uploading-text">جاري الرفع...</span>
                         </div>
@@ -63,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive } from 'vue';
 
 interface Message {
     id: number | string;
@@ -95,6 +98,12 @@ export default defineComponent({
         },
     },
     emits: ['edit-message'],
+    setup() {
+        const isDownloading = reactive<Record<string | number, boolean>>({});
+        return {
+            isDownloading,
+        };
+    },
     data() {
         return {
             userId: (this.$root as any).userId as number,
@@ -118,7 +127,7 @@ export default defineComponent({
         fetchMessages(chat: any) {
             if (!chat) return;
             this.loading = true;
-            fetch(`/chats/${chat}/messages`, {
+            fetch(`/convers/${chat}/messages`, {
                 headers: {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': (this.$root as any).csrf_token,
@@ -141,7 +150,6 @@ export default defineComponent({
                     this.loading = false;
                 })
                 .catch(error => {
-                    console.error('Error fetching messages:', error);
                     this.loading = false;
                 });
         },
@@ -178,9 +186,10 @@ export default defineComponent({
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         },
 
-        async downloadFile(fileData: FileData) {
+        async downloadFile(fileData: FileData, messageId: string | number) {
             try {
-                const response = await fetch(`/storage/${fileData.file_path}`, {
+                this.isDownloading[messageId] = true;
+                const response = await fetch(`/uploads/messages/${fileData.file_path}`, {
                     method: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': (this.$root as any).csrf_token,
@@ -201,8 +210,9 @@ export default defineComponent({
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
             } catch (error) {
-                console.error('Error downloading file:', error);
                 alert('فشل في تنزيل الملف');
+            } finally {
+                this.isDownloading[messageId] = false;
             }
         },
 

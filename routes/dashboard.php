@@ -7,18 +7,17 @@ use App\Http\Controllers\Dashboard\ContactMessagesController;
 use App\Http\Controllers\Dashboard\PagesController;
 use App\Http\Controllers\Dashboard\PropertiesController;
 use App\Http\Controllers\Dashboard\RolesController;
-use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\UsersController;
 use App\Http\Controllers\Dashboard\WebsiteSettingsController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('dashboard.')->group(function () {
-    Route::get('/', function () {
-        return view('dashboard.home');
-    })->name('index');
+
+    Route::get('/', [AdminController::class, 'redirect'])->name('index');
 
     // Roles
-    Route::resource('roles', RolesController::class)->middleware('password.confirm')->except('show');
+    Route::resource('roles', RolesController::class)->middleware('confirm_password')->except('show');
     // End Roles
 
     // Admins
@@ -49,11 +48,11 @@ Route::prefix('dashboard')->middleware(['auth', 'verified', 'admin'])->name('das
 
     Route::get('users/{user}/restore', [UsersController::class, 'restore'])->name('users.restore');
 
-    Route::get('users/roles', [UsersController::class, 'roles'])->middleware('password.confirm')->name('users.roles.index');
+    Route::get('users/roles', [UsersController::class, 'roles'])->middleware('confirm_password')->name('users.roles.index');
 
-    Route::get('users/{user}/roles/edit', [UsersController::class, 'editRoles'])->middleware('password.confirm')->name('users.roles.edit');
+    Route::get('users/{user}/roles/edit', [UsersController::class, 'editRoles'])->middleware('confirm_password')->name('users.roles.edit');
 
-    Route::put('users/{user}/roles/update', [UsersController::class, 'updateRoles'])->middleware('password.confirm')->name('users.roles.update');
+    Route::put('users/{user}/roles/update', [UsersController::class, 'updateRoles'])->middleware('confirm_password')->name('users.roles.update');
 
     Route::resource('users', UsersController::class)->except(['show', 'edit']);
 

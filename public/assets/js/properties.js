@@ -36,6 +36,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Function to show toast notification
+    function showNotification(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast-notification toast-${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        // Show toast
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
+
     // Fetch properties with current filters
     function fetchProperties(url = '/properties') {
         const filters = {};
@@ -136,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        fetch(`/api/zones/${cityId}`, {
+        fetch(`/zones/${cityId}`, {
             headers: {
                 Accept: 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -153,6 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 option_all.className = 'option';
                 option_all.dataset.value = 'all';
                 option_all.textContent = 'الكل';
+                // Empty zoneOptionsContainer before adding new options
+                zoneOptionsContainer.innerHTML = '';
                 zoneOptionsContainer.appendChild(option_all);
 
                 data.forEach((zone) => {

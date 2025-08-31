@@ -27,7 +27,7 @@ class WebsiteSettingsController extends Controller
 
     public function settings_save(Request $request)
     {
-        Artisan::call('cache:clear');
+        // Artisan::call('cache:clear');
 
         Gate::authorize('website_settings.update');
 
@@ -47,7 +47,10 @@ class WebsiteSettingsController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'تم الحفظ بنجاح');
+        flash()->success('تم الحفظ بنجاح');
+
+
+        return redirect()->back();
     }
 
     public function delete_logo()

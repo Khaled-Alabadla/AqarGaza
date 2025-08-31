@@ -133,7 +133,7 @@
                     <div class="select-box" data-filter-name="zone">
                         <div class="selected-option">المنطقة</div>
                         <div class="options-container">
-                            <div class="option" data-value="all">الكل</div>
+                            {{-- <div class="option" data-value="all">الكل</div> --}}
                         </div>
                     </div>
                 </div>

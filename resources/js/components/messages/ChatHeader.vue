@@ -22,7 +22,6 @@ export default {
     },
     methods: {
         getChatName(chat) {
-            console.log(chat);
             if (!chat) return 'اختر محادثة';
             const user = chat.user_id == this.$root.userId ? chat.receiver : chat.creator;
             return user?.name || 'Unknown';

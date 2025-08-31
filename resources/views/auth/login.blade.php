@@ -13,14 +13,15 @@
             <h1 class="welcome-text">أهلا بكم في عقاري</h1>
 
             <div class="social-login">
-                <button class="social-login-button google-button">
-                    <a href="{{ route('auth.redirect', 'google') }}" class="icon-wrapper google">
+                <a class="social-login-button google-button" style="text-decoration: none"
+                    href="{{ route('auth.redirect', 'google') }}">
+                    <span class="icon-wrapper google">
                         <img style="max-width: 120%;" src="{{ asset('assets/img/google.png') }}" alt="google"
                             class="social-image" />
-                    </a>
+                    </span>
                     <span class="google"> تسجيل الدخول عن طريق جوجل
                     </span>
-                </button>
+                </a>
 
             </div>
 
@@ -31,8 +32,8 @@
                 <div class="form-group">
                     <label for="email">البريد الإلكتروني</label>
                     <div class="field-login_box">
-                        <input class="@error('email') is-invalid @enderror" type="email" id="email" name="email"
-                            placeholder="example@gmail.com" required />
+                        <input class="@error('email') is-invalid @enderror" type="email" value="{{ old('email') }}"
+                            id="email" name="email" placeholder="example@gmail.com" required />
                     </div>
                     @error('email')
                         <small style="color: red; margin-top:5px">{{ $message }}</small>

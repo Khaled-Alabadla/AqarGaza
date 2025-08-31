@@ -49,7 +49,9 @@ class AdminsController extends Controller
             DB::rollback();
         }
 
-        return redirect()->route('dashboard.admins.index')->with('success', 'تم الإضافة بنجاح');
+        flash()->success('تمت الإضافة بنجاح');
+
+        return redirect()->route('dashboard.admins.index');
     }
 
     public function edit($id)
@@ -69,7 +71,9 @@ class AdminsController extends Controller
 
         $admin->roles()->sync($request->roles);
 
-        return redirect()->route('dashboard.admins.index')->with('success', 'تم تعديل الصلاحية بنجاح');
+        flash()->success('تم تعديل الصلاحية بنجاح');
+
+        return redirect()->route('dashboard.admins.index');
     }
 
     public function destroy($id)
@@ -84,6 +88,8 @@ class AdminsController extends Controller
         $admin->update([
             'role' => 'user'
         ]);
+
+        flash()->success('تم الحذف بنجاح');
 
         return redirect()->route('dashboard.admins.index')->with('success', 'تم الحذف بنجاح');
     }

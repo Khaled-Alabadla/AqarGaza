@@ -76,6 +76,7 @@
                                     <th class="border-bottom-0">#</th>
                                     <th class="border-bottom-0">الصورة</th>
                                     <th class="border-bottom-0">العنوان</th>
+                                    <th class="border-bottom-0">المقتطف</th>
                                     <th class="border-bottom-0">المحتوى</th>
                                     <th class="border-bottom-0">التاريخ</th>
                                     @if (auth()->user()->can('blogs.delete') || auth()->user()->can('blogs.show') || auth()->user()->can('blogs.update'))
@@ -89,6 +90,7 @@
                                         <td>{{ $loop->index + 1 }}</td>
                                         <td><img width="100" src="{{ asset($blog->image) }}" alt=""></td>
                                         <td>{{ $blog->title }}</td>
+                                        <td>{{ $blog->excerpt }}</td>
                                         <td>{{ Str::words($blog->content, 20, '...') }}</td>
                                         <td>{{ date_format(date_create($blog->created_at), 'd/m/Y') }}</td>
                                         @if (auth()->user()->can('blogs.delete') || auth()->user()->can('blogs.show'))

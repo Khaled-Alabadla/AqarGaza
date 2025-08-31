@@ -16,7 +16,9 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton('settings', function () {
+            return Setting::pluck('value', 'key')->toArray();
+        });
     }
 
     /**
@@ -24,9 +26,11 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Cache::remember('settings', 3600, function () {
-            return Setting::pluck('value', 'key')->toArray();
-        });
+        // Cache::remember('settings', 3600, function () {
+        //     return Setting::pluck('value', 'key')->toArray();
+        // });
+
+
 
         View::composer('dashboard.layouts.main-sidebar', function ($view) {
             $messages_count = Contact::where('is_open', 0)->count();

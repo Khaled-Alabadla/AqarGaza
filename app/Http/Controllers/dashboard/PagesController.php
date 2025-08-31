@@ -30,7 +30,10 @@ class PagesController extends Controller
     {
         Page::create($request->except('_token'));
 
-        return redirect()->route('dashboard.pages.index')->with('success', 'تمت الإضافة بنجاح');
+        flash()->success('تمت الإضافة بنجاح');
+
+
+        return redirect()->route('dashboard.pages.index');
     }
 
     public function edit(Page $page)
@@ -45,8 +48,9 @@ class PagesController extends Controller
 
         $page->update($request->except('_token'));
 
+        flash()->success('تم التعديل بنجاح');
 
-        return redirect()->route('dashboard.pages.index')->with('success', 'تم التعديل بنجاح');
+        return redirect()->route('dashboard.pages.index');
     }
 
     public function destroy($id)
@@ -55,6 +59,8 @@ class PagesController extends Controller
 
         Page::destroy($id);
 
-        return redirect()->route('dashboard.pages.index')->with('success', 'تم الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.pages.index');
     }
 }

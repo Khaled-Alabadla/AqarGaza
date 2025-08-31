@@ -21,13 +21,17 @@ class ContactController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'message' => 'required',
-            'phone' => 'required'
+            'phone' => 'required',
+            'string',
+            'max:20',
+            'regex:/^\+?\d{7,15}$/'
         ], [
             'name.required' => 'الاسم مطلوب',
             'email.required' => 'البريد الإلكتروني مطلوب',
             'email.email' => 'البريد الإلكتروني غير صالح',
             'message.required' => 'الرجاء كتابة الرسالة',
-            'phone.required' => 'رقم الجوال مطلوب'
+            'phone.required' => 'رقم الجوال مطلوب',
+            'owner-phone.regex' => 'رقم الهاتف يجب أن يكون بين 7 و15 رقمًا، ويمكن أن يبدأ بـ +.',
         ]);
 
         Contact::create([

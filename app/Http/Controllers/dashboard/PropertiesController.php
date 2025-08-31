@@ -42,7 +42,9 @@ class PropertiesController extends Controller
 
         Property::destroy($id);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'تم الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.properties.index');
     }
 
     public function trash()
@@ -60,7 +62,9 @@ class PropertiesController extends Controller
 
         Property::onlyTrashed()->find($id)->restore();
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'تمت الاستعادة بنجاح');
+        flash()->success('تمت الاستعادة بنجاح');
+
+        return redirect()->route('dashboard.properties.index');
     }
 
     public function force_delete($id)
@@ -77,6 +81,8 @@ class PropertiesController extends Controller
 
         Storage::disk('public_uploads')->delete($property->main_image);
 
-        return redirect()->route('dashboard.properties.index')->with('success', 'تم الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.properties.index');
     }
 }

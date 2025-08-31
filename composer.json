@@ -16,6 +16,7 @@
         "laravel/socialite": "^5.19",
         "laravel/tinker": "^2.10.1",
         "php-flasher/flasher-laravel": "*",
+        "php-flasher/php-flasher": "^2.0",
         "pusher/pusher-php-server": "^7.2",
         "tightenco/ziggy": "^2.4"
     },
@@ -32,9 +33,6 @@
         "pestphp/pest-plugin-laravel": "^3.1"
     },
     "autoload": {
-        "files": [
-            "App\\Helpers\\General.php"
-        ],
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",

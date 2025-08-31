@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         Broadcast::routes(['middleware' => 'auth']);
 
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);

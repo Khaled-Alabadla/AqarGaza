@@ -43,7 +43,7 @@
                     @if (session('success'))
                         <div class="alert alert-success" id="success-alert">{{ session('success') }}</div>
                     @endif
-                    <h3 class="mb-3">{{ $property->category->name }} - {{ $property->title }}
+                    <h3 class="mb-3">{{ $property->title }}
                     </h3>
 
                     <div class="row row-sm">
@@ -55,27 +55,17 @@
                                             <div class="preview-pic tab-content">
                                                 <div class="tab-pane active" id="pic-1"><img
                                                         src="{{ asset($property->main_image) }}" alt="image"></div>
-                                                @foreach ($property->images as $image)
-                                                    <div class="tab-pane" id="pic-2"><img
-                                                            src="{{ asset($image->image_path) }}" alt="image"></div>
-                                                @endforeach
+
                                             </div>
                                             <ul class="preview-thumbnail nav nav-tabs">
-                                                <li class="active"><a data-target="#pic-1" data-toggle="tab"><img
-                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-5.png"
-                                                            alt="image"></a></li>
-                                                <li><a data-target="#pic-2" data-toggle="tab"><img
-                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-2.png"
-                                                            alt="image"></a></li>
-                                                <li><a data-target="#pic-3" data-toggle="tab"><img
-                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-3.png"
-                                                            alt="image"></a></li>
-                                                <li><a data-target="#pic-4" data-toggle="tab"><img
-                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-4.png"
-                                                            alt="image"></a></li>
-                                                <li><a data-target="#pic-5" data-toggle="tab"><img
-                                                            src="http://127.0.0.1:8001/assets/img/ecommerce/shirt-1.png"
-                                                            alt="image"></a></li>
+                                                @foreach ($property->images as $image)
+                                                    <li class="active"><a class="active"
+                                                            data-target="#pic-{{ $loop->iteration }}"
+                                                            data-toggle="tab"><img src="{{ asset($image->image_path) }}"
+                                                                alt="image"></a>
+                                                    </li>
+                                                @endforeach
+
                                             </ul>
                                         </div>
                                         <div class="details col-xl-7 col-lg-12 col-md-12 mt-4 mt-xl-0">

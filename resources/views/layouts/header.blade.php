@@ -3,7 +3,7 @@
         <a class="sidebar-toggle" aria-label="قائمة" title="قائمة">
             <i class="fa-solid fa-bars"></i>
         </a>
-        <a href="#" class="logo">
+        <a href="{{ route('home') }}" class="logo">
             <img src="{{ asset('assets/img/ho.png') }}" alt="شعار الموقع">
         </a>
         <nav class="main-nav">
@@ -12,6 +12,9 @@
                         class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">الرئيسية</a></li>
                 <li><a href="{{ route('front.properties.index') }}"
                         class="nav-link {{ request()->routeIs('front.properties.index') ? 'active' : '' }}">العقارات</a>
+                </li>
+                <li><a href="{{ route('front.about') }}"
+                        class="nav-link {{ request()->routeIs('front.about') ? 'active' : '' }}">من نحن</a>
                 </li>
                 @auth
                     <li><a href="{{ route('front.properties.user', ['user' => Auth::id()]) }}"
@@ -33,14 +36,20 @@
             @auth
                 <div class="profile-icon-container">
                     <div class="profile-icon">
-                        <img src="{{ Auth::user()->image ? asset(Auth::user()->image) : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZOE1Otd-Jf_QaQTl7CTI3VX2qpKjEbz24gA&s' }}"
+                        <img src="{{ Auth::user()->image ? asset(Auth::user()->image) : asset('assets/img/avatar.png') }}"
                             alt="الملف الشخصي">
                     </div>
                     <ul class="dropdown-menu">
+                        @if (Auth::user()->role != 'user')
+                            <li><a href="{{ route('dashboard.index') }}"><i class="fas fa-user"></i>لوحة التحكم</a></li>
+                        @endif
                         <li><a href="{{ route('front.profile') }}"><i class="fas fa-user"></i> الملف الشخصي</a></li>
                         <li><a href="{{ route('front.favorites.index') }}"><i class="fas fa-heart"></i> المفضلة</a></li>
-                        <li><a href="{{ route('front.auth.edit_password') }}"><i class="fas fa-address-book"></i>تغيير كلمة
-                                المرور</a></li>
+                        @if (!auth()->user()->provider)
+                            <li><a href="{{ route('front.auth.edit_password') }}"><i class="fas fa-address-book"></i>تغيير
+                                    كلمة
+                                    المرور</a></li>
+                        @endif
                         <li class="separator"></li>
                         <li><a href="#"
                                 onclick="event.preventDefault();document.querySelector('#logout-form').submit();"><i
@@ -66,6 +75,9 @@
         <li><a href="{{ route('front.properties.index') }}"
                 class="sidebar-link {{ request()->routeIs('front.properties.index') ? 'active' : '' }}">العقارات</a>
         </li>
+        <li><a href="{{ route('front.about') }}"
+                class="sidebar-link {{ request()->routeIs('front.about') ? 'active' : '' }}">من نحن</a>
+        </li>
         @auth
             <li><a href="{{ route('front.properties.user', Auth::id()) }}"
                     class="sidebar-link {{ request()->routeIs('front.properties.user') ? 'active' : '' }}">عقاراتي</a></li>
@@ -89,8 +101,13 @@
                         <li><a href="{{ route('front.profile') }}" class="sidebar-sub-link"><i class="fas fa-user"></i>
                                 تعديل الملف الشخصي</a>
                         </li>
-                        <li><a href="{{ route('front.auth.edit_password') }}" class="sidebar-sub-link"><i
-                                    class="fas fa-lock"></i> تغيير كلمة المرور</a>
+                        @if (!auth()->user()->provider)
+                            <li><a href="{{ route('front.auth.edit_password') }}" class="sidebar-sub-link"><i
+                                        class="fas fa-lock"></i> تغيير كلمة المرور</a>
+                            </li>
+                        @endif
+                        <li><a href="{{ route('dashboard.index') }}" class="sidebar-sub-link"><i
+                                    class="fas fa-lock"></i>لوحة التحكم</a>
                         </li>
                     </ul>
                 </div>

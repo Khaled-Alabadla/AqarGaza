@@ -30,6 +30,10 @@ class UserRequest extends FormRequest
                 'name' => 'required|min:10',
                 'email' => 'required|email',
                 'password' => 'required|confirmed|min:8',
+                'phone' => 'nullable',
+                'string',
+                'max:20',
+                'regex:/^\+?\d{7,15}$/'
             ];
         }
         return [
@@ -48,6 +52,7 @@ class UserRequest extends FormRequest
                 'password.min' => 'يجب أن تحتوي كلمة المرور على 8 أحرف أو أكثر',
                 'email.required' => 'البريد الإلكتروني مطلوب',
                 'email.email' => 'البريد الإلكتروني غير صالح',
+                'phone.regex' => 'رقم الهاتف يجب أن يكون بين 7 و15 رقمًا، ويمكن أن يبدأ بـ +.',
             ];
         }
         return [
@@ -55,6 +60,7 @@ class UserRequest extends FormRequest
             'name.min' => 'يجب أن يحتوي الاسم على الأقل 10 أحرف',
             'email.required' => 'البريد الإلكتروني مطلوب',
             'email.email' => 'البريد الإلكتروني غير صالح',
+            'phone.regex' => 'رقم الهاتف يجب أن يكون بين 7 و15 رقمًا، ويمكن أن يبدأ بـ +.',
         ];
     }
 }

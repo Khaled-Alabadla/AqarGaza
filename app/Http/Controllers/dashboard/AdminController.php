@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Contact;
+use App\Models\Property;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -17,81 +22,60 @@ class AdminController extends Controller
 
         // $authEmployeeId = Auth::id();
 
-        // $labels = [
-        //     Carbon::now()->translatedFormat('F'), // Current month in Arabic
-        //     Carbon::now()->subMonth()->translatedFormat('F'), // Previous month in Arabic
-        //     Carbon::now()->subMonths(2)->translatedFormat('F'), // Two months ago in Arabic
-        // ];
+        $admins = User::where('role', '<>', 'user')->count();
 
-        // $totals = [
-        //     $this->getAssistanceTotal(0),
-        //     $this->getAssistanceTotal(1),
-        //     $this->getAssistanceTotal(2),
-        // ];
+        $messages = Contact::where('is_open', 0)->count();
 
-        // $received = [
-        //     $this->getReceivedAssistance($authEmployeeId, 0),
-        //     $this->getReceivedAssistance($authEmployeeId, 1),
-        //     $this->getReceivedAssistance($authEmployeeId, 2),
-        // ];
+        $categories = DB::select('select categories.name, count(*) as count from categories join properties on properties.category_id = categories.id group by categories.name DESC');
 
-        // $count = Assistance::whereMonth('date', Carbon::now()->month)
-        //     ->whereYear('date', Carbon::now()->year)
-        //     ->count();
+        $labels = [
+            Carbon::now()->translatedFormat('F'), // Current month in Arabic
+            Carbon::now()->subMonth()->translatedFormat('F'), // Previous month in Arabic
+            Carbon::now()->subMonths(2)->translatedFormat('F'), // Two months ago in Arabic
+        ];
 
-        // $topEmployees = Distribution::select('user_id', DB::raw('SUM(quantity) as total_assistances'))
-        //     ->groupBy('user_id')
-        //     ->orderByDesc('total_assistances')
-        //     ->take(5)
-        //     ->get();
+        $totals = [
+            $this->getPropertiesTotal(0),
+            $this->getPropertiesTotal(1),
+            $this->getPropertiesTotal(2),
+        ];
 
-        // $fiveDonors = Donor::take(5)->get();
+        $count = Property::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
 
-        // $donorContributions = DB::table('properties')
-        //     ->join('donors', 'properties.donor_id', '=', 'donors.id')
-        //     ->select('donors.name', DB::raw('COUNT(properties.id) as assistance_count'))
-        //     ->groupBy('donors.name')
-        //     ->orderBy('assistance_count', 'desc') // Sort by count descending
-        //     ->get();
 
-        // $topDonors = $donorContributions->take(3);
+        $sale = Property::where('type', 'sale')->count();
+        $rent = Property::where('type', 'rent')->count();
 
-        // $otherAssistances = $donorContributions->slice(3)->sum('assistance_count'); // Sum the rest
 
-        // // Prepare data for the chart
-        // $chartData = [
-        //     'labels' => $topDonors->pluck('name')->toArray(),
-        //     'data' => $topDonors->pluck('assistance_count')->toArray(),
-        // ];
+        // Prepare data for the chart
+        $chartData = [
+            'labels' => ['بيع', 'تأجير'],
+            'data' => [$sale, $rent],
+        ];
 
-        // // Add "Other" if applicable
-        // if ($otherAssistances > 0) {
-        //     $chartData['labels'][] = 'الجهات المانحة الأخرى';
-        //     $chartData['data'][] = $otherAssistances;
-        // }
+        // Convert to JSON for use in JavaScript
+        $chartDataJson = $chartData;
 
-        // // Convert to JSON for use in JavaScript
-        // $chartDataJson = $chartData;
-
-        // dd($chartDataJson);
 
         if ($id == 'home') {
-
-            return view('dashboard.home');
+            return view('dashboard.home', compact('totals', 'labels', 'count', 'admins', 'messages', 'chartDataJson', 'categories'));
         }
 
         if (view()->exists($id)) {
             return view('dashboard.' . $id);
         }
 
+
         if ($id == null) {
-            return view('dashboard.home');
+            return view('dashboard.home', compact('totals', 'labels', 'count', 'admins', 'messages', 'chartDataJson', 'categories'));
         } else {
             return view('dashboard.404');
         }
     }
 
-    private function getAssistanceTotal($monthOffset)
+    private function getPropertiesTotal($monthOffset)
     {
         $month =  now()->month;
 
@@ -111,8 +95,8 @@ class AdminController extends Controller
 
 
         return DB::table('properties')
-            ->whereMonth('date', now()->subMonths($monthOffset)->month)
-            ->whereYear('date', $year)
+            ->whereMonth('created_at', now()->subMonths($monthOffset)->month)
+            ->whereYear('created_at', $year)
             ->count();
     }
 

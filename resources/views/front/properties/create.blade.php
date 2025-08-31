@@ -513,7 +513,7 @@
                         zoneSelect.disabled = !cityId;
 
                         if (cityId) {
-                            fetch(`/api/zones/${cityId}`, {
+                            fetch(`/zones/${cityId}`, {
                                     headers: {
                                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                                     }

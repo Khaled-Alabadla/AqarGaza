@@ -72,16 +72,33 @@ class MessagesController extends Controller
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
                 $type = 'attachment';
-                $directory = 'uploads/messages';
-                $file_name = rand() . time() . $request->file('attachment')->getClientOriginalName();
+
+                // Absolute path outside project -> htdocs/uploads/messages
+                $directory = base_path('../uploads/messages');
+
+                // Create directory if not exists
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0777, true);
+                }
+
+                // Unique file name
+                $file_name = rand() . time() . '.' . $file->getClientOriginalExtension();
+
+                $request->file('attachment')->move($directory, $file_name);
+
+                $relativePath = 'uploads/messages/' . $file_name;
+
+                // Move the uploaded file
+                // $relativePath = $file->storeAs('uploads/messages', $file_name, ['disk' => 'public_uploads']);
+                // Store file info as JSON
                 $messageContent = json_encode([
-                    'file_name' => $file->getClientOriginalName(),
-                    'file_size' => $file->getSize(),
-                    'mimetype' => $file->getMimeType(),
-                    'file_path' => $file_name,
+                    'file_name'  => $file->getClientOriginalName(),
+                    // 'file_size'  => $file->getSize(),
+                    // 'mimetype'   => $file->getMimeType(),
+                    'file_path'  => $relativePath, // ✅ save relative path instead of only filename
                 ]);
-                $file_path = $request->file('attachment')->storeAs($directory, $file_name, 'public_uploads');
             }
+
 
             // 3. Create the message
             $message = $chat->messages()->create([
@@ -111,8 +128,9 @@ class MessagesController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Message $message)
+    public function update(Request $request, $id)
     {
+        $message = Message::findOrFail($id);
         // Ensure the authenticated user is the sender of the message
         if (Auth::id() !== $message->sender_id) {
             return response()->json(['error' => 'Unauthorized'], 403);

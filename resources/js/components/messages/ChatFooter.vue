@@ -1,6 +1,6 @@
 <template>
     <div class="footer">
-        <form @submit.prevent="sendMessage" style="width: 100%; display: flex;">
+        <form @submit.prevent="sendMessage" style="width: 100%; display: flex; justify-content: space-between;">
             <input type="hidden" name="_token" :value="$root.csrfToken" />
             <div class="input-group">
                 <i class="far fa-smile smile"></i>
@@ -10,9 +10,9 @@
                 <i class="fas fa-paper-plane send" id="send-message" @click.prevent="sendMessage"></i>
             </div>
             <div class="footer-icons">
-                <i class="fas fa-microphone"></i>
+                <!-- <i class="fas fa-microphone"></i> -->
                 <i class="fas fa-paperclip" @click="triggerFileInput" style="cursor: pointer;"></i>
-                <i class="fas fa-ellipsis-h"></i>
+                <!-- <i class="fas fa-ellipsis-h"></i> -->
             </div>
         </form>
 
@@ -84,7 +84,7 @@ export default defineComponent({
     },
     data() {
         return {
-            csrfToken: (this.$root as any).csrf_token as string,
+            csrfToken: (this.$root as any).csrfToken as string,
             userId: (this.$root as any).userId as number,
             userName: (this.$root as any).userName || 'User',
             userImage: (this.$root as any).userImage as string | undefined,
@@ -147,7 +147,7 @@ export default defineComponent({
                 const messageToUpdate = this.editingMessage;
                 try {
                     const response = await fetch(`/messages/${messageToUpdate.id}`, {
-                        method: 'PUT',
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
@@ -182,7 +182,6 @@ export default defineComponent({
 
                     this.$emit('clear-editing');
                 } catch (error) {
-                    console.error('Error updating message:', error);
                     this.messageText = messageToUpdate.message;
                 } finally {
                     this.isSending = false;
@@ -230,6 +229,7 @@ export default defineComponent({
                     formData.append('sender_id', this.userId.toString());
                     formData.append('receiver_id', receiverId.toString());
                     formData.append('_token', this.$root.csrfToken);
+                    console.log(fileToSend);
 
                     if (fileToSend) {
                         formData.append('attachment', fileToSend);
@@ -268,7 +268,6 @@ export default defineComponent({
                         isTemp: false,
                     });
                 } catch (error) {
-                    console.error('Error sending message:', error);
                     const index = (this.$root as any).messages.findIndex((m: Message) => m.id == tempMessage.id);
                     if (index !== -1) {
                         (this.$root as any).messages.splice(index, 1);

@@ -29,18 +29,41 @@ class BlogsController extends Controller
 
     public function store(BlogRequest $request)
     {
-        $image_name = rand() . time() . $request->file('image')->getClientOriginalName();
+        $file_path = null;
 
-        $image_path = $request->file('image')->storeAs('uploads/blogs', $image_name, 'public_uploads');
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+
+            // Define folder inside htdocs/uploads
+            $directory = base_path('../uploads/blogs');
+
+            // Create the folder if it doesn’t exist
+            if (!file_exists($directory)) {
+                mkdir($directory, 0777, true);
+            }
+
+            // Unique file name
+            $file_name = rand() . time() . $request->file('image')->getClientOriginalName();
+
+            // Move file to htdocs/uploads/users/profiles
+            $file->move($directory, $file_name);
+
+            // Save relative path (for DB)
+            $file_path = "uploads/blogs/" . $file_name;
+        }
 
         Blog::create([
             'title' => $request->post('title'),
+            'excerpt' => $request->post('excerpt'),
             'content' => $request->post('content'),
-            'image' => $image_path,
-            'user_id' => Auth::id()
+            'image' => $file_path,
+            'user_id' => Auth::id(),
+            'date' => now()->toDateString()
         ]);
 
-        return redirect()->route('dashboard.blogs.index')->with('success', 'تمت الإضافة بنجاح');
+        flash()->success('تمت الإضافة بنجاح');
+
+        return redirect()->route('dashboard.blogs.index');
     }
 
     public function edit(Blog $blog)
@@ -52,23 +75,45 @@ class BlogsController extends Controller
 
     public function update(BlogRequest $request, Blog $blog)
     {
-        $image_path = $blog->image;
+        $relativePath = $blog->image;
+
+        $directory = base_path('../uploads/blogs');
 
         if ($request->hasFile('image')) {
-            Storage::disk('public_uploads')->delete($blog->image);
+            if ($blog->image) {
+                $oldPath = base_path('../' . $blog->image);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
 
-            $image_name = rand() . time() . $request->file('image')->getClientOriginalName();
+            $file_name = rand() . time() . '_' . $request->file('main-property-image')->getClientOriginalName();
 
-            $image_path = $request->file('image')->storeAs('uploads/blogs', $image_name, 'public_uploads');
+            $request->file('image')->move($directory, $file_name);
+
+            if (!file_exists($directory)) {
+                mkdir($directory, 0777, true);
+            }
+
+            // Move file to uploads folder
+            $request->file('image')->move($directory, $file_name);
+
+            // Save relative path for DB
+            $relativePath = 'uploads/blogs/' . $file_name;
         }
+
         $blog->update([
             'title' => $request->title,
+            'excerpt' => $request->excerpt,
             'content' => $request->content,
             'user_id' => Auth::id(),
-            'image' => $image_path
+            'image' => $relativePath
         ]);
 
-        return redirect()->route('dashboard.blogs.index')->with('success', 'تم التعديل بنجاح');
+        flash()->success('تم التعديل بنجاح');
+
+
+        return redirect()->route('dashboard.blogs.index');
     }
 
     public function show(string $id)
@@ -91,6 +136,8 @@ class BlogsController extends Controller
 
         Storage::disk('public_uploads')->delete($blog->image);
 
-        return redirect()->route('dashboard.blogs.index')->with('success', 'تم الحذف بنجاح');
+        flash()->success('تم الحذف بنجاح');
+
+        return redirect()->route('dashboard.blogs.index');
     }
 }

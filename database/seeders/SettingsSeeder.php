@@ -1,0 +1,21 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Setting;
+use Illuminate\Database\Seeder;
+
+class SettingsSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Setting::firstOrCreate(['key' => 'site_name']);
+        Setting::firstOrCreate(['key' => 'site_logo']);
+        Setting::firstOrCreate(['key' => 'facebook']);
+        Setting::firstOrCreate(['key' => 'twitter']);
+        Setting::firstOrCreate(['key' => 'copyright']);
+    }
+}

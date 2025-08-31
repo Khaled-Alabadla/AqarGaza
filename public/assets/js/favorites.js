@@ -45,14 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const icon = button.querySelector('i');
         const isFavorited = icon.classList.contains('fas');
 
-        fetch('/favorites', {
-            method: isFavorited ? 'DELETE' : 'POST',
+        fetch(isFavorited ? 'favorites/delete' : 'favorites', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
                 Accept: 'application/json',
             },
-            body: JSON.stringify({ property_id: propertyId }),
+            body: JSON.stringify({ property_id: propertyId }, (_method = isFavorited ? 'DELETE' : 'POST')),
         })
             .then((response) => {
                 if (response.status === 401) {

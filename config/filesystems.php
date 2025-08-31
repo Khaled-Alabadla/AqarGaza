@@ -46,10 +46,11 @@ return [
             'throw' => false,
             'report' => false,
         ],
+
         'public_uploads' => [
             'driver' => 'local',
-            'root' => public_path(),
-            'url' => env('APP_URL'),
+            'root'   => public_path(),
+            'url' => 'http://aqar-gaza.ct.ws',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

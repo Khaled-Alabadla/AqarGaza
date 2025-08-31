@@ -42,6 +42,11 @@ class PageSeeder extends Seeder
             'name' => 'favorites',
             'title' => 'العقارات المفضلة',
             'subtitle' => 'جميع العقارات التي قمت بإضافتها إلى المفضلة',
-        ]); // North Governorate
+        ]);
+        Page::firstOrCreate([
+            'name' => 'my_properties',
+            'title' => 'عقاراتي',
+            'subtitle' => 'جميع العقارات التي قمت بإضافتها',
+        ]);
     }
 }
